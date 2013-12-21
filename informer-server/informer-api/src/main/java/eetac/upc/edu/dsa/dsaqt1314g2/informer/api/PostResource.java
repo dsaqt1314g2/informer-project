@@ -8,6 +8,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -254,9 +255,9 @@ public class PostResource {
 			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
-		// TODO: Seguridad. hacer consulta del id del usuario y colocarlo.
-		// post.setUsername(security.getUserPrincipal().getName());
-		post.setUsername("ropnom");
+		
+		post.setUsername(security.getUserPrincipal().getName());
+//		post.setUsername("ropnom");
 
 		Connection con = null;
 		Statement stmt = null;
@@ -308,10 +309,6 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post likePost(@PathParam("postid") String postid, @QueryParam("l") String like, @QueryParam("d") String dislike) {
 		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
-		// TODO:Security
-		// if (!security.isUserInRole("registered")) {
-		// throw new ForbiddenException("You are not allowed...");
-		// }
 		if ((like == null) && (dislike == null))
 			throw new BadRequestException("Formato de datos incorrecto");
 		else if ((like != null) && (dislike != null))
@@ -334,8 +331,8 @@ public class PostResource {
 		try {
 			stmt = con.createStatement();
 
-			// String username = security.getUserPrincipal().getName();
-			String username = "ropnom";
+			String username = security.getUserPrincipal().getName();
+//			String username = "ropnom";
 
 			// ver si ya a denunciado
 			String query = "SELECT COUNT(id) FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
@@ -483,11 +480,8 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post updatePost(@PathParam("postid") String postid, Post post) {
 		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
-		// TODO: Cambiar rol a moderador
-		// if (security.isUserInRole("registered")) {
-		// throw new ForbiddenException("You are not allowed...");
-		// }
-
+		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
+			throw new BadRequestException("Visibilidad incorrecta.");
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -498,8 +492,8 @@ public class PostResource {
 		try {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
-			// String username = security.getUserPrincipal().getName();
-			String username = "ropnom";
+			String username = security.getUserPrincipal().getName();
+//			String username = "ropnom";
 			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
 		} catch (SQLException e) {
@@ -518,9 +512,6 @@ public class PostResource {
 	@Path("/{postid}")
 	public void deleteComentario(@PathParam("postid") String postid) {
 		// TODO: DELETE: /posts/{postid} (admin)
-		// if (!security.isUserInRole("admin")) {
-		// throw new ForbiddenException("You are not allowed...");
-		// }
 		Connection con = null;
 		Statement stmt = null;
 		try {
