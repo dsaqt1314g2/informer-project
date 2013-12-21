@@ -4,8 +4,9 @@ import java.util.Date;
 
 public class Post {
 	private int identificador;
-	private int id_user;
-	private int visibilidad; //0=anonimo, 1=nombre para amigos, 2=publico, 3=no visible, 5=pendiente de moderar
+	private String username;
+	private int visibilidad; // 0=anonimo, 1=nombre para amigos, 2=publico, 3=no
+								// visible, 5=pendiente de moderar
 	private String asunto;
 	private String contenido;
 	private Date publicacion_date;
@@ -14,14 +15,6 @@ public class Post {
 	private int calificaciones_negativas;
 	private int revisado;
 	private int who_revised;
-
-	public int getId_user() {
-		return id_user;
-	}
-
-	public void setId_user(int id_user) {
-		this.id_user = id_user;
-	}
 
 	public int getVisibilidad() {
 		return visibilidad;
@@ -101,6 +94,14 @@ public class Post {
 
 	public void setIdentificador(int identificador) {
 		this.identificador = identificador;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 }

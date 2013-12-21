@@ -1,15 +1,24 @@
 package eetac.upc.edu.dsa.dsaqt1314g2.informer.api;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -32,8 +41,77 @@ public class PostResource {
 
 	@GET
 	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
-	public PostCollection getPosts() {
-		// TODO: GETs: /posts?{offset}{length} (Registered)(admin)
+	public PostCollection getPosts(@QueryParam("o") String offset, @QueryParam("l") String length) {
+		// GETs: /posts?{offset}{length} (Registered)(admin)
+		if ((offset == null) || (length == null))
+			throw new BadRequestException("offset and length are mandatory parameters");
+		int ioffset, ilength;
+		try {
+			ioffset = Integer.parseInt(offset);
+			if (ioffset < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("offset must be an integer greater or equal than 0.");
+		}
+		try {
+			ilength = Integer.parseInt(length);
+			if (ilength < 1)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("length must be an integer greater or equal than 0.");
+		}
+
+		// Sting for each one and store them in the StingCollection.
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+			stmt = con.createStatement();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			String query;
+			// if (username == null)
+			query = "select * FROM posts ORDER BY publicacion_date desc LIMIT " + offset + ", " + length + ";";
+			// else
+			// query =
+			// "select stings.*, users.name FROM stings INNER JOIN users ON (users.username=stings.username) WHERE stings.username='"
+			// + username
+			// + "' ORDER BY creation_timestamp DESC LIMIT " + offset + ", " +
+			// length + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Post post = new Post();
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setUsername(rs.getString("username"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getInt("who_revisado"));
+				posts.add(post);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo, offset,
+		// length, username, "self"));
+		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo,
+		// Integer.toString(prev), length, username, "prev"));
+		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo,
+		// Integer.toString(next), length, username, "next"));
 		return posts;
 	}
 
@@ -41,8 +119,60 @@ public class PostResource {
 	@Path("/{postid}")
 	@Produces(MediaType.INFORMER_API_POST)
 	public Response getPost(@PathParam("postid") String postid, @Context Request req) {
-		// TODO: GET: /posts/{postid} (Registered)(admin)
-		
+		// GET: /posts/{postid} (Registered)(admin)
+		CacheControl cc = new CacheControl();
+		Post post = new Post();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT * FROM posts WHERE identificador=" + postid + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setUsername(rs.getString("username"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getInt("who_revisado"));
+			} else
+				throw new PostNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		// Calculate the ETag on last modified date of user resource
+		EntityTag eTag = new EntityTag(Integer.toString(post.getPublicacion_date().hashCode()));
+
+		// Verify if it matched with etag available in http request
+		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+
+		// If ETag matches the rb will be non-null;
+		// Use the rb to return the response without any further processing
+		if (rb != null) {
+			return rb.cacheControl(cc).tag(eTag).build();
+		}
+
+		// If rb is null then either it is first time request; or resource is
+		// modified
+		// Get the updated representation and return with Etag attached to it
+		rb = Response.ok(post).cacheControl(cc).tag(eTag);
+
+		return rb.build();
+
 	}
 
 	@GET
@@ -50,7 +180,7 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Response getRanking(@PathParam("categoria") String categoria, @Context Request req) {
 		// TODO: GETs: /posts/ranking/{categoria} (Registered)(admin)
-		
+
 	}
 
 	@POST
@@ -58,26 +188,194 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post createPost(Post post) {
 		// TODO: POST: /posts (Registered)(admin)
+		if (post.getAsunto().length() > 50)
+			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
+		if (post.getContenido().length() > 2048)
+			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
+		// TODO: Seguridad. hacer consulta del id del usuario y colocarlo.
+//		post.setUsername(security.getUserPrincipal().getName());
+		post.setUsername("ropnom");
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			stmt = con.createStatement();
+			String update = "insert into posts(username, visibilidad, contenido) values ('" + post.getUsername() + "','" + post.getVisibilidad() + "','"
+					+ post.getContenido() + "');";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				int identificador = rs.getInt(1);
+				rs.close();
+
+				rs = stmt.executeQuery("SELECT * FROM posts WHERE identificador='" + identificador + "';");
+				rs.next();
+
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setUsername(rs.getString("username"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getInt("who_revisado"));
+				// TODO: Add links
+			} else {
+				throw new PostNotFoundException();
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
 		return post;
 	}
 
 	@POST
 	@Path("/{postid}/like")
-	@Consumes(MediaType.INFORMER_API_POST)
 	@Produces(MediaType.INFORMER_API_POST)
-	public Post likePost() {
-		// TODO: POST: /posts/{postid}/like (1=like, 0 dislike)
-		// (Registered)(admin)
+	public Post likePost(@PathParam("postid") String postid, @QueryParam("l") String like, @QueryParam("d") String dislike) {
+		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
+		// TODO:Security
+		// if (!security.isUserInRole("registered")) {
+		// throw new ForbiddenException("You are not allowed...");
+		// }
+		if ((like == null) && (dislike == null))
+			throw new BadRequestException("Formato de datos incorrecto");
+		else if ((like != null) && (dislike != null))
+			throw new BadRequestException("Formato de datos incorrecto");
+		int estado = -1;
+		if (like != null)
+			estado = 1;
+		else
+			estado = 0;
 
+		Post post = new Post();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			stmt = con.createStatement();
+
+			// String username = security.getUserPrincipal().getName();
+			String username = "ropnom";
+
+			// ver si ya a denunciado
+			String query = "SELECT COUNT(id) FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) != 0)
+				throw new LikeAlreadyFoundException();
+
+			// like: estado de las relaciones --> 0=dislike, 1=like
+			String insert = "INSERT INTO calificacion (username,id_post,estado) values ('" + username + "'," + postid + "," + estado + ");";
+			stmt.executeUpdate(insert);
+
+			// actualizar contador del post
+			String update;
+			if (like != null)
+				update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas+1 WHERE posts.identificador='" + postid + "';";
+			else
+				update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas+1 WHERE posts.identificador='" + postid + "';";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid
+					+ "';");
+			if (rs.next()) {
+				post.setIdentificador(Integer.parseInt(postid));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				// TODO: Add links
+			} else {
+				throw new PostNotFoundException();
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return post;
 	}
 
 	@POST
 	@Path("/{postid}/denunciar")
-	@Consumes(MediaType.INFORMER_API_POST)
-	@Produces(MediaType.INFORMER_API_POST)
-	public Post denunciaPost() {
-		// TODO: POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar) (Registered)(admin)
+	// @Produces(MediaType.INFORMER_API_POST)
+	public void denunciaPost(@PathParam("postid") String postid, @QueryParam("d") String denuncia) {
+		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
+		// (Registered)(admin)
+		// TODO:Security
+		// if (!security.isUserInRole("registered")) {
+		// throw new ForbiddenException("You are not allowed...");
+		// }
 
+		if (denuncia == null)
+			throw new BadRequestException("Formato de datos incorrecto");
+		Post post = new Post();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			stmt = con.createStatement();
+			// buscar id_usuario
+
+			// String username = security.getUserPrincipal().getName();
+			String username = "ropnom";
+
+			// ver si ya a denunciado
+			String query = "SELECT COUNT(id) FROM denuncias_post Where id_post='" + postid + "' and username='" + username + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) != 0)
+				throw new DenunciaAlreadyFoundException();
+
+			// denunciar
+			String insert = "INSERT INTO denuncias_post (username,id_post) values ('" + username + "'," + postid + ");";
+			stmt.executeUpdate(insert);
+
+			// comprobar si hay mas de 20 denuncias y cambiar visibilidad a 5 si
+			// los hay
+			int MAX_DENUNCIAS = 20;
+			query = "SELECT COUNT(id) FROM denuncias_post WHERE id_post='" + postid + "';";
+			rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) >= MAX_DENUNCIAS) {
+				insert = "UPDATE posts SET visibilidad=5 WHERE identificador='" + postid + "';";
+				post.setVisibilidad(5);
+				stmt.executeUpdate(insert);
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		// return post;
 	}
 
 	@PUT
@@ -86,6 +384,35 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post updatePost(@PathParam("postid") String postid, Post post) {
 		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+
+		// TODO: Cambiar rol a moderador
+		if (security.isUserInRole("registered")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			// comprobar que el que modifica es quien ha creado el post
+			String username = security.getUserPrincipal().getName();
+
+			String update = "UPDATE posts SET revisado=revisado+1 who_revisado='"+username+"' WHERE identificador=" + postid + ";";
+			stmt.executeUpdate(update);
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
 		return post;
 	}
 
