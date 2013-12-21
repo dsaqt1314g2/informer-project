@@ -23,6 +23,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.UsersAPILinkBuilder;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.User;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.UserCollection;
 
@@ -84,8 +85,8 @@ public class UserResource {
 
 				// TODO: Generar lso Links
 				// añadimos los links
-				// user.addLink(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
-				// libro.getLibroid(), "self"));
+				 user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
+				 user.getUsername(), "self"));
 
 			} else {
 				throw new UserNotFoundException();
@@ -235,6 +236,8 @@ public class UserResource {
 				user.setLugar_de_residencia(rs.getString("lugar_de_residencia"));
 				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
 				// TODO: Links
+				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
+						 user.getUsername(), "self"));
 
 				users.add(user);
 			}
@@ -249,6 +252,18 @@ public class UserResource {
 			}
 		}
 
+		int o = Integer.parseInt(offset);
+		int l = Integer.parseInt(length);
+		if((o-l)>=o)
+		{
+			String offset2 = Integer.toString(o-l);
+			users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset2, length, "self"));
+		}
+		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset, length, "self"));
+		String offset3 = Integer.toString(o+l);
+		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset3, length, "self"));
+		users.addLink();
+		
 		return users;
 	}
 
@@ -313,8 +328,8 @@ public class UserResource {
 
 				// TODO: Generar lso Links
 				// añadimos los links
-				// user.addLink(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
-				// libro.getLibroid(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
+						 user.getUsername(), "self"));
 			}
 
 			rs.close();
@@ -345,12 +360,12 @@ public class UserResource {
 		Statement stmt = null;
 
 		 if (!security.isUserInRole("registered")
-		 || !security.isUserInRole("admin")) {
+		 && !security.isUserInRole("admin")) {
 		
 		 throw new ForbiddenException("You are nor allowed");
 		
 		 }
-		 if (!security.isUserInRole("registered")) {
+		 if (security.isUserInRole("registered")) {
 		
 		 if (!security.getUserPrincipal().getName().equals(username)) {
 		
@@ -410,8 +425,8 @@ public class UserResource {
 
 				// TODO: Generar lso Links
 				// añadimos los links
-				// user.addLink(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
-				// libro.getLibroid(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
+						 user.getUsername(), "self"));
 
 			} else {
 				throw new UserNotFoundException();

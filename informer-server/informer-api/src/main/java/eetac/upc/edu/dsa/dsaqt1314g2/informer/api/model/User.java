@@ -132,12 +132,10 @@ public class User {
 		this.links = links;
 	}
 	
-	public void setaddLinks(Link link) {
+	public void addLinks(Link link) {
 		this.links.add(link);
 	}
-	public Link  getaLinks(int a) {
-		return(this.links.get(a));
-	}
+	
 	
 	
 	
