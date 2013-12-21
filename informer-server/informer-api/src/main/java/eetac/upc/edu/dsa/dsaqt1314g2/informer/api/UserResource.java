@@ -15,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
@@ -126,13 +127,129 @@ public class UserResource {
 		return user;
 	}
 
-	// @GET
-	// @Path("/search")
-	// @Produces(MediaType.INFORMER_API_USER_COLLECTION)
-	// public UserCollection getSearch(@Context Request req) {
-	// // TODO: Search: GET ? {nombre},{escula},{sexo},{edad},{estadocivil}
-	// // (Registered)(admin)
-	// }
+	@POST
+	@Path("/search")
+	@Consumes(MediaType.INFORMER_API_USER_COLLECTION )
+	@Produces(MediaType.INFORMER_API_USER_COLLECTION )
+	public UserCollection getSearch(@QueryParam("o") String offset,
+			@QueryParam("l") String length, @Context Request req, User busqueda) {
+		// TODO: Search: GET ? {nombre},{escula},{sexo},{edad},{estadocivil}
+		// (Registered)(admin)
+
+		if ((offset == null) || (length == null))
+			throw new BadRequestException(
+					"offset and length are mandatory parameters");
+		int ioffset, ilength;
+		try {
+			ioffset = Integer.parseInt(offset);
+			if (ioffset < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException(
+					"offset must be an integer greater or equal than 0.");
+		}
+		try {
+			ilength = Integer.parseInt(length);
+			if (ilength < 1)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException(
+					"length must be an integer greater or equal than 0.");
+		}
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+			stmt = con.createStatement();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		boolean coma = false;
+		String query = "Select * from perfiles where ";
+		if (busqueda.getUsername() != null) {
+			coma = true;
+			query += " username like '%" + busqueda.getUsername() + "%' ";
+		}
+		if (busqueda.getUni_escuela() != 0) {
+			if (coma) {				
+				query += " and ";
+			}
+			else
+			{
+				coma = true;
+			}
+			query += " uni_escuela =" + busqueda.getUni_escuela();
+		}
+		if (busqueda.getGenero() != null) {
+			if (coma) {				
+				query += " and ";
+			}
+			else
+			{
+				coma = true;
+			}
+			query += " genero =" + busqueda.getGenero();
+		}
+		if (busqueda.getFecha_nacimiento() != null) {
+			if (coma) {				
+				query += " and ";
+			}
+			else
+			{
+				coma = true;
+			}
+			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+			String nacimiento = dt1.format(busqueda.getFecha_nacimiento());
+			query += " fecha_nacimiento <='" +nacimiento +"'";
+		}
+		if (busqueda.getEstado_civil() != -1) {
+			if (coma) {				
+				query += " and ";
+			}
+			else
+			{
+				coma = true;
+			}
+			
+			query += " estado_civil <=" +busqueda.getEstado_civil() ;
+		}
+
+		query += " ORDER BY username asc LIMIT " + offset + ", " + length + ";";
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+
+				User user = new User();
+				user.setIdentificador(rs.getInt("identificador"));
+				user.setUsername(rs.getString("username"));
+				user.setName(rs.getString("name"));
+				user.setCorreo(rs.getString("correo"));
+				user.setGenero(rs.getBoolean("genero"));
+				user.setFecha_nacimiento(rs.getDate("fecha_nacimiento"));
+				user.setUni_escuela(rs.getInt("uni_escuela"));
+				user.setFoto(rs.getString("foto"));
+				user.setEstado_civil(rs.getInt("estado_civil"));
+				user.setLugar_de_residencia(rs.getString("lugar_de_residencia"));
+				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
+				// TODO: Links
+
+				users.add(user);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return users;
+	}
 
 	@POST
 	@Consumes(MediaType.INFORMER_API_USER)
@@ -152,7 +269,7 @@ public class UserResource {
 		try {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			throw new ServiceUnavailableException(e.getMessage());
 		}
@@ -181,10 +298,10 @@ public class UserResource {
 			// le indicamos que nso devuelva la primary key que le genere a la
 			// nueva entrada
 			stmt.executeUpdate(sql);
-			rs = stmt.getGeneratedKeys();
 			// leemos la primary key
 			rs.close();
-			sql = "select identificador,last_Update from perfiles where username=" + user.getUsername();
+			sql = "select identificador,last_Update from perfiles where username='"
+					+ user.getUsername() + "';";
 			rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 

@@ -19,7 +19,7 @@ public class User {
 	//Pendiente de idear una enumeraicon por universidades y esculas
 	private int uni_escuela;
 	private String foto;
-	// 0 Soltero, 1 sin lazos, 2 follamiga, 3 relacionabierta, 4 relaciona a distancia, 5 con relacion, 6 comprometido, 7 casado, 8 destrozado por la ex, 9 falta de mimos. 
+	// 0 Soltero, 1 sin lazos, 2 destrozado por ex/falta de mimos 3 follamiga, 4 relacionabierta, 5 relaciona a distancia, 6 con relacion, 7 comprometido, 
 	private int estado_civil;
 	private String lugar_de_residencia;
 	// si tiene GPS activado o no
