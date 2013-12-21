@@ -3,14 +3,14 @@ package eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import eetac.upc.edu.dsa.rodrigo.libros.api.links.Link;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.Link;
 
 
-public class LibrosRootAPI {
+public class InformerRootAPI {
 
 	private List<Link> rw;
 
-	public LibrosRootAPI() {
+	public InformerRootAPI() {
 		rw = new ArrayList<Link>();
 	}
 
