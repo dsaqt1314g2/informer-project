@@ -14,5 +14,5 @@ insert into users(username, userpass, name, email) values ('Creador',md5('Creado
 
 insert into user_roles(username, rolename) values ('Creador','registered');
 insert into user_roles(username, rolename) values ('McD0n3ld','registered');
-insert into user_roles(username, rolename) values ('ropnom','registered');
+insert into user_roles(username, rolename) values ('ropnom','admin');
 
