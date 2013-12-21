@@ -1,21 +1,3 @@
-drop database if exists realm-db;
-create database realm-db;
-use realm-db;
-
-CREATE TABLE usuarios (
-	username varchar(20) NOT NULL PRIMARY KEY,
-	password char(32) NOT NULL,
-	correo varchar(255) NOT NULL,
-	name varchar(70) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
-CREATE TABLE roles (
-	username varchar(20) NOT NULL,
-	rolename varchar(20) NOT NULL,
-	FOREIGN KEY(username) REFERENCES usuarios(username) ON DELETE CASCADE,
-	PRIMARY KEY (username, rolename)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
 drop database if exists informerdb;
 create database informerdb;
 use informerdb;
@@ -32,7 +14,7 @@ CREATE TABLE perfiles (
 	estado_civil int,
 	lugar_de_residencia varchar(255),
 	participar_GPS boolean
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE posts (
 	identificador int NOT NULL auto_increment PRIMARY KEY,
@@ -41,13 +23,14 @@ CREATE TABLE posts (
 	asunto varchar(50),
 	contenido varchar(2048) NOT NULL,
 	publicacion_date timestamp NOT NULL,
+	numcomentarios int NOT NULL,
 	calificaciones_positivas int NOT NULL,
 	calificaciones_negativas int NOT NULL,
-	revisado int NOT NULL,
-	who_revisado int,
+	revisado int NOT NULL DEFAULT  '0',
+	who_revisado int NOT NULL DEFAULT  '0',
 	FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(who_revisado) REFERENCES perfiles(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE comentarios (
 	identificador int NOT NULL auto_increment PRIMARY KEY,
@@ -56,12 +39,12 @@ CREATE TABLE comentarios (
 	visibilidad int NOT NULL,
 	contenido varchar(255) NOT NULL,
 	publicacion_date timestamp NOT NULL,
-	revisado int NOT NULL,
-	who_revisado int NOT NULL,
+	revisado int NOT NULL DEFAULT  '0',
+	who_revisado int NOT NULL DEFAULT  '0',
 	FOREIGN KEY(id_post) REFERENCES posts(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(who_revisado) REFERENCES perfiles(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE mensajes_chat (
 	identificador int NOT NULL auto_increment PRIMARY KEY,
@@ -71,7 +54,7 @@ CREATE TABLE mensajes_chat (
 	last_update timestamp NOT NULL,
 	FOREIGN KEY(id_sala) REFERENCES perfiles(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE salas_chat (
 	identificador int NOT NULL auto_increment PRIMARY KEY,
@@ -80,7 +63,7 @@ CREATE TABLE salas_chat (
 	visibilidad int NOT NULL,
 	password char(32) NOT NULL,
 FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `amigos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -89,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `amigos` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
   FOREIGN KEY (id_friend) REFERENCES perfiles(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `denuncias_post` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -98,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `denuncias_post` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
   FOREIGN KEY (id_post) REFERENCES posts(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `denuncias_comentario` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -107,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `denuncias_comentario` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
   FOREIGN KEY (id_comentario) REFERENCES comentarios(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `calificacion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -117,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `calificacion` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
   FOREIGN KEY (id_post) REFERENCES posts(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `rel_sala_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -127,4 +110,4 @@ CREATE TABLE IF NOT EXISTS `rel_sala_user` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
   FOREIGN KEY (id_sala) REFERENCES salas_chat(identificador) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
