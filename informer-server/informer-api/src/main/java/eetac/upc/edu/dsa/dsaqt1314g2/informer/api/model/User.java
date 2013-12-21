@@ -7,19 +7,34 @@ import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.Link;
 
 public class User {
 
+	//primary key las dos idnt y username
 	private int identificador;
 	private String username;
+	
 	private String name;
 	private String correo;
+	// True Macho False Hembra
 	private Boolean genero;
 	private Date fecha_nacimiento;
+	//Pendiente de idear una enumeraicon por universidades y esculas
 	private int uni_escuela;
 	private String foto;
+	// 0 Soltero, 1 sin lazos, 2 follamiga, 3 relacionabierta, 4 relaciona a distancia, 5 con relacion, 6 comprometido, 7 casado, 8 destrozado por la ex, 9 falta de mimos. 
 	private int estado_civil;
 	private String lugar_de_residencia;
+	// si tiene GPS activado o no
 	private Boolean participar_GPS;
+	private Date last_Update;
 	
 	private ArrayList <Link> links = new ArrayList<Link>();;
+
+	public Date getLast_Update() {
+		return last_Update;
+	}
+
+	public void setLast_Update(Date last_Update) {
+		this.last_Update = last_Update;
+	}
 
 	public int getIdentificador() {
 		return identificador;

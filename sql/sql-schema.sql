@@ -3,7 +3,7 @@ create database informerdb;
 use informerdb;
 
 CREATE TABLE perfiles (
-	identificador int NOT NULL auto_increment PRIMARY KEY,
+	identificador int NOT NULL auto_increment ,
 	username varchar(20) NOT NULL,
 	name varchar(70) NOT NULL,
 	correo varchar(255) NOT NULL,
@@ -13,7 +13,9 @@ CREATE TABLE perfiles (
 	foto varchar(255),
 	estado_civil int DEFAULT 0,
 	lugar_de_residencia varchar(255) DEFAULT 'Mi casa',
-	participar_GPS boolean
+	participar_GPS boolean,
+	last_Update timestamp NOT NULL,
+	primary key (identificador, username)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
 
 CREATE TABLE posts (
