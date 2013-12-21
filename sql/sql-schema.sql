@@ -27,7 +27,7 @@ CREATE TABLE posts (
 	calificaciones_positivas int NOT NULL,
 	calificaciones_negativas int NOT NULL,
 	revisado int NOT NULL DEFAULT  '0',
-	who_revisado int NOT NULL DEFAULT  '0',
+	who_revisado int NULL ,
 	FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(who_revisado) REFERENCES perfiles(identificador) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;
@@ -40,7 +40,7 @@ CREATE TABLE comentarios (
 	contenido varchar(255) NOT NULL,
 	publicacion_date timestamp NOT NULL,
 	revisado int NOT NULL DEFAULT  '0',
-	who_revisado int NOT NULL DEFAULT  '0',
+	who_revisado int NULL ,
 	FOREIGN KEY(id_post) REFERENCES posts(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(id_user) REFERENCES perfiles(identificador) ON DELETE CASCADE,
 	FOREIGN KEY(who_revisado) REFERENCES perfiles(identificador) ON DELETE CASCADE
