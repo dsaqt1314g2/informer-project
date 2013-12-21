@@ -8,7 +8,6 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -24,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.PostsAPILinkBuilder;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Post;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.PostCollection;
 
@@ -73,14 +73,7 @@ public class PostResource {
 
 		try {
 			String query;
-			// if (username == null)
 			query = "select * FROM posts ORDER BY publicacion_date desc LIMIT " + offset + ", " + length + ";";
-			// else
-			// query =
-			// "select stings.*, users.name FROM stings INNER JOIN users ON (users.username=stings.username) WHERE stings.username='"
-			// + username
-			// + "' ORDER BY creation_timestamp DESC LIMIT " + offset + ", " +
-			// length + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				Post post = new Post();
@@ -92,6 +85,7 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getInt("who_revisado"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
 			}
 			rs.close();
@@ -106,12 +100,11 @@ public class PostResource {
 		}
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
-		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo, offset,
-		// length, username, "self"));
-		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo,
-		// Integer.toString(prev), length, username, "prev"));
-		// stings.addLink(BeeterAPILinkBuilder.buildURIStings(uriInfo,
-		// Integer.toString(next), length, username, "next"));
+		posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, offset, length, null, "self"));
+		if (prev > 0)
+			posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(prev), length, null, "prev"));
+		posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(next), length, null, "next"));
+		// TODO: limitar el next
 		return posts;
 	}
 
@@ -142,6 +135,9 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getInt("who_revisado"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
 			} else
 				throw new PostNotFoundException();
 		} catch (SQLException e) {
@@ -178,12 +174,31 @@ public class PostResource {
 	@GET
 	@Path("/ranking/{categoria}")
 	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
-	public PostCollection getRanking(@PathParam("categoria") String categoria, @Context Request req) {
+	public PostCollection getRanking(@PathParam("categoria") String categoria, @QueryParam("o") String offset, @QueryParam("l") String length,
+			@Context Request req) {
 		// GETs: /posts/ranking/{categoria} (Registered)(admin)
-		// TODO: Cacheable
 		if (!categoria.equals("likes") && !categoria.equals("dislikes") && !categoria.equals("coments"))
 			throw new BadRequestException("Formato de peitición incorrecto");
-//		CacheControl cc = new CacheControl();
+		int ioffset = 0, ilength = 10;
+		if ((offset == null) || (length == null)) {
+			offset = "0";
+			length = "10";
+		} else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("offset must be an integer greater or equal than 0.");
+			}
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("length must be an integer greater or equal than 0.");
+			}
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -195,12 +210,12 @@ public class PostResource {
 			stmt = con.createStatement();
 			String query = "";
 			if (categoria.equals("likes"))
-				query = "SELECT * FROM posts ORDER BY calificaciones_positivas DESC;";
+				query = "SELECT * FROM posts ORDER BY calificaciones_positivas DESC LIMIT " + offset + ", " + length + ";";
 			else if (categoria.equals("coments"))
-				query = "SELECT * FROM posts ORDER BY numcomentarios DESC;";
+				query = "SELECT * FROM posts ORDER BY numcomentarios DESC LIMIT " + offset + ", " + length + ";";
 			else if (categoria.equals("dislikes"))
-				query = "SELECT * FROM posts ORDER BY calificaciones_negativas DESC;";
-			
+				query = "SELECT * FROM posts ORDER BY calificaciones_negativas DESC LIMIT " + offset + ", " + length + ";";
+
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				Post post = new Post();
@@ -212,6 +227,7 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getInt("who_revisado"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
 			}
 		} catch (SQLException e) {
@@ -223,25 +239,13 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-
-//		// Calculate the ETag on last modified date of user resource
-//		EntityTag eTag = new EntityTag(Integer.toString(post.getPublicacion_date().hashCode()));
-//
-//		// Verify if it matched with etag available in http request
-//		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
-//
-//		// If ETag matches the rb will be non-null;
-//		// Use the rb to return the response without any further processing
-//		if (rb != null) {
-//			return rb.cacheControl(cc).tag(eTag).build();
-//		}
-//
-//		// If rb is null then either it is first time request; or resource is
-//		// modified
-//		// Get the updated representation and return with Etag attached to it
-//		rb = Response.ok(post).cacheControl(cc).tag(eTag);
-//
-//		return rb.build();
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, offset, length, null, "self"));
+		if (prev > 0)
+			posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(prev), length, null, "prev"));
+		posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(next), length, null, "next"));
+		// TODO: limitar el next
 		return posts;
 
 	}
@@ -255,9 +259,8 @@ public class PostResource {
 			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
-		
+
 		post.setUsername(security.getUserPrincipal().getName());
-//		post.setUsername("ropnom");
 
 		Connection con = null;
 		Statement stmt = null;
@@ -288,7 +291,7 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getInt("who_revisado"));
-				// TODO: Add links
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -330,13 +333,17 @@ public class PostResource {
 
 		try {
 			stmt = con.createStatement();
-
 			String username = security.getUserPrincipal().getName();
-//			String username = "ropnom";
+			// a ver si existe el post
+			String query = "SELECT COUNT(identificador) FROM posts Where identificador='" + postid + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) == 0)
+				throw new PostNotFoundException();
 
 			// ver si ya a denunciado
-			String query = "SELECT COUNT(id) FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
-			ResultSet rs = stmt.executeQuery(query);
+			query = "SELECT COUNT(id) FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
+			rs = stmt.executeQuery(query);
 			rs.next();
 			if (rs.getInt(1) != 0)
 				throw new LikeAlreadyFoundException();
@@ -358,7 +365,7 @@ public class PostResource {
 				post.setIdentificador(Integer.parseInt(postid));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
-				// TODO: Add links
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -380,10 +387,6 @@ public class PostResource {
 	public void denunciaPost(@PathParam("postid") String postid, @QueryParam("d") String denuncia) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
-		// TODO:Security
-		// if (!security.isUserInRole("registered")) {
-		// throw new ForbiddenException("You are not allowed...");
-		// }
 
 		if (denuncia == null)
 			throw new BadRequestException("Formato de datos incorrecto");
@@ -398,14 +401,15 @@ public class PostResource {
 
 		try {
 			stmt = con.createStatement();
-			// buscar id_usuario
-
-			// String username = security.getUserPrincipal().getName();
-			String username = "ropnom";
-
-			// ver si ya a denunciado
-			String query = "SELECT COUNT(id) FROM denuncias_post Where id_post='" + postid + "' and username='" + username + "';";
+			String username = security.getUserPrincipal().getName();
+			String query = "SELECT COUNT(identificador) FROM posts Where identificador='" + postid + "';";
 			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) == 0)
+				throw new PostNotFoundException();
+			// ver si ya a denunciado
+			query = "SELECT COUNT(id) FROM denuncias_post Where id_post='" + postid + "' and username='" + username + "';";
+			rs = stmt.executeQuery(query);
 			rs.next();
 			if (rs.getInt(1) != 0)
 				throw new DenunciaAlreadyFoundException();
@@ -457,8 +461,8 @@ public class PostResource {
 		try {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
-			// String username = security.getUserPrincipal().getName();
-			String username = "ropnom";
+			String username = security.getUserPrincipal().getName();
+			// String username = "ropnom";
 
 			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='" + username + "' WHERE identificador=" + postid + ";";
 			stmt.executeUpdate(update);
@@ -493,7 +497,7 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-//			String username = "ropnom";
+			// String username = "ropnom";
 			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
 		} catch (SQLException e) {
@@ -505,6 +509,8 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
+		post.setIdentificador(Integer.parseInt(postid));
+		post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 		return post;
 	}
 

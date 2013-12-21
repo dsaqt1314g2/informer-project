@@ -11,7 +11,7 @@ import eetac.upc.edu.dsa.rodrigo.libros.api.model.Libro;
 
 public class UsersAPILinkBuilder {
     public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase -> http:blablabla/beeter-api/
-            URI uriRoot = uriInfo.getBaseUriBuilder().path(LibrosRootAPIResource.class).build();
+            URI uriRoot = uriInfo.getBaseUriBuilder().path(InformerRootAPIResource.class).build();
             Link link = new Link();
             link.setUri(uriRoot.toString());
             link.setRel("self bookmark"); //apunta a el mismo / pagina inicial

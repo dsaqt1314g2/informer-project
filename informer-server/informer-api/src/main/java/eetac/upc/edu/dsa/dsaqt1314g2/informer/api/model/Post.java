@@ -1,6 +1,9 @@
 package eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.Link;
 
 public class Post {
 	private int identificador;
@@ -15,7 +18,14 @@ public class Post {
 	private int calificaciones_negativas;
 	private int revisado;
 	private int who_revised;
+	
+	private ArrayList<Link> links= new ArrayList<Link>();
 
+	public void addLink(Link link) {
+		links.add(link);
+		return;
+	}
+	
 	public int getVisibilidad() {
 		return visibilidad;
 	}
@@ -102,6 +112,14 @@ public class Post {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public ArrayList<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(ArrayList<Link> links) {
+		this.links = links;
 	}
 
 }
