@@ -26,7 +26,7 @@ public class User {
 	private Boolean participar_GPS;
 	private Date last_Update;
 	
-	private ArrayList <Link> links = new ArrayList<Link>();;
+	private ArrayList <Link> links = new ArrayList<Link>();
 
 	public Date getLast_Update() {
 		return last_Update;

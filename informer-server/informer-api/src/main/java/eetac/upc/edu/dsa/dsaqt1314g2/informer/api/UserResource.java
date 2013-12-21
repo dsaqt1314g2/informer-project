@@ -257,12 +257,12 @@ public class UserResource {
 		if((o-l)>=o)
 		{
 			String offset2 = Integer.toString(o-l);
-			users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset2, length, "self"));
+			users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset2, length, "prev"));
 		}
 		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset, length, "self"));
 		String offset3 = Integer.toString(o+l);
-		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset3, length, "self"));
-		users.addLink();
+		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset3, length, "next"));
+		//users.addLink();
 		
 		return users;
 	}
