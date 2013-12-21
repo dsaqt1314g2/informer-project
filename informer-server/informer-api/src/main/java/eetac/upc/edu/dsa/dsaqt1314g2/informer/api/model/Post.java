@@ -17,7 +17,7 @@ public class Post {
 	private int calificaciones_positivas;
 	private int calificaciones_negativas;
 	private int revisado;
-	private int who_revised;
+	private String who_revised;
 	
 	private ArrayList<Link> links= new ArrayList<Link>();
 
@@ -90,13 +90,7 @@ public class Post {
 		this.revisado = revisado;
 	}
 
-	public int getWho_revised() {
-		return who_revised;
-	}
 
-	public void setWho_revised(int who_revised) {
-		this.who_revised = who_revised;
-	}
 
 	public int getIdentificador() {
 		return identificador;
@@ -120,6 +114,14 @@ public class Post {
 
 	public void setLinks(ArrayList<Link> links) {
 		this.links = links;
+	}
+
+	public String getWho_revised() {
+		return who_revised;
+	}
+
+	public void setWho_revised(String who_revised) {
+		this.who_revised = who_revised;
 	}
 
 }

@@ -84,7 +84,8 @@ public class PostResource {
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
-				post.setWho_revised(rs.getInt("who_revisado"));
+				post.setVisibilidad(rs.getInt("visibilidad"));
+				post.setWho_revised(rs.getString("who_revisado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
 			}
@@ -134,7 +135,7 @@ public class PostResource {
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
-				post.setWho_revised(rs.getInt("who_revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
@@ -226,7 +227,7 @@ public class PostResource {
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
-				post.setWho_revised(rs.getInt("who_revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
 			}
@@ -259,7 +260,9 @@ public class PostResource {
 			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
-
+		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
+			throw new BadRequestException("Visibilidad incorrecta.");
+		
 		post.setUsername(security.getUserPrincipal().getName());
 
 		Connection con = null;
@@ -290,7 +293,7 @@ public class PostResource {
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
-				post.setWho_revised(rs.getInt("who_revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 			} else {
 				throw new PostNotFoundException();
@@ -384,12 +387,10 @@ public class PostResource {
 	@POST
 	@Path("/{postid}/denunciar")
 	// @Produces(MediaType.INFORMER_API_POST)
-	public void denunciaPost(@PathParam("postid") String postid, @QueryParam("d") String denuncia) {
+	public void denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
 
-		if (denuncia == null)
-			throw new BadRequestException("Formato de datos incorrecto");
 		Post post = new Post();
 		Connection con = null;
 		Statement stmt = null;
