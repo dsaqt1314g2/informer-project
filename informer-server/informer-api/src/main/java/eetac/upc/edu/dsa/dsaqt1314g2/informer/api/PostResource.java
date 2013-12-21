@@ -8,7 +8,6 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -177,9 +176,72 @@ public class PostResource {
 
 	@GET
 	@Path("/ranking/{categoria}")
-	@Produces(MediaType.INFORMER_API_POST)
-	public Response getRanking(@PathParam("categoria") String categoria, @Context Request req) {
-		// TODO: GETs: /posts/ranking/{categoria} (Registered)(admin)
+	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
+	public PostCollection getRanking(@PathParam("categoria") String categoria, @Context Request req) {
+		// GETs: /posts/ranking/{categoria} (Registered)(admin)
+		// TODO: Cacheable
+		if (!categoria.equals("likes") && !categoria.equals("dislikes") && !categoria.equals("coments"))
+			throw new BadRequestException("Formato de peitición incorrecto");
+//		CacheControl cc = new CacheControl();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "";
+			if (categoria.equals("likes"))
+				query = "SELECT * FROM posts ORDER BY calificaciones_positivas DESC;";
+			else if (categoria.equals("coments"))
+				query = "SELECT * FROM posts ORDER BY numcomentarios DESC;";
+			else if (categoria.equals("dislikes"))
+				query = "SELECT * FROM posts ORDER BY calificaciones_negativas DESC;";
+			
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Post post = new Post();
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setUsername(rs.getString("username"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getInt("who_revisado"));
+				posts.add(post);
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+//		// Calculate the ETag on last modified date of user resource
+//		EntityTag eTag = new EntityTag(Integer.toString(post.getPublicacion_date().hashCode()));
+//
+//		// Verify if it matched with etag available in http request
+//		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+//
+//		// If ETag matches the rb will be non-null;
+//		// Use the rb to return the response without any further processing
+//		if (rb != null) {
+//			return rb.cacheControl(cc).tag(eTag).build();
+//		}
+//
+//		// If rb is null then either it is first time request; or resource is
+//		// modified
+//		// Get the updated representation and return with Etag attached to it
+//		rb = Response.ok(post).cacheControl(cc).tag(eTag);
+//
+//		return rb.build();
+		return posts;
 
 	}
 
@@ -193,7 +255,7 @@ public class PostResource {
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
 		// TODO: Seguridad. hacer consulta del id del usuario y colocarlo.
-//		post.setUsername(security.getUserPrincipal().getName());
+		// post.setUsername(security.getUserPrincipal().getName());
 		post.setUsername("ropnom");
 
 		Connection con = null;
@@ -380,15 +442,13 @@ public class PostResource {
 
 	@PUT
 	@Path("/{postid}/moderar")
-	@Consumes(MediaType.INFORMER_API_POST)
-	@Produces(MediaType.INFORMER_API_POST)
-	public Post updatePost(@PathParam("postid") String postid, Post post) {
-		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+	public void moderarPost(@PathParam("postid") String postid) {
+		// TODO: PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
 
 		// TODO: Cambiar rol a moderador
-		if (security.isUserInRole("registered")) {
-			throw new ForbiddenException("You are not allowed...");
-		}
+		// if (security.isUserInRole("registered")) {
+		// throw new ForbiddenException("You are not allowed...");
+		// }
 
 		Connection con = null;
 		Statement stmt = null;
@@ -400,9 +460,47 @@ public class PostResource {
 		try {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
-			String username = security.getUserPrincipal().getName();
+			// String username = security.getUserPrincipal().getName();
+			String username = "ropnom";
 
-			String update = "UPDATE posts SET revisado=revisado+1 who_revisado='"+username+"' WHERE identificador=" + postid + ";";
+			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='" + username + "' WHERE identificador=" + postid + ";";
+			stmt.executeUpdate(update);
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return;
+	}
+
+	@PUT
+	@Path("/{postid}")
+	@Consumes(MediaType.INFORMER_API_POST)
+	@Produces(MediaType.INFORMER_API_POST)
+	public Post updatePost(@PathParam("postid") String postid, Post post) {
+		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+		// TODO: Cambiar rol a moderador
+		// if (security.isUserInRole("registered")) {
+		// throw new ForbiddenException("You are not allowed...");
+		// }
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			// comprobar que el que modifica es quien ha creado el post
+			// String username = security.getUserPrincipal().getName();
+			String username = "ropnom";
+			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
@@ -416,18 +514,34 @@ public class PostResource {
 		return post;
 	}
 
-	@PUT
-	@Path("/{postid}")
-	@Consumes(MediaType.INFORMER_API_POST)
-	@Produces(MediaType.INFORMER_API_POST)
-	public Post moderarPost(@PathParam("postid") String postid, Post post) {
-		// TODO: PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
-		return post;
-	}
-
 	@DELETE
 	@Path("/{postid}")
 	public void deleteComentario(@PathParam("postid") String postid) {
 		// TODO: DELETE: /posts/{postid} (admin)
+		// if (!security.isUserInRole("admin")) {
+		// throw new ForbiddenException("You are not allowed...");
+		// }
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "DELETE FROM posts WHERE identificador=" + postid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new PostNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 }
