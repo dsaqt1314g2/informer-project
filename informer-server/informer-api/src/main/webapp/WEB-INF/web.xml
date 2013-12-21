@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This web.xml file is not required when using Servlet 3.0 container,
-     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <servlet>
-        <servlet-name>Jersey Web Application</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>eetac.upc.edu.dsa.dsaqt1314g2.informer.api</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Jersey Web Application</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-    
-    <filter>
+<!-- This web.xml file is not required when using Servlet 3.0 container, 
+	see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>eetac.upc.edu.dsa.dsaqt1314g2.informer.api</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
 		<!-- The CORS filter with parameters -->
 		<filter-name>CORS</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
@@ -103,7 +105,7 @@
 			<role-name>registered</role-name>
 		</auth-constraint>
 	</security-constraint>
-	
+
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Posts</web-resource-name>
@@ -121,6 +123,7 @@
 			<url-pattern>/users/*</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>PUT</http-method>
+			<http-method>POST</http-method>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>registered</role-name>
@@ -131,6 +134,8 @@
 		<web-resource-collection>
 			<web-resource-name>Users-admin</web-resource-name>
 			<url-pattern>/users/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>PUT</http-method>
 			<http-method>POST</http-method>
 			<http-method>DELETE</http-method>
 		</web-resource-collection>

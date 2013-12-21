@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -258,11 +259,11 @@ public class UserResource {
 		// TODO: Post: /users (admin)
 		Statement stmt = null;
 
-		// if (!security.isUserInRole("admin")) {
-		//
-		// throw new ForbiddenException("You are nor allowed");
-		//
-		// }
+		 if (!security.isUserInRole("admin")) {
+		
+		 throw new ForbiddenException("You are not allowed");
+		
+		 }
 
 		// realizamos conexion
 		Connection conn = null;
@@ -343,20 +344,20 @@ public class UserResource {
 
 		Statement stmt = null;
 
-		// if (!security.isUserInRole("registered")
-		// || !security.isUserInRole("admin")) {
-		//
-		// throw new ForbiddenException("You are nor allowed");
-		//
-		// }
-		// if (!security.isUserInRole("registered")) {
-		//
-		// if (!security.getUserPrincipal().getName().equals(username)) {
-		//
-		// throw new ForbiddenException("You are nor allowed");
-		// }
-		//
-		// }
+		 if (!security.isUserInRole("registered")
+		 || !security.isUserInRole("admin")) {
+		
+		 throw new ForbiddenException("You are nor allowed");
+		
+		 }
+		 if (!security.isUserInRole("registered")) {
+		
+		 if (!security.getUserPrincipal().getName().equals(username)) {
+		
+		 throw new ForbiddenException("You are nor allowed");
+		 }
+		
+		 }
 
 		// arrancamos la conexion
 		Connection conn = null;
@@ -447,12 +448,7 @@ public class UserResource {
 			e.printStackTrace();
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-
-		// if (!security.isUserInRole("admin")) {
-		//
-		// throw new ForbiddenException("You are nor allowed");
-		//
-		// }
+		
 
 		// hacemso la consulta y el array de stings
 		try {
