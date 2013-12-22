@@ -126,7 +126,7 @@ public class SalasResource {
 	@GET
 	@Path("/{salaid}")
 	@Produces(MediaType.INFORMER_API_SALA)
-	public Response getPost(@PathParam("salaid") String salaid,
+	public Response getSala(@PathParam("salaid") String salaid,
 			@Context Request req) {
 		// GET: /posts/{postid} (Registered)(admin)
 
@@ -250,13 +250,13 @@ public class SalasResource {
 						+ offset + ", " + length + ";";
 			else if (icategoria == 2) {
 				String username = security.getUserPrincipal().getName();
-				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where salas_chatvisibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
+				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
 				query += "rel_sala_user.username = '" + username
 						+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
 						+ length + ";";
 			} else if (icategoria == 3) {
 				String username = security.getUserPrincipal().getName();
-				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=0 and ";
+				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=1 and ";
 				query += "rel_sala_user.username = '" + username
 						+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
 						+ length + ";";
@@ -307,326 +307,337 @@ public class SalasResource {
 
 	}
 
-//	@POST
-//	@Consumes(MediaType.INFORMER_API_SALA)
-//	@Produces(MediaType.INFORMER_API_SALA)
-//	public Post createSala(Post post) {
-//		// TODO: POST: /posts (Registered)(admin)
-//		if (post.getAsunto().length() > 50)
-//			throw new BadRequestException(
-//					"Longitud del asunto excede el limite de 50 caracteres.");
-//		if (post.getContenido().length() > 2048)
-//			throw new BadRequestException(
-//					"Longitud del asunto excede el limite de 2048 caracteres.");
-//
-//		post.setUsername(security.getUserPrincipal().getName());
-//
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//
-//		try {
-//			stmt = con.createStatement();
-//			String update = "insert into posts(username, visibilidad, contenido) values ('"
-//					+ post.getUsername()
-//					+ "','"
-//					+ post.getVisibilidad()
-//					+ "','" + post.getContenido() + "');";
-//			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
-//			ResultSet rs = stmt.getGeneratedKeys();
-//			if (rs.next()) {
-//				int identificador = rs.getInt(1);
-//				rs.close();
-//
-//				rs = stmt
-//						.executeQuery("SELECT * FROM posts WHERE identificador='"
-//								+ identificador + "';");
-//				rs.next();
-//
-//				post.setIdentificador(rs.getInt("identificador"));
-//				post.setUsername(rs.getString("username"));
-//				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
-//				post.setNumcomentarios(rs.getInt("numcomentarios"));
-//				post.setCalificaciones_positivas(rs
-//						.getInt("calificaciones_positivas"));
-//				post.setCalificaciones_negativas(rs
-//						.getInt("calificaciones_negativas"));
-//				post.setRevisado(rs.getInt("revisado"));
-//				post.setWho_revised(rs.getInt("who_revisado"));
-//				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo,
-//						post.getIdentificador(), "self"));
-//			} else {
-//				throw new PostNotFoundException();
-//			}
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		return post;
-//	}
-//
-//	@POST
-//	@Path("/{postid}/like")
-//	@Produces(MediaType.INFORMER_API_POST)
-//	public Post likePost(@PathParam("postid") String postid,
-//			@QueryParam("l") String like, @QueryParam("d") String dislike) {
-//		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
-//		if ((like == null) && (dislike == null))
-//			throw new BadRequestException("Formato de datos incorrecto");
-//		else if ((like != null) && (dislike != null))
-//			throw new BadRequestException("Formato de datos incorrecto");
-//		int estado = -1;
-//		if (like != null)
-//			estado = 1;
-//		else
-//			estado = 0;
-//
-//		Post post = new Post();
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//
-//		try {
-//			stmt = con.createStatement();
-//			String username = security.getUserPrincipal().getName();
-//			// a ver si existe el post
-//			String query = "SELECT COUNT(identificador) FROM posts Where identificador='"
-//					+ postid + "';";
-//			ResultSet rs = stmt.executeQuery(query);
-//			rs.next();
-//			if (rs.getInt(1) == 0)
-//				throw new PostNotFoundException();
-//
-//			// ver si ya a denunciado
-//			query = "SELECT COUNT(id) FROM calificacion Where id_post='"
-//					+ postid + "' and username='" + username + "';";
-//			rs = stmt.executeQuery(query);
-//			rs.next();
-//			if (rs.getInt(1) != 0)
-//				throw new LikeAlreadyFoundException();
-//
-//			// like: estado de las relaciones --> 0=dislike, 1=like
-//			String insert = "INSERT INTO calificacion (username,id_post,estado) values ('"
-//					+ username + "'," + postid + "," + estado + ");";
-//			stmt.executeUpdate(insert);
-//
-//			// actualizar contador del post
-//			String update;
-//			if (like != null)
-//				update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas+1 WHERE posts.identificador='"
-//						+ postid + "';";
-//			else
-//				update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas+1 WHERE posts.identificador='"
-//						+ postid + "';";
-//			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
-//			rs = stmt
-//					.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='"
-//							+ postid + "';");
-//			if (rs.next()) {
-//				post.setIdentificador(Integer.parseInt(postid));
-//				post.setCalificaciones_positivas(rs
-//						.getInt("calificaciones_positivas"));
-//				post.setCalificaciones_negativas(rs
-//						.getInt("calificaciones_negativas"));
-//				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo,
-//						post.getIdentificador(), "self"));
-//			} else {
-//				throw new PostNotFoundException();
-//			}
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		return post;
-//	}
-//
-//	@POST
-//	@Path("/{postid}/denunciar")
-//	// @Produces(MediaType.INFORMER_API_POST)
-//	public void denunciaPost(@PathParam("postid") String postid,
-//			@QueryParam("d") String denuncia) {
-//		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
-//		// (Registered)(admin)
-//
-//		if (denuncia == null)
-//			throw new BadRequestException("Formato de datos incorrecto");
-//		Post post = new Post();
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//
-//		try {
-//			stmt = con.createStatement();
-//			String username = security.getUserPrincipal().getName();
-//			String query = "SELECT COUNT(identificador) FROM posts Where identificador='"
-//					+ postid + "';";
-//			ResultSet rs = stmt.executeQuery(query);
-//			rs.next();
-//			if (rs.getInt(1) == 0)
-//				throw new PostNotFoundException();
-//			// ver si ya a denunciado
-//			query = "SELECT COUNT(id) FROM denuncias_post Where id_post='"
-//					+ postid + "' and username='" + username + "';";
-//			rs = stmt.executeQuery(query);
-//			rs.next();
-//			if (rs.getInt(1) != 0)
-//				throw new DenunciaAlreadyFoundException();
-//
-//			// denunciar
-//			String insert = "INSERT INTO denuncias_post (username,id_post) values ('"
-//					+ username + "'," + postid + ");";
-//			stmt.executeUpdate(insert);
-//
-//			// comprobar si hay mas de 20 denuncias y cambiar visibilidad a 5 si
-//			// los hay
-//			int MAX_DENUNCIAS = 20;
-//			query = "SELECT COUNT(id) FROM denuncias_post WHERE id_post='"
-//					+ postid + "';";
-//			rs = stmt.executeQuery(query);
-//			rs.next();
-//			if (rs.getInt(1) >= MAX_DENUNCIAS) {
-//				insert = "UPDATE posts SET visibilidad=5 WHERE identificador='"
-//						+ postid + "';";
-//				post.setVisibilidad(5);
-//				stmt.executeUpdate(insert);
-//			}
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		// return post;
-//	}
-//
-//	@PUT
-//	@Path("/{postid}/moderar")
-//	public void moderarPost(@PathParam("postid") String postid) {
-//		// TODO: PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
-//
-//		// TODO: Cambiar rol a moderador
-//		// if (security.isUserInRole("registered")) {
-//		// throw new ForbiddenException("You are not allowed...");
-//		// }
-//
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//		try {
-//			stmt = con.createStatement();
-//			// comprobar que el que modifica es quien ha creado el post
-//			String username = security.getUserPrincipal().getName();
-//			// String username = "ropnom";
-//
-//			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='"
-//					+ username + "' WHERE identificador=" + postid + ";";
-//			stmt.executeUpdate(update);
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		return;
-//	}
-//
-//	@PUT
-//	@Path("/{postid}")
-//	@Consumes(MediaType.INFORMER_API_POST)
-//	@Produces(MediaType.INFORMER_API_POST)
-//	public Post updatePost(@PathParam("postid") String postid, Post post) {
-//		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
-//		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
-//			throw new BadRequestException("Visibilidad incorrecta.");
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//		try {
-//			stmt = con.createStatement();
-//			// comprobar que el que modifica es quien ha creado el post
-//			String username = security.getUserPrincipal().getName();
-//			// String username = "ropnom";
-//			String update = "UPDATE posts SET visibilidad="
-//					+ post.getVisibilidad() + " WHERE identificador=" + postid
-//					+ " and username='" + username + "';";
-//			stmt.executeUpdate(update);
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		post.setIdentificador(Integer.parseInt(postid));
-//		post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo,
-//				post.getIdentificador(), "self"));
-//		return post;
-//	}
-//
-//	@DELETE
-//	@Path("/{postid}")
-//	public void deleteComentario(@PathParam("postid") String postid) {
-//		// TODO: DELETE: /posts/{postid} (admin)
-//		Connection con = null;
-//		Statement stmt = null;
-//		try {
-//			con = ds.getConnection();
-//		} catch (SQLException e) {
-//			throw new ServiceUnavailableException(e.getMessage());
-//		}
-//		try {
-//			stmt = con.createStatement();
-//			String query = "DELETE FROM posts WHERE identificador=" + postid
-//					+ ";";
-//			int rows = stmt.executeUpdate(query);
-//			if (rows == 0)
-//				throw new PostNotFoundException();
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				con.close();
-//				stmt.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//	}
+	@POST
+	@Consumes(MediaType.INFORMER_API_SALA)
+	@Produces(MediaType.INFORMER_API_SALA)
+	public Sala createSala(Sala sala) {
+		// TODO: POST: /posts (Registered)(admin)
+		if (sala.getNombre_sala().length() < 5
+				|| sala.getNombre_sala().length() > 50)
+			throw new BadRequestException(
+					"Longitud del nombre excede el limite de 50 caracteres.");
+		if (sala.getPassword().length() > 25)
+			throw new BadRequestException(
+					"Longitud de la contraseñaexcede el limite de 25 caracteres.");
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			stmt = con.createStatement();
+			String update = "insert into salas_chat (username, nombre_sala, visibilidad, password) values ('"
+					+ sala.getUsername()
+					+ "','"
+					+ sala.getNombre_sala()
+					+ "',"
+					+ sala.getVisibilidad()
+					+ ",MD5('"
+					+ sala.getPassword()
+					+ "'));";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				int identificador = rs.getInt(1);
+				rs.close();
+
+				rs = stmt
+						.executeQuery("SELECT * FROM salas_chat WHERE identificador='"
+								+ identificador + "';");
+				rs.next();
+
+				sala.setIdentificador(rs.getInt("identificador"));
+				sala.setUsername(rs.getString("username"));
+				sala.setNombre_sala(rs.getString("nombre_sala"));
+				sala.setVisibilidad(rs.getInt("visibilidad"));
+				sala.setLast_update(rs.getTimestamp("last_update"));
+				sala.setPassword("*********");
+
+				// TODO Links:
+
+			} else {
+				throw new SalaNotFoundException();
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return sala;
+	}
+
+	@GET
+	@Path("/{salaid}/unirse")
+	public String Unirse(@PathParam("salaid") String salaid,
+			@QueryParam("pass") String pass, @Context Request req) {
+		// GET: /posts/{postid} (Registered)(admin)
+
+		String mensaje = "La contraseña es incorrecta;";
+
+		if (pass == null) {
+			pass = "password";
+		}
+		Sala sala = new Sala();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT * FROM salas_chat WHERE identificador="
+					+ salaid + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				sala.setIdentificador(rs.getInt("identificador"));
+				sala.setUsername(rs.getString("username"));
+				sala.setNombre_sala(rs.getString("nombre_sala"));
+				sala.setVisibilidad(rs.getInt("visibilidad"));
+				sala.setLast_update(rs.getTimestamp("last_update"));
+
+				if (sala.getVisibilidad() < 1) {
+					sala.setPassword("password");
+				} else {
+					sala.setPassword(rs.getNString("password"));
+				}
+
+				// TODO Links
+
+			} else
+				throw new SalaNotFoundException();
+
+			if (pass.equals(sala.getPassword())) {
+				rs.close();
+
+				query = "SELECT * FROM rel_sala_user WHERE id_sala="
+						+ sala.getIdentificador() + " and username = '"
+						+ security.getUserPrincipal().getName() + "';";
+				rs = stmt.executeQuery(query);
+				if (!rs.next()) {
+
+					String update = "insert into rel_sala_user (username, id_sala, estado) values ('"
+							+ security.getUserPrincipal().getName()
+							+ "',"
+							+ sala.getIdentificador() + ",1);";
+					stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+					rs = stmt.getGeneratedKeys();
+					if (rs.next()) {
+						int identificador = rs.getInt(1);
+						rs.close();
+						mensaje = "Usuario Unido Correctamente, relacion : "
+								+ identificador;
+					} else {
+						throw new SalaNotFoundException();
+					}
+				} else {
+					// TODO: execepciones
+					throw new SalaNotFoundException();
+				}
+
+			} else {
+
+			}
+
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return (mensaje);
+	}
+
+	@GET
+	@Path("/{salaid}/invitar")
+	public String Invitar(@PathParam("salaid") String salaid,
+			@QueryParam("username") String username, @Context Request req) {
+		// GET: /posts/{postid} (Registered)(admin)
+
+		String mensaje = "No puedes invitar a una sala en al que no estas subscrito";
+
+		if (username == null) {
+			throw new BadRequestException(
+					"Es encesario indicar el username a invitar");
+		}
+		Sala sala = new Sala();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT * FROM rel_sala_user WHERE estado = 1 and id_sala="
+					+ salaid
+					+ " and username='"
+					+ security.getUserPrincipal().getName() + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			boolean invitador = false;
+			if (rs.next()) {
+				invitador = true;
+			}
+			rs.close();
+
+			if (invitador) {
+				boolean invitado = false;
+				query = "SELECT * FROM rel_sala_user WHERE estado = 0 and id_sala="
+						+ salaid + " and username='" + username + "';";
+				rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					invitado = true;
+				}
+
+				rs.close();
+
+				if (!invitado) {
+
+					String update = "insert into rel_sala_user (username, id_sala, estado) values ('"
+							+ username
+							+ "',"
+							+ salaid
+							+ ",0);";
+					stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+					rs = stmt.getGeneratedKeys();
+					if (rs.next()) {
+						int identificador = rs.getInt(1);
+						rs.close();
+						mensaje = "Usuario " + username
+								+ " Invitado Correctamente, relacion : "
+								+ identificador;
+					} else {
+						throw new SalaNotFoundException();
+					}
+
+				}
+				else
+				{
+					throw new BadRequestException(
+							"El usuario ya ha sido invitado a la sala");
+				}
+			}
+			else
+			{
+				throw new BadRequestException(
+						"Es encesario pertenecer ala sala para invitar");
+			}
+
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return (mensaje);
+	}
+
+	@PUT
+	@Path("/{salaid}")
+	@Consumes(MediaType.INFORMER_API_SALA)
+	@Produces(MediaType.INFORMER_API_SALA)
+	public Sala updateSala(@PathParam("salaid") String salaid, Sala sala) {
+		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+
+		if (sala.getNombre_sala().length() < 5
+				|| sala.getNombre_sala().length() > 50)
+			throw new BadRequestException(
+					"Longitud del nombre excede el limite de 50 caracteres.");
+		if (sala.getPassword().length() > 25)
+			throw new BadRequestException(
+					"Longitud de la contraseñaexcede el limite de 25 caracteres.");
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT * FROM salas_chat WHERE identificador="
+					+ salaid + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				sala.setUsername(rs.getString("username"));
+
+			} else {
+				throw new SalaNotFoundException();
+			}
+			rs.close();
+
+			String username = security.getUserPrincipal().getName();
+			if (sala.getUsername().equals(username)) {
+
+				String update = "UPDATE salas_chat SET nombre_sala='"
+						+ sala.getNombre_sala() + "', visibilidad="
+						+ sala.getVisibilidad() + ", password='"
+						+ sala.getPassword() + "' WHERE identificador="
+						+ salaid + " ;";
+				stmt.executeUpdate(update);
+				sala.setPassword("***OK***");
+			}
+
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		sala.setIdentificador(Integer.parseInt(salaid));
+		// TODO LINKS
+
+		return sala;
+	}
+
+	@DELETE
+	@Path("/{salaid}")
+	public void deleteSala(@PathParam("salaid") String salaid) {
+		// TODO: DELETE: /posts/{postid} (admin)
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "DELETE FROM salas_chat WHERE identificador="
+					+ salaid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new SalaNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+	}
 }

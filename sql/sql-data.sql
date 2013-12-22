@@ -16,10 +16,10 @@ INSERT INTO `informerdb`.`denuncias_comentario` (`id`, `username`, `id_comentari
 
 INSERT INTO `informerdb`.`denuncias_post` (`id`, `username`, `id_post`) VALUES ('1', 'McD0n3ld', '2');
 
-INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('1', 'ropnom', 'Sala EETAC', '0', 'EETAC');
-INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('2', 'McD0n3ld', 'Aeronauticas Calientes', '1', 'pass');
-INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('3', 'ropnom', 'Aeronauticas en bolas', '2', 'dificil');
-INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('4', 'ropnom', 'Aeronautica', '0', '');
+INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('1', 'ropnom', 'Sala EETAC', '0', MD5('EETAC'));
+INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('2', 'McD0n3ld', 'Aeronauticas Calientes', '1', MD5('pass'));
+INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('3', 'ropnom', 'Aeronauticas en bolas', '2', MD5('dificil'));
+INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('4', 'ropnom', 'Aeronautica', '0', MD5(''));
 
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('1', 'ropnom', '1', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('2', 'McD0n3ld', '1', '0');
