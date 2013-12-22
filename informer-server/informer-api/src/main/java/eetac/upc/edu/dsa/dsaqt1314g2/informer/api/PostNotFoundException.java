@@ -10,7 +10,7 @@ public class PostNotFoundException extends WebApplicationException {
 	 * 
 	 */
 	private static final long serialVersionUID = -4110163799971920585L;
-	private final static String MESSAGE = "Post not found";
+	private final static String MESSAGE = "Post no encontrado";
 	public PostNotFoundException() {
 		super(Response
 				.status(Response.Status.NOT_FOUND)
