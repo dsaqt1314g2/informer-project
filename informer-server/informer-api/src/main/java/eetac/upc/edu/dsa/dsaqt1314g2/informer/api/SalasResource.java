@@ -40,7 +40,7 @@ public class SalasResource {
 	SalaCollection salas = new SalaCollection();
 
 	@GET
-	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
+	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
 	public Response getmySalas(@QueryParam("o") String offset,
 			@QueryParam("l") String length, @Context Request req) {
 		int ioffset = 0, ilength = 10;
@@ -77,7 +77,7 @@ public class SalasResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where  and rel_sala_user.id_sala = salas_chat.identificador and ";
+			String query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.estado=1 and rel_sala_user.id_sala = salas_chat.identificador and ";
 			String username = security.getUserPrincipal().getName();
 			query += "rel_sala_user.username = '" + username
 					+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
@@ -86,7 +86,7 @@ public class SalasResource {
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				Sala sala = new Sala();
-				sala.setIdentificador(rs.getInt("identificacor"));
+				sala.setIdentificador(rs.getInt("identificador"));
 				sala.setUsername(rs.getString("username"));
 				sala.setNombre_sala(rs.getString("nombre_sala"));
 				sala.setVisibilidad(rs.getInt("visibilidad"));
@@ -102,18 +102,22 @@ public class SalasResource {
 						"DELETE", "self"));
 				sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 				if (sala.getVisibilidad() == 0)
-					sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(uriInfo,	sala.getIdentificador(), false));
-//				else if (sala.getVisibilidad() == 1)
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				else
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				sala.addLinks(SalasAPILinkBuilder
-//						.buildTemplatedURISalasInvitar(uriInfo,
-//								sala.getIdentificador()));
+					sala.addLinks(SalasAPILinkBuilder
+							.buildTemplatedURISalasUnirse(uriInfo,
+									sala.getIdentificador(), false));
+				// else if (sala.getVisibilidad() == 1)
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// else
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasInvitar(uriInfo,
+				// sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
 
 				salas.add(sala);
 			}
@@ -129,11 +133,16 @@ public class SalasResource {
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
 
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 0, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 1, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 2, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 2, "Subcripciones"));
-		
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 0, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 1, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 2, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 2, "Subcripciones"));
+		salas.addLink(SalasAPILinkBuilder.buildTemplatedURIgetInvitaciones(uriInfo));
+
 		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
 
@@ -197,18 +206,23 @@ public class SalasResource {
 						"DELETE", "self"));
 				sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 				if (sala.getVisibilidad() == 0)
-					sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(uriInfo,	sala.getIdentificador(), false));
-//				else if (sala.getVisibilidad() == 1)
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				else
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				sala.addLinks(SalasAPILinkBuilder
-//						.buildTemplatedURISalasInvitar(uriInfo,
-//								sala.getIdentificador()));
+					sala.addLinks(SalasAPILinkBuilder
+							.buildTemplatedURISalasUnirse(uriInfo,
+									sala.getIdentificador(), false));
+				// else if (sala.getVisibilidad() == 1)
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// else
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasInvitar(uriInfo,
+				// sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+
 			} else
 				throw new SalaNotFoundException();
 		} catch (SQLException e) {
@@ -245,8 +259,7 @@ public class SalasResource {
 	@GET
 	@Path("/visible/{categoria}")
 	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
-	public Response getVisibilidad(
-			@PathParam("categoria") String categoria,
+	public Response getVisibilidad(@PathParam("categoria") String categoria,
 			@QueryParam("o") String offset, @QueryParam("l") String length,
 			@Context Request req) {
 		// GETs: /posts/ranking/{categoria} (Registered)(admin)
@@ -337,18 +350,23 @@ public class SalasResource {
 						"DELETE", "self"));
 				sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 				if (sala.getVisibilidad() == 0)
-					sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(uriInfo,	sala.getIdentificador(), false));
-//				else if (sala.getVisibilidad() == 1)
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				else
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				sala.addLinks(SalasAPILinkBuilder
-//						.buildTemplatedURISalasInvitar(uriInfo,
-//								sala.getIdentificador()));
+					sala.addLinks(SalasAPILinkBuilder
+							.buildTemplatedURISalasUnirse(uriInfo,
+									sala.getIdentificador(), false));
+				// else if (sala.getVisibilidad() == 1)
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// else
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasInvitar(uriInfo,
+				// sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+
 				salas.add(sala);
 			}
 		} catch (SQLException e) {
@@ -365,30 +383,152 @@ public class SalasResource {
 
 		// TODO Links
 
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 0, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 1, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 2, "Categorias"));
-		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 2, "Subcripciones"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 0, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 1, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 2, "Categorias"));
+		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
+				length, 2, "Subcripciones"));
+
+		// Calculate the ETag on last modified date of user resource
+		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
+
+		// Verify if it matched with etag available in http request
+		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+
+		// If ETag matches the rb will be non-null;
+		// Use the rb to return the response without any further processing
+		if (rb != null) {
+			return rb.cacheControl(cc).tag(eTag).build();
+		}
+
+		// If rb is null then either it is first time request; or resource is
+		// modified
+		// Get the updated representation and return with Etag attached to it
+		rb = Response.ok(salas).cacheControl(cc).tag(eTag);
+
+		return rb.build();
+
+	}
+	
+	@GET
+	@Path("/invitaciones")
+	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
+	public Response getInvitaciones(@QueryParam("o") String offset,
+			@QueryParam("l") String length, @Context Request req) {
+		
+		int ioffset = 0, ilength = 10;
+		if ((offset == null) || (length == null)) {
+			offset = "0";
+			length = "10";
+		} else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException(
+						"offset must be an integer greater or equal than 0.");
+			}
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException(
+						"length must be an integer greater or equal than 0.");
+			}
+
+		}
+
+		CacheControl cc = new CacheControl();
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where  rel_sala_user.estado=0 and rel_sala_user.id_sala = salas_chat.identificador and ";
+			String username = security.getUserPrincipal().getName();
+			query += "rel_sala_user.username = '" + username
+					+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
+					+ length + ";";
+
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Sala sala = new Sala();
+				sala.setIdentificador(rs.getInt("identificador"));
+				sala.setUsername(rs.getString("username"));
+				sala.setNombre_sala(rs.getString("nombre_sala"));
+				sala.setVisibilidad(rs.getInt("visibilidad"));
+				sala.setLast_update(rs.getTimestamp("last_update"));
+				sala.setPassword(rs.getNString("password"));
+
+				// TODO Links
+				sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
+						"GET", "self"));
+				sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
+						"PUT", "self"));
+				sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
+						"DELETE", "self"));
+				sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
+				if (sala.getVisibilidad() == 0)
+					sala.addLinks(SalasAPILinkBuilder
+							.buildTemplatedURISalasUnirse(uriInfo,
+									sala.getIdentificador(), false));
+				// else if (sala.getVisibilidad() == 1)
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// else
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasInvitar(uriInfo,
+				// sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+
+
+				salas.add(sala);
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+
 		
 		// Calculate the ETag on last modified date of user resource
-				EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
+		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
 
-				// Verify if it matched with etag available in http request
-				Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+		// Verify if it matched with etag available in http request
+		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
 
-				// If ETag matches the rb will be non-null;
-				// Use the rb to return the response without any further processing
-				if (rb != null) {
-					return rb.cacheControl(cc).tag(eTag).build();
-				}
+		// If ETag matches the rb will be non-null;
+		// Use the rb to return the response without any further processing
+		if (rb != null) {
+			return rb.cacheControl(cc).tag(eTag).build();
+		}
 
-				// If rb is null then either it is first time request; or resource is
-				// modified
-				// Get the updated representation and return with Etag attached to it
-				rb = Response.ok(salas).cacheControl(cc).tag(eTag);
+		// If rb is null then either it is first time request; or resource is
+		// modified
+		// Get the updated representation and return with Etag attached to it
+		rb = Response.ok(salas).cacheControl(cc).tag(eTag);
 
-				return rb.build();
-
+		return rb.build();
 	}
 
 	@POST
@@ -450,18 +590,23 @@ public class SalasResource {
 						"DELETE", "self"));
 				sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 				if (sala.getVisibilidad() == 0)
-					sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(uriInfo,	sala.getIdentificador(), false));
-//				else if (sala.getVisibilidad() == 1)
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				else
-//					sala.addLinks(SalasAPILinkBuilder
-//							.buildTemplatedURISalasUnirse(uriInfo,
-//									sala.getIdentificador(), true));
-//				sala.addLinks(SalasAPILinkBuilder
-//						.buildTemplatedURISalasInvitar(uriInfo,
-//								sala.getIdentificador()));
+					sala.addLinks(SalasAPILinkBuilder
+							.buildTemplatedURISalasUnirse(uriInfo,
+									sala.getIdentificador(), false));
+				// else if (sala.getVisibilidad() == 1)
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// else
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasUnirse(uriInfo,
+				// sala.getIdentificador(), true));
+				// sala.addLinks(SalasAPILinkBuilder
+				// .buildTemplatedURISalasInvitar(uriInfo,
+				// sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+
 			} else {
 				throw new SalaNotFoundException();
 			}
@@ -645,6 +790,35 @@ public class SalasResource {
 
 		return (mensaje);
 	}
+	
+	@DELETE
+	@Path("/{salaid}/aceptar")
+	public void AceptarInvitacion(@PathParam("salaid") String salaid) {
+		// TODO: DELETE: /posts/{postid} (admin)
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "DELETE FROM salas_chat WHERE identificador="
+					+ salaid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new SalaNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+	}
 
 	@PUT
 	@Path("/{salaid}")
@@ -712,18 +886,23 @@ public class SalasResource {
 				"DELETE", "self"));
 		sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 		if (sala.getVisibilidad() == 0)
-			sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(uriInfo,	sala.getIdentificador(), false));
-//		else if (sala.getVisibilidad() == 1)
-//			sala.addLinks(SalasAPILinkBuilder
-//					.buildTemplatedURISalasUnirse(uriInfo,
-//							sala.getIdentificador(), true));
-//		else
-//			sala.addLinks(SalasAPILinkBuilder
-//					.buildTemplatedURISalasUnirse(uriInfo,
-//							sala.getIdentificador(), true));
-//		sala.addLinks(SalasAPILinkBuilder
-//				.buildTemplatedURISalasInvitar(uriInfo,
-//						sala.getIdentificador()));
+			sala.addLinks(SalasAPILinkBuilder
+					.buildTemplatedURISalasUnirse(uriInfo,
+							sala.getIdentificador(), false));
+		// else if (sala.getVisibilidad() == 1)
+		// sala.addLinks(SalasAPILinkBuilder
+		// .buildTemplatedURISalasUnirse(uriInfo,
+		// sala.getIdentificador(), true));
+		// else
+		// sala.addLinks(SalasAPILinkBuilder
+		// .buildTemplatedURISalasUnirse(uriInfo,
+		// sala.getIdentificador(), true));
+		// sala.addLinks(SalasAPILinkBuilder
+		// .buildTemplatedURISalasInvitar(uriInfo,
+		// sala.getIdentificador()));
+		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
+		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+
 
 		return sala;
 	}
@@ -755,5 +934,74 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
+	}
+
+	@DELETE
+	@Path("/{salaid}/abandonar")
+	public String AbandonarSala(@PathParam("salaid") String salaid,
+			@Context Request req) {
+		// GET: /posts/{postid} (Registered)(admin)
+
+		String mensaje = "Has abandonado la Sala";
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "DELETE FROM rel_sala_user WHERE estado=1 and username='"
+					+ security.getUserPrincipal().getName() + "' and id_sala="
+					+ salaid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new SalaNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return mensaje;
+	}
+	@DELETE
+	@Path("/{salaid}/invitacion")
+	public String DenegarInvitacion(@PathParam("salaid") String salaid,
+			@Context Request req) {
+		// GET: /posts/{postid} (Registered)(admin)
+
+		String mensaje = "Has Rechazado la Invitacion.";
+
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "DELETE FROM rel_sala_user WHERE estado=0 and username='"
+					+ security.getUserPrincipal().getName() + "' and id_sala="
+					+ salaid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new SalaNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return mensaje;
 	}
 }

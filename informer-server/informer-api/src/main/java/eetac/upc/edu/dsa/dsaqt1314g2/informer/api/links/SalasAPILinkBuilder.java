@@ -90,6 +90,53 @@ public class SalasAPILinkBuilder {
 		return link;
 	}
 
+	public static final Link buildTemplatedURIAbandonarSala(UriInfo uriInfo,
+			int salaid) {
+		URI uriSalas;
+
+		uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.path(SalasResource.class, "AbandonarSala").build(salaid);
+
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
+		link.setRel("leave");
+		link.setTitle("Abandonar una Sala ");
+		link.setType(MediaType.INFORMER_API_SALA_COLLECTION);
+
+		return link;
+	}
+	public static final Link buildTemplatedURIDenegarInvitacion(UriInfo uriInfo,
+			int salaid) {
+		URI uriSalas;
+
+		uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.path(SalasResource.class, "DenegarInvitacion").build(salaid);
+
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
+		link.setRel("declined");
+		link.setTitle("Declinar una Invitacion ");
+		link.setType(MediaType.INFORMER_API_SALA_COLLECTION);
+
+		return link;
+	}
+	public static final Link buildTemplatedURIgetInvitaciones(UriInfo uriInfo) {
+		URI uriSalas;
+
+		uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.path(SalasResource.class, "getInvitacionesn").build();
+
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
+		link.setRel("invitations");
+		link.setTitle("Obtener invitaciones Sala ");
+		link.setType(MediaType.INFORMER_API_SALA_COLLECTION);
+
+		return link;
+	}
+	
+	
+
 	public static final Link buildTemplatedURISalasInvitar(UriInfo uriInfo,
 			int salaid) {
 		URI uriSalas;
