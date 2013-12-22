@@ -8,8 +8,10 @@ insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuel
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('ropnom',0,'Seguiremos los pasos del creador',1,3,0,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('McD0n3ld',0,'Los sicarios os persiguen',1,0,3,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('Creador',0,'Los POJOS son la ostia',1,2,1,0);
+insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('McD0n3ld',0,'Van dos y se cae el del medio',3,6,6,2);
 
-INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('1', '1', 'ropnom', '0', 'Esto es un comentario', CURRENT_TIMESTAMP, '1', 'ropnom'), ('2', '2', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '1', 'ropnom');
+
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('1', '1', 'ropnom', '0', 'Esto es un comentario', CURRENT_TIMESTAMP, '1', 'ropnom'), ('2', '2', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '1', 'ropnom'), ('3', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL),('4', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL),('5', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
 
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`) VALUES ('1', 'ropnom', 'McD0n3ld'), ('2', 'McD0n3ld', 'Creador');
 
