@@ -19,7 +19,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
@@ -42,7 +44,7 @@ public class UserResource {
 	@GET
 	@Path("/{username}")
 	@Produces(MediaType.INFORMER_API_USER)
-	public User getUser(@PathParam("username") String username,
+	public Response getUser(@PathParam("username") String username,
 			@Context Request req) {
 		// TODO: GET: /users/{nombre} (Registered)(admin)
 		// Create CacheControl cache por si me lohan pedido hace poco
@@ -82,6 +84,7 @@ public class UserResource {
 				user.setEstado_civil(rs.getInt("estado_civil"));
 				user.setLugar_de_residencia(rs.getString("lugar_de_residencia"));
 				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
+				user.setLast_Update(rs.getTimestamp("last_Update"));
 
 				// TODO: Generar lso Links
 				// añadimos los links
@@ -107,33 +110,32 @@ public class UserResource {
 			}
 		}
 
-		// // Calculate the ETag on last modified date of user resource
-		// EntityTag eTag = new EntityTag(Integer.toString(user.getLast_Update()
-		// .hashCode()));
-		//
-		// // Verify if it matched with etag available in http request
-		// Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
-		//
-		// // If ETag matches the rb will be non-null;
-		// // Use the rb to return the response without any further processing
-		// if (rb != null) {
-		// return rb.cacheControl(cc).tag(eTag).build();
-		// }
-		//
-		// // If rb is null then either it is first time request; or resource is
-		// // modified
-		// // Get the updated representation and return with Etag attached to it
-		// rb = Response.ok(user).cacheControl(cc).tag(eTag);
+		 // Calculate the ETag on last modified date of user resource
+		 EntityTag eTag = new EntityTag(Integer.toString(user.getLast_Update().hashCode()));
+		
+		 // Verify if it matched with etag available in http request
+		 Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+		
+		 // If ETag matches the rb will be non-null;
+		 // Use the rb to return the response without any further processing
+		 if (rb != null) {
+		 return rb.cacheControl(cc).tag(eTag).build();
+		 }
+		
+		 // If rb is null then either it is first time request; or resource is
+		 // modified
+		 // Get the updated representation and return with Etag attached to it
+		 rb = Response.ok(user).cacheControl(cc).tag(eTag);
 
-		// return rb.build();
-		return user;
+		 return rb.build();
+		//return user;
 	}
 
 	@POST
 	@Path("/search")
 	@Consumes(MediaType.INFORMER_API_USER_COLLECTION )
 	@Produces(MediaType.INFORMER_API_USER_COLLECTION )
-	public UserCollection getSearch(@QueryParam("o") String offset,
+	public Response getSearch(@QueryParam("o") String offset,
 			@QueryParam("l") String length, @Context Request req, User busqueda) {
 		// TODO: Search: GET ? {nombre},{escula},{sexo},{edad},{estadocivil}
 		// (Registered)(admin)
@@ -159,6 +161,7 @@ public class UserResource {
 					"length must be an integer greater or equal than 0.");
 		}
 
+		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -264,7 +267,24 @@ public class UserResource {
 		users.addLink(UsersAPILinkBuilder.buildURIUsers(uriInfo, offset3, length, "next"));
 		//users.addLink();
 		
-		return users;
+		// Calculate the ETag on last modified date of user resource
+				 EntityTag eTag = new EntityTag(Integer.toString(users.hashCode()));
+				
+				 // Verify if it matched with etag available in http request
+				 Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
+				
+				 // If ETag matches the rb will be non-null;
+				 // Use the rb to return the response without any further processing
+				 if (rb != null) {
+				 return rb.cacheControl(cc).tag(eTag).build();
+				 }
+				
+				 // If rb is null then either it is first time request; or resource is
+				 // modified
+				 // Get the updated representation and return with Etag attached to it
+				 rb = Response.ok(users).cacheControl(cc).tag(eTag);
+
+				 return rb.build();
 	}
 
 	@POST

@@ -4,93 +4,134 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriInfo;
 
-import eetac.upc.edu.dsa.rodrigo.libros.api.LibroResource;
-import eetac.upc.edu.dsa.rodrigo.libros.api.LibrosRootAPIResource;
-import eetac.upc.edu.dsa.rodrigo.libros.api.MediaType;
-import eetac.upc.edu.dsa.rodrigo.libros.api.model.Libro;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.InformerRootAPIResource;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.MediaType;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.SalasResource;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Sala;
 
 public class SalasAPILinkBuilder {
-    public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase -> http:blablabla/beeter-api/
-            URI uriRoot = uriInfo.getBaseUriBuilder().path(InformerRootAPIResource.class).build();
-            Link link = new Link();
-            link.setUri(uriRoot.toString());
-            link.setRel("self bookmark"); //apunta a el mismo / pagina inicial
-            link.setTitle("Libros API");
-            link.setType(MediaType.LIBROS_API_LINK_COLLECTION); //devolver coleccion de enlaces
 
-            return link;
-    }
+	// public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase ->
+	// http:blablabla/beeter-api/
+	// URI uriRoot =
+	// uriInfo.getBaseUriBuilder().path(InformerRootAPIResource.class).build();
+	// Link link = new Link();
+	// link.setUri(uriRoot.toString());
+	// link.setRel("self bookmark"); //apunta a el mismo / pagina inicial
+	// link.setTitle("Salas API");
+	// link.setType(MediaType.INFORMER_API_SALA_COLLECTION); //devolver
+	// coleccion de enlaces
+	//
+	// return link;
+	// }
 
-    public static final Link buildURILibros(UriInfo uriInfo, String rel) {
-            return buildURILibros(uriInfo, null, null, null, rel);
-    }
+	public static final Link buildURISalasVision(UriInfo uriInfo,
+			String offset, String length, int categoria, String rel) {
+		URI uriSalas;
+		if (offset == null && length == null)
+			uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+					.path(SalasResource.class, "getVisibilidad")
+					.build(categoria);
+		else {
 
-    public static final Link buildURILibros(UriInfo uriInfo, String offset, String length, String username, String rel) {
-            URI uriStings;
-            if (offset == null && length == null)
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).build();        //devuelve http:blabla/stings
-            else {
-                    if (username == null)
-                            uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", offset).queryParam("length", length).build();
-                    else
-                            uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", offset).queryParam("length", length)
-                                            .queryParam("username", username).build();
-            }
+			uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+					.path(SalasResource.class, "getVisibilidad")
+					.queryParam("o", offset).queryParam("l", length)
+					.build(categoria);
 
-            Link self = new Link();
-            self.setUri(uriStings.toString());
-            self.setRel(rel);
-            self.setTitle("Libro collection");
-            self.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
+		}
 
-            return self;
-    }
+		Link self = new Link();
+		self.setUri(uriSalas.toString());
+		self.setRel(rel);
+		switch (categoria) {
+		case 0:
+			self.setTitle("Salas Publicas");
+			break;
 
-    public static final Link buildTemplatedURIStings(UriInfo uriInfo, String rel) {
+		case 1:
+			self.setTitle("Salas Privadas Visibles");
+			break;
 
-            return buildTemplatedURIStings(uriInfo, rel, false);
-    }
+		case 2:
+			self.setTitle("Salas Privadas Subscrito");
+			break;
 
-    public static final Link buildTemplatedURIStings(UriInfo uriInfo, String rel, boolean username) {
-            URI uriStings;
-            if (username)
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}")
-                                    .queryParam("username", "{username}").build();
-            else
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").build();
+		case 3:
+			self.setTitle("Todas tus Subscripciones a Salas");
+			break;
 
-            Link link = new Link();
-            link.setUri(URITemplateBuilder.buildTemplatedURI(uriStings));
-            link.setRel(rel);
-            if (username)
-                    link.setTitle("Libro collection resource filtered by {username}");
-            else
-                    link.setTitle("Libro collection resource");
-            link.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
+		}
+		self.setType(MediaType.INFORMER_API_SALA_COLLECTION);
 
-            return link;
-    }
+		return self;
+	}
 
-    public final static Link buildURILibro(UriInfo uriInfo, Libro libro) {
-            URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).build();
-            Link link = new Link();
-            link.setUri(stingURI.toString());
-            link.setRel("self");
-            link.setTitle("Libro " + libro.getLibroid());
-            link.setType(MediaType.LIBROS_API_LIBRO);
+	public static final Link buildTemplatedURISalasUnirse(UriInfo uriInfo,
+			int salaid, boolean pass) {
+		URI uriSalas;
+		if (pass)
+			uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+					.path(SalasResource.class, "Unirse")
+					.queryParam("pass", "{pass}").build(salaid);
+		else
+			uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+					.path(SalasResource.class, "Unirse").build(salaid);
 
-            return link;
-    }
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
+		link.setRel("self");
+		if (pass)
+			link.setTitle("Unirse a una Sala Privada");
+		else
+			link.setTitle("Unirse a una Sala Publica");
+		link.setType(MediaType.INFORMER_API_SALA_COLLECTION);
 
-    public final static Link buildURILibroId(UriInfo uriInfo, int libroid, String rel) {
-            URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path(LibroResource.class, "getLibro").build(libroid);
-            Link link = new Link();
-            link.setUri(stingURI.toString());
-            link.setRel(rel);
-            link.setTitle("Libro " + libroid);
-            link.setType(MediaType.LIBROS_API_LIBRO);
+		return link;
+	}
 
-            return link;
-    }
+	public static final Link buildTemplatedURISalasInvitar(UriInfo uriInfo,
+			int salaid) {
+		URI uriSalas;
+
+		uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.path(SalasResource.class, "Invitar")
+				.queryParam("username", "{username}").build(salaid);
+
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
+		link.setRel("self");
+		link.setTitle("Invitar a la Sala");
+		link.setType(MediaType.INFORMER_API_SALA_COLLECTION);
+
+		return link;
+	}
+
+	public final static Link buildURISala(UriInfo uriInfo, String tipo) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.build();
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel("Salas action");
+		link.setTitle("Tipy " + tipo);
+		link.setType(MediaType.INFORMER_API_SALA);
+
+		return link;
+	}
+
+	public final static Link buildURISalaId(UriInfo uriInfo, Sala sala,
+			String type, String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(SalasResource.class)
+				.path(SalasResource.class, "getSala")
+				.build(sala.getIdentificador());
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle(type + " Sala :" + sala.getIdentificador() + " "
+				+ sala.getNombre_sala());
+		link.setType(MediaType.INFORMER_API_SALA);
+
+		return link;
+	}
 
 }
