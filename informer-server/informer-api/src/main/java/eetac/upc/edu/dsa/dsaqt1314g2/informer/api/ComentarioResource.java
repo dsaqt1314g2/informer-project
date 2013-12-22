@@ -81,6 +81,7 @@ public class ComentarioResource {
 			while (rs.next()) {
 				Comentario c = new Comentario();
 				c.setIdentificador(rs.getInt("identificador"));
+				c.setId_post(rs.getInt("id_post"));
 				c.setUsername(rs.getString("username"));
 				c.setVisibilidad(rs.getInt("visibilidad"));
 				c.setContenido(rs.getString("contenido"));
@@ -131,6 +132,7 @@ public class ComentarioResource {
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				c.setIdentificador(rs.getInt("identificador"));
+				c.setId_post(rs.getInt("id_post"));
 				c.setUsername(rs.getString("username"));
 				c.setVisibilidad(rs.getInt("visibilidad"));
 				c.setContenido(rs.getString("contenido"));
@@ -208,6 +210,7 @@ public class ComentarioResource {
 				rs.next();
 
 				comentario.setIdentificador(rs.getInt("identificador"));
+				comentario.setId_post(rs.getInt("id_post"));
 				comentario.setUsername(rs.getString("username"));
 				comentario.setVisibilidad(rs.getInt("visibilidad"));
 				comentario.setContenido(rs.getString("contenido"));
@@ -232,9 +235,8 @@ public class ComentarioResource {
 
 	@POST
 	@Path("/{comentarioid}/denunciar")
-	public void denunciaComentario(@PathParam("postid") String postid,@PathParam("comentarioid") String comentarioid) {
+	public String denunciaComentario(@PathParam("postid") String postid,@PathParam("comentarioid") String comentarioid) {
 		//POST: /posts/{postid}/comentarios/{comentarioid} /denunciar (1=denunciar, 0 desdenunciar)  (Registered)
-		Comentario c = new Comentario();
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -275,7 +277,6 @@ public class ComentarioResource {
 			rs.next();
 			if (rs.getInt(1) >= MAX_DENUNCIAS) {
 				insert = "UPDATE comentarios SET visibilidad=5 WHERE identificador='" + comentarioid + "';";
-				c.setVisibilidad(5);
 				stmt.executeUpdate(insert);
 			}
 		} catch (SQLException e) {
@@ -287,6 +288,7 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
+		return "COMENTARIO DENUNCIADO";
 	}
 
 	@PUT
@@ -294,7 +296,7 @@ public class ComentarioResource {
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
 	public Comentario updateComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid, Comentario comentario) {
-		// TODO: PUT: /posts/{postid}/comentarios/{comentarioid}  (Registered-Propietario) => visibilidad.
+		// PUT: /posts/{postid}/comentarios/{comentarioid}  (Registered-Propietario) => visibilidad.
 		if (comentario.getVisibilidad() < 0 || comentario.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
 		Connection con = null;
@@ -308,9 +310,22 @@ public class ComentarioResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			// String username = "ropnom";
 			String update = "UPDATE comentarios SET visibilidad=" + comentario.getVisibilidad() + " WHERE identificador=" + comentarioid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
+			String query = "SELECT * FROM comentarios WHERE id_post=" + postid + " and identificador="+comentarioid+";";
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				comentario.setIdentificador(rs.getInt("identificador"));
+				comentario.setId_post(rs.getInt("id_post"));
+				comentario.setUsername(rs.getString("username"));
+				comentario.setVisibilidad(rs.getInt("visibilidad"));
+				comentario.setContenido(rs.getString("contenido"));
+				comentario.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				comentario.setRevisado(rs.getInt("revisado"));
+				comentario.setWho_revisado(rs.getString("who_revisado"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), comentario.getIdentificador(), "self"));
+			} else
+				throw new ComentarioNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -320,8 +335,6 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		comentario.setIdentificador(Integer.parseInt(postid));
-		comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), comentario.getIdentificador(), "self"));
 		return comentario;
 	}
 
@@ -329,8 +342,8 @@ public class ComentarioResource {
 	@Path("/{comentarioid}/moderar")
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
-	public void moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
-		// TODO: PUT: /posts/{postid}/comentarios/{comentarioid}/moderar   (admin) => revisado y who_revisado
+	public String moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
+		// PUT: /posts/{postid}/comentarios/{comentarioid}/moderar   (admin) => revisado y who_revisado
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -355,12 +368,12 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		return;
+		return "MODERADO";
 	}
 
 	@DELETE
 	@Path("/{comentarioid}")
-	public void deleteComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid) {
+	public String deleteComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid}/commentarios/{comentarioid} (Registered-Propietario)
 		Connection con = null;
 		Statement stmt = null;
@@ -384,5 +397,6 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
+		return "ELIMINADO";
 	}
 }

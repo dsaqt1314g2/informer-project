@@ -87,7 +87,7 @@ public class ComentariosAPILinkBuilder {
             Link link = new Link();
             link.setUri(stingURI.toString());
             link.setRel(rel);
-            link.setTitle("Libro " + libroid);
+            link.setTitle("Comentario " + libroid);
             link.setType(MediaType.INFORMER_API_COMENTARIO);
 
             return link;

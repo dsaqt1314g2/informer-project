@@ -18,6 +18,9 @@ public class Post {
 	private int calificaciones_negativas;
 	private int revisado;
 	private String who_revised;
+	private int liked; //2 liked, 1 disliked
+	
+	
 	
 	private ArrayList<Link> links= new ArrayList<Link>();
 
@@ -122,6 +125,14 @@ public class Post {
 
 	public void setWho_revised(String who_revised) {
 		this.who_revised = who_revised;
+	}
+
+	public int getLiked() {
+		return liked;
+	}
+
+	public void setLiked(int liked) {
+		this.liked = liked;
 	}
 
 }

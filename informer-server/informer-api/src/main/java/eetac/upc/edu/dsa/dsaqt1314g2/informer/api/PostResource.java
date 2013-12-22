@@ -70,6 +70,8 @@ public class PostResource {
 		Connection con = null;
 		Statement stmt = null;
 		int posts_encontrados = 0; // variable para saber si hay link_next
+		String username = security.getUserPrincipal().getName();
+		
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -78,9 +80,11 @@ public class PostResource {
 		}
 		try {
 			String query;
-			query = "select * FROM posts ORDER BY publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
+			query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' ORDER BY publicacion_date DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
+				if (posts_encontrados++ > ilength)
+					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
 				post.setUsername(rs.getString("username"));
@@ -91,9 +95,9 @@ public class PostResource {
 				post.setRevisado(rs.getInt("revisado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
-				posts_encontrados++;
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -124,6 +128,7 @@ public class PostResource {
 		Post post = new Post();
 		Connection con = null;
 		Statement stmt = null;
+		String username = security.getUserPrincipal().getName();
 		try {
 			con = ds.getConnection();
 		} catch (SQLException e) {
@@ -131,7 +136,7 @@ public class PostResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT * FROM posts WHERE identificador=" + postid + ";";
+			String query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' WHERE identificador="+postid+" ORDER BY publicacion_date DESC;";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				post.setIdentificador(rs.getInt("identificador"));
@@ -142,9 +147,11 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
+				//TODO: Links si la visibilidad lo permite.
 			} else
 				throw new PostNotFoundException();
 			rs.close();
@@ -198,6 +205,7 @@ public class PostResource {
 				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
 			}
 		}
+		String username = security.getUserPrincipal().getName();
 		Connection con = null;
 		Statement stmt = null;
 		int posts_encontrados = 0;
@@ -210,14 +218,16 @@ public class PostResource {
 			stmt = con.createStatement();
 			String query = "";
 			if (categoria.equals("likes"))
-				query = "SELECT * FROM posts ORDER BY calificaciones_positivas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY calificaciones_positivas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 			else if (categoria.equals("coments"))
-				query = "SELECT * FROM posts ORDER BY numcomentarios DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY numcomentarios DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 			else if (categoria.equals("dislikes"))
-				query = "SELECT * FROM posts ORDER BY calificaciones_negativas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY calificaciones_negativas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
+				if (posts_encontrados++ > ilength)
+					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
 				post.setUsername(rs.getString("username"));
@@ -227,9 +237,9 @@ public class PostResource {
 				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
-				posts_encontrados++;
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -384,10 +394,9 @@ public class PostResource {
 	@POST
 	@Path("/{postid}/denunciar")
 	// @Produces(MediaType.INFORMER_API_POST)
-	public void denunciaPost(@PathParam("postid") String postid) {
+	public String denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
-		Post post = new Post();
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -423,7 +432,6 @@ public class PostResource {
 			rs.next();
 			if (rs.getInt(1) >= MAX_DENUNCIAS) {
 				insert = "UPDATE posts SET visibilidad=5 WHERE identificador='" + postid + "';";
-				post.setVisibilidad(5);
 				stmt.executeUpdate(insert);
 			}
 		} catch (SQLException e) {
@@ -435,13 +443,13 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		// return post;
+		return "DENUNCIADO";
 	}
 
 	@PUT
 	@Path("/{postid}/moderar")
-	public void moderarPost(@PathParam("postid") String postid) {
-		// TODO: PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
+	public String moderarPost(@PathParam("postid") String postid) {
+		// PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
 
 		// TODO: Cambiar rol a moderador
 		// if (security.isUserInRole("registered")) {
@@ -459,7 +467,6 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			// String username = "ropnom";
 
 			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='" + username + "' WHERE identificador=" + postid + ";";
 			stmt.executeUpdate(update);
@@ -472,7 +479,7 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		return;
+		return "REVISADO";
 	}
 
 	@PUT
@@ -494,9 +501,27 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			// String username = "ropnom";
 			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
+			String query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' WHERE identificador="+postid+" ORDER BY publicacion_date DESC;";
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setUsername(rs.getString("username"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
+				//TODO: Links si la visibilidad lo permite.
+			} else
+				throw new PostNotFoundException();
+			rs.close();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -506,15 +531,13 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		post.setIdentificador(Integer.parseInt(postid));
-		post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 		return post;
 	}
 
 	@DELETE
 	@Path("/{postid}")
-	public void deleteComentario(@PathParam("postid") String postid) {
-		// TODO: DELETE: /posts/{postid} (admin)
+	public String deleteComentario(@PathParam("postid") String postid) {
+		// DELETE: /posts/{postid} (admin)
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -537,5 +560,6 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
+		return "DELETED "+postid;
 	}
 }
