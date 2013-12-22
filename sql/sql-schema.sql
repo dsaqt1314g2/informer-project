@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `calificacion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `id_post` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL,
+  `estado` tinyint(2) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (username) REFERENCES perfiles(username) ON DELETE CASCADE,
   FOREIGN KEY (id_post) REFERENCES posts(identificador) ON DELETE CASCADE
