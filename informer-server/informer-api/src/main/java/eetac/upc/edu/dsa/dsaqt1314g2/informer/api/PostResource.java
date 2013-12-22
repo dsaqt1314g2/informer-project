@@ -82,7 +82,7 @@ public class PostResource {
 			String query;
 			//TODO: Limitar visibilidad
 			//TODO: No actualizar 
-			query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username ORDER BY publicacion_date DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
+			query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 ORDER BY publicacion_date DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (posts_encontrados++ > ilength)
@@ -97,7 +97,7 @@ public class PostResource {
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getString("who_revisado"));
 				post.setLiked(rs.getInt("estado"));
-				if (username == rs.getString("username"))
+				if (username.equals(rs.getString("username")))
 					post.setUsername(username);
 				else {
 					switch (post.getVisibilidad()) {
@@ -153,7 +153,7 @@ public class PostResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username WHERE identificador="+postid+";";
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 WHERE identificador="+postid+";";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				post.setIdentificador(rs.getInt("identificador"));
@@ -164,7 +164,7 @@ public class PostResource {
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getString("who_revisado"));
 				post.setLiked(rs.getInt("estado"));
-				if (username == rs.getString("username"))
+				if (username.equals(rs.getString("username")))
 					post.setUsername(username);
 				else {
 					switch (post.getVisibilidad()) {
@@ -250,11 +250,11 @@ public class PostResource {
 			stmt = con.createStatement();
 			String query = "";
 			if (categoria.equals("likes"))
-				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY calificaciones_positivas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 ORDER BY calificaciones_positivas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 			else if (categoria.equals("coments"))
-				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY numcomentarios DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 ORDER BY numcomentarios DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 			else if (categoria.equals("dislikes"))
-				query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"'  ORDER BY calificaciones_negativas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
+				query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 ORDER BY calificaciones_negativas DESC LIMIT " + offset + ", " + (ilength+1) + ";";
 
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
@@ -262,7 +262,6 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
-				post.setUsername(rs.getString("username"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -270,6 +269,22 @@ public class PostResource {
 				post.setRevisado(rs.getInt("revisado"));
 				post.setWho_revised(rs.getString("who_revisado"));
 				post.setLiked(rs.getInt("estado"));
+				if (username.equals(rs.getString("username")))
+					post.setUsername(username);
+				else {
+					switch (post.getVisibilidad()) {
+						case 0: post.setUsername("Anónimo");
+								break;
+						case 1: String usr = rs.getString("username");
+								if (usr == null)
+									post.setUsername("Anónimo");
+								else
+									post.setUsername(usr);
+								break;
+						case 2: post.setUsername(rs.getString("username"));
+								break;
+					}
+				}
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				posts.add(post);
 			}
@@ -535,11 +550,10 @@ public class PostResource {
 			String username = security.getUserPrincipal().getName();
 			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
-			String query = "SELECT posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' WHERE identificador="+postid+" ORDER BY publicacion_date DESC;";
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 WHERE identificador="+postid+";";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				post.setIdentificador(rs.getInt("identificador"));
-				post.setUsername(rs.getString("username"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -548,6 +562,22 @@ public class PostResource {
 				post.setWho_revised(rs.getString("who_revisado"));
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
+				if (username.equals(rs.getString("username")))
+					post.setUsername(username);
+				else {
+					switch (post.getVisibilidad()) {
+						case 0: post.setUsername("Anónimo");
+								break;
+						case 1: String usr = rs.getString("username");
+								if (usr == null)
+									post.setUsername("Anónimo");
+								else
+									post.setUsername(usr);
+								break;
+						case 2: post.setUsername(rs.getString("username"));
+								break;
+					}
+				}
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));

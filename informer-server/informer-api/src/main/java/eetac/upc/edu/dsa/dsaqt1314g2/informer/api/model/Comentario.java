@@ -5,25 +5,25 @@ import java.util.Date;
 
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.Link;
 
-
 public class Comentario {
-	
+
 	private int identificador;
 	private int id_post;
 	private String username;
-	private int visibilidad;
+	private int visibilidad; // 0=anonimo, 1=nombre para amigos, 2=publico, 3=no
+								// visible, 5=pendiente de moderar
 	private String contenido;
 	private Date publicacion_date;
 	private int revisado;
 	private String who_revisado;
-	
-	private ArrayList<Link> links= new ArrayList<Link>();
+
+	private ArrayList<Link> links = new ArrayList<Link>();
 
 	public void addLink(Link link) {
 		links.add(link);
 		return;
 	}
-	
+
 	public int getIdentificador() {
 		return identificador;
 	}
@@ -95,7 +95,5 @@ public class Comentario {
 	public void setLinks(ArrayList<Link> links) {
 		this.links = links;
 	}
-	
-	
-	
+
 }

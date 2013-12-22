@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `amigos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `friend` varchar(20) NOT NULL,
+  `estado` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (username) REFERENCES perfiles(username) ON DELETE CASCADE,
   FOREIGN KEY (friend) REFERENCES perfiles(username) ON DELETE CASCADE

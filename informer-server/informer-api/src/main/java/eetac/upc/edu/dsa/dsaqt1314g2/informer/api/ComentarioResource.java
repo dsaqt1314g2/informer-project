@@ -67,6 +67,8 @@ public class ComentarioResource {
 		// Sting for each one and store them in the StingCollection.
 		Connection con = null;
 		Statement stmt = null;
+		String username = security.getUserPrincipal().getName();
+		int comentarios_encontrados=0;
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -76,18 +78,35 @@ public class ComentarioResource {
 
 		try {
 			String query;
-			query = "select * FROM comentarios WHERE id_post="+postid+" ORDER BY publicacion_date desc LIMIT " + offset + ", " + length + ";";
+			query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post="+postid+" ORDER BY publicacion_date desc LIMIT " + offset + ", " + (ilength+1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
+				if (comentarios_encontrados++ > ilength)
+					break;
 				Comentario c = new Comentario();
 				c.setIdentificador(rs.getInt("identificador"));
 				c.setId_post(rs.getInt("id_post"));
-				c.setUsername(rs.getString("username"));
 				c.setVisibilidad(rs.getInt("visibilidad"));
 				c.setContenido(rs.getString("contenido"));
 				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				c.setRevisado(rs.getInt("revisado"));
 				c.setWho_revisado(rs.getString("who_revisado"));
+				if (username.equals(rs.getString("username")))
+					c.setUsername(username);
+				else {
+					switch (c.getVisibilidad()) {
+						case 0: c.setUsername("Anónimo");
+								break;
+						case 1: String usr = rs.getString("username");
+								if (usr == null)
+									c.setUsername("Anónimo");
+								else
+									c.setUsername(usr);
+								break;
+						case 2: c.setUsername(rs.getString("username"));
+								break;
+					}
+				}
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), c.getIdentificador(), "self"));
 				comentarios.add(c);
 			}
@@ -106,8 +125,8 @@ public class ComentarioResource {
 		comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, offset, length, null, "self"));
 		if (prev > 0)
 			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, Integer.toString(prev), length, null, "prev"));
-		comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, Integer.toString(next), length, null, "next"));
-		// TODO: limitar el next
+		if (comentarios_encontrados > ilength)
+			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, Integer.toString(next), length, null, "next"));
 		return comentarios;
 	}
 
@@ -120,6 +139,7 @@ public class ComentarioResource {
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
+		String username = security.getUserPrincipal().getName();
 		try {
 			con = ds.getConnection();
 		} catch (SQLException e) {
@@ -128,17 +148,32 @@ public class ComentarioResource {
 		Comentario c = new Comentario();
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT * FROM comentarios WHERE id_post=" + postid + " and identificador="+comentarioid+";";
+			String query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post=" + postid + " and identificador="+comentarioid+";";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				c.setIdentificador(rs.getInt("identificador"));
 				c.setId_post(rs.getInt("id_post"));
-				c.setUsername(rs.getString("username"));
 				c.setVisibilidad(rs.getInt("visibilidad"));
 				c.setContenido(rs.getString("contenido"));
 				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				c.setRevisado(rs.getInt("revisado"));
 				c.setWho_revisado(rs.getString("who_revisado"));
+				if (username.equals(rs.getString("username")))
+					c.setUsername(username);
+				else {
+					switch (c.getVisibilidad()) {
+						case 0: c.setUsername("Anónimo");
+								break;
+						case 1: String usr = rs.getString("username");
+								if (usr == null)
+									c.setUsername("Anónimo");
+								else
+									c.setUsername(usr);
+								break;
+						case 2: c.setUsername(rs.getString("username"));
+								break;
+					}
+				}
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), c.getIdentificador(), "self"));
 			} else
 				throw new ComentarioNotFoundException();
@@ -312,17 +347,32 @@ public class ComentarioResource {
 			String username = security.getUserPrincipal().getName();
 			String update = "UPDATE comentarios SET visibilidad=" + comentario.getVisibilidad() + " WHERE identificador=" + comentarioid + " and username='" + username + "';";
 			stmt.executeUpdate(update);
-			String query = "SELECT * FROM comentarios WHERE id_post=" + postid + " and identificador="+comentarioid+";";
+			String query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post=" + postid + " and identificador="+comentarioid+";";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				comentario.setIdentificador(rs.getInt("identificador"));
 				comentario.setId_post(rs.getInt("id_post"));
-				comentario.setUsername(rs.getString("username"));
 				comentario.setVisibilidad(rs.getInt("visibilidad"));
 				comentario.setContenido(rs.getString("contenido"));
 				comentario.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				comentario.setRevisado(rs.getInt("revisado"));
 				comentario.setWho_revisado(rs.getString("who_revisado"));
+				if (username.equals(rs.getString("username")))
+					comentario.setUsername(username);
+				else {
+					switch (comentario.getVisibilidad()) {
+						case 0: comentario.setUsername("Anónimo");
+								break;
+						case 1: String usr = rs.getString("username");
+								if (usr == null)
+									comentario.setUsername("Anónimo");
+								else
+									comentario.setUsername(usr);
+								break;
+						case 2: comentario.setUsername(rs.getString("username"));
+								break;
+					}
+				}
 				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), comentario.getIdentificador(), "self"));
 			} else
 				throw new ComentarioNotFoundException();

@@ -13,7 +13,7 @@ insert into posts(username, visibilidad, contenido, numcomentarios, calificacion
 
 INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('1', '1', 'ropnom', '0', 'Esto es un comentario', CURRENT_TIMESTAMP, '1', 'ropnom'), ('2', '2', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '1', 'ropnom'), ('3', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL),('4', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL),('5', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
 
-INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`) VALUES ('1', 'ropnom', 'McD0n3ld'), ('2', 'McD0n3ld', 'ropnom'), ('3', 'McD0n3ld', 'Creador'), ('4', 'Creador', 'McD0n3ld');
+INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('1', 'ropnom', 'McD0n3ld','1'), ('2', 'McD0n3ld', 'ropnom','1'), ('3', 'McD0n3ld', 'Creador','1'), ('4', 'Creador', 'McD0n3ld','1');
 
 INSERT INTO `informerdb`.`calificacion` (`id`, `username`, `id_post`, `estado`) VALUES ('1', 'ropnom', '1', '2');
 INSERT INTO `informerdb`.`calificacion` (`id`, `username`, `id_post`, `estado`) VALUES ('2', 'McD0n3ld', '1', '1');

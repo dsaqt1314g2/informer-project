@@ -76,9 +76,12 @@ public class MensajeResource {
 		int sala = Integer.parseInt(salaid);
 		if (sala < 0)
 			throw new SalaNotFoundException();
-		// Sting for each one and store them in the StingCollection.
+		
 		Connection con = null;
 		Statement stmt = null;
+		String username = security.getUserPrincipal().getName();
+		int mensajes_encontrados=0;
+		
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -88,23 +91,25 @@ public class MensajeResource {
 		try {
 			String query;
 			if (sala == 0)
-				query = "select id_sala from rel_sala_user where username='" + security.getUserPrincipal().getName() + "';";
+				query = "SELECT mensajes_chat.* FROM mensajes_chat LEFT JOIN rel_sala_user ON rel_sala_user.id_sala=mensajes_chat.id_sala and rel_sala_user.username='"+username+"' WHERE last_update<"+fecha+" ORDER BY last_update DESC LIMIT "+ offset + ", " + (ilength+1) + ";";
 			else
-				query = "select id_sala from rel_sala_user where username='" + security.getUserPrincipal().getName() + "' and id_sala=" + salaid + ";";
+				query = "SELECT * FROM mensajes_chat WHERE id_sala="+sala+" and last_update<"+fecha+" ORDER BY last_update DESC LIMIT "+ offset + ", " + (ilength+1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				sala = rs.getInt(1);
 				String query_sala = "select * from mensajes_chat where id_sala='" + sala + "' and last_update<" + ifecha + " ORDER BY last_update DESC LIMIT "
-						+ offset + ", " + length + ";";
+						+ offset + ", " + (ilength+1) + ";";
 				ResultSet rss = stmt.executeQuery(query_sala);
 				while (rs.next()) {
+					if (mensajes_encontrados++ > ilength)
+						break;
 					Mensaje m = new Mensaje();
 					m.setIdentificador(rs.getInt("identificador"));
 					m.setId_sala(rs.getInt("id_sala"));
 					m.setUsername(rs.getString("username"));
 					m.setContenido(rs.getString("contenido"));
 					m.setLast_update(rs.getTimestamp("last_update"));
-					m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
+//					m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
 					mensajes.add(m);
 				}
 				rss.close();
@@ -119,6 +124,11 @@ public class MensajeResource {
 			} catch (Exception e) {
 			}
 		}
+//		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, offset, length, null, "self"));
+//		if ((ioffset-ilength) > 0)
+//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString((ioffset-ilength)), length, null, "prev"));
+//		if (mensajes_encontrados > ilength)
+//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString((ioffset+ilength)), length, null, "next"));
 		return mensajes;
 	}
 
@@ -146,7 +156,7 @@ public class MensajeResource {
 				m.setUsername(rs.getString("username"));
 				m.setContenido(rs.getString("contenido"));
 				m.setLast_update(rs.getTimestamp("last_update"));
-				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
+//				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
 			} else
 				throw new ComentarioNotFoundException();
 		} catch (SQLException e) {
@@ -160,7 +170,7 @@ public class MensajeResource {
 		}
 
 		// Calculate the ETag on last modified date of user resource
-		EntityTag eTag = new EntityTag(Integer.toString(c.getPublicacion_date().hashCode()));
+		EntityTag eTag = new EntityTag(Integer.toString(m.getLast_update().hashCode()));
 
 		// Verify if it matched with etag available in http request
 		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
@@ -174,7 +184,7 @@ public class MensajeResource {
 		// If rb is null then either it is first time request; or resource is
 		// modified
 		// Get the updated representation and return with Etag attached to it
-		rb = Response.ok(c).cacheControl(cc).tag(eTag);
+		rb = Response.ok(m).cacheControl(cc).tag(eTag);
 
 		return rb.build();
 	}
@@ -206,9 +216,9 @@ public class MensajeResource {
 			throw new BadRequestException("length must be an integer greater or equal than 0.");
 		}
 
-		// Sting for each one and store them in the StingCollection.
 		Connection con = null;
 		Statement stmt = null;
+		int mensajes_encontrados=0;
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -218,16 +228,18 @@ public class MensajeResource {
 
 		try {
 			String query;
-			query = "select * FROM mensajes_chat WHERE id_sala=" + salaid + " ORDER BY publicacion_date desc LIMIT " + offset + ", " + length + ";";
+			query = "select * FROM mensajes_chat WHERE id_sala=" + salaid + " ORDER BY publicacion_date desc LIMIT " + offset + ", " + (ilength+1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
+				if (mensajes_encontrados++ > ilength)
+					break;
 				Mensaje m = new Mensaje();
 				m.setIdentificador(rs.getInt("identificador"));
 				m.setId_sala(rs.getInt("id_sala"));
 				m.setUsername(rs.getString("username"));
 				m.setContenido(rs.getString("contenido"));
 				m.setLast_update(rs.getTimestamp("last_update"));
-				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
+//				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
 				mensajes.add(m);
 			}
 			rs.close();
@@ -242,11 +254,11 @@ public class MensajeResource {
 		}
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
-		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, offset, length, null, "self"));
-		if (prev > 0)
-			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(prev), length, null, "prev"));
-		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(next), length, null, "next"));
-		// TODO: limitar el next
+//		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, offset, length, null, "self"));
+//		if (prev > 0)
+//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(prev), length, null, "prev"));
+//		if (mensajes_encontrados > ilength)
+//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(next), length, null, "next"));
 		return mensajes;
 	}
 
@@ -287,7 +299,7 @@ public class MensajeResource {
 				mensaje.setUsername(rs.getString("username"));
 				mensaje.setContenido(rs.getString("contenido"));
 				mensaje.setLast_update(rs.getTimestamp("last_update"));
-				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(salaid), mensaje.getIdentificador(), "self"));
+//				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(salaid), mensaje.getIdentificador(), "self"));
 			} else {
 				throw new ComentarioNotFoundException();
 			}
