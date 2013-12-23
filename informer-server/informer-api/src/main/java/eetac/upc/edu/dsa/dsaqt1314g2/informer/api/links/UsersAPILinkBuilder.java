@@ -11,19 +11,19 @@ import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.User;
 public class UsersAPILinkBuilder {
 
 
-	// public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase ->
-	// http:blablabla/beeter-api/
-	// URI uriRoot =
-	// uriInfo.getBaseUriBuilder().path(LibrosRootAPIResource.class).build();
-	// Link link = new Link();
-	// link.setUri(uriRoot.toString());
-	// link.setRel("self bookmark"); //apunta a el mismo / pagina inicial
-	// link.setTitle("Libros API");
-	// link.setType(MediaType.LIBROS_API_LINK_COLLECTION); //devolver coleccion
-	// de enlaces
-	//
-	// return link;
-	// }
+//	 public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase ->
+//	 //http:blablabla/beeter-api/
+//	 URI uriRoot =
+//	 uriInfo.getBaseUriBuilder().path(LibrosRootAPIResource.class).build();
+//	 Link link = new Link();
+//	 link.setUri(uriRoot.toString());
+//	 link.setRel("self bookmark"); //apunta a el mismo / pagina inicial
+//	 link.setTitle("Libros API");
+//	 link.setType(MediaType.LIBROS_API_LINK_COLLECTION); //devolver coleccion
+//	 de enlaces
+//	
+//	 return link;
+//	 }
 
 	public static final Link buildURILibros(UriInfo uriInfo, String rel) {
 		return buildURIUsers(uriInfo, null, null, rel);
@@ -90,6 +90,56 @@ public class UsersAPILinkBuilder {
 		link.setUri(stingURI.toString());
 		link.setRel(rel);
 		link.setTitle("Usuario " + username);
+		link.setType(MediaType.INFORMER_API_USER);
+
+		return link;
+	}
+	
+	public final static Link buildURIDeleteUser(UriInfo uriInfo, String username,
+			String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(UserResource.class)
+				.path(UserResource.class, "deleteUser").build(username);
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle("Delete Usuario: " + username);
+		link.setType(MediaType.INFORMER_API_USER);
+
+		return link;
+	}
+	
+	public final static Link buildURISolicitud(UriInfo uriInfo, String username,
+			String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(UserResource.class)
+				.path(UserResource.class, "SolicitudAmigo").build(username);
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle(" Solicitud al Usuario " + username);
+		link.setType(MediaType.INFORMER_API_USER);
+
+		return link;
+	}
+	public final static Link buildURIEliminarAmigo(UriInfo uriInfo, String username,
+			String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(UserResource.class)
+				.path(UserResource.class, "Deletefriend").build(username);
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle(" Eliminar Solicitud/Amigo: " + username);
+		link.setType(MediaType.INFORMER_API_USER);
+
+		return link;
+	}
+	public final static Link buildURIAceptarSolicitud(UriInfo uriInfo, String username,
+			String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(UserResource.class)
+				.path(UserResource.class, "AceptarSolicitud").build(username);
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle(" Aceptar Solicitud de: " + username);
 		link.setType(MediaType.INFORMER_API_USER);
 
 		return link;

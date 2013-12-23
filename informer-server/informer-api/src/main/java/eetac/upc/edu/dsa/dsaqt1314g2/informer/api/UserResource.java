@@ -90,6 +90,9 @@ public class UserResource {
 				// añadimos los links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURIDeleteUser(uriInfo,
+						user.getUsername(), "delete"));
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
 
 			} else {
 				throw new UserNotFoundException();
@@ -234,6 +237,8 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
+
 
 				users.add(user);
 			}
@@ -344,6 +349,7 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(uriInfo, user.getUsername(), "del_friend"));
 
 				users.add(user);
 			}
@@ -454,6 +460,9 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(uriInfo, user.getUsername(), "del_solicitud"));
+				user.addLinks(UsersAPILinkBuilder.buildURIAceptarSolicitud(uriInfo, user.getUsername(),"acept_solicitud"));
+
 
 				users.add(user);
 			}
@@ -758,6 +767,8 @@ public class UserResource {
 				// añadimos los links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
+
 			}
 
 			rs.close();
