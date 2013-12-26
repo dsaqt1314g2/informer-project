@@ -325,7 +325,7 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		boolean coma = false;
+		
 		//Todo Sub query
 		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"+username+"' and estado = 1) ";
 		query += " ORDER BY username asc LIMIT " + offset + ", " + length + ";";
@@ -436,7 +436,7 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		boolean coma = false;
+		
 		//Todo Sub query
 		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"+security.getUserPrincipal().getName()+"' and estado = 0) ";
 		query += " ORDER BY username asc LIMIT " + offset + ", " + length + ";";
@@ -891,7 +891,7 @@ public class UserResource {
 
 	@DELETE
 	@Path("/{username}")
-	public void deleteUser(@PathParam("username") String username) {
+	public String deleteUser(@PathParam("username") String username) {
 		// TODO: Delete: /users/{nombre} (admin)
 		Statement stmt = null;
 		Connection conn = null;
@@ -928,6 +928,7 @@ public class UserResource {
 				e.printStackTrace();
 			}
 		}
+		return("Eliminado satisfactoriamente a " + username);
 	}
 
 }
