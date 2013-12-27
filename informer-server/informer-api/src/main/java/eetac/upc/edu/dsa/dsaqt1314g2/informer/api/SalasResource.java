@@ -40,6 +40,7 @@ public class SalasResource {
 	SalaCollection salas = new SalaCollection();
 
 	@GET
+	@Path("/administrarsalas")
 	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
 	public Response getmySalas(@QueryParam("o") String offset,
 			@QueryParam("l") String length, @Context Request req) {
@@ -77,9 +78,9 @@ public class SalasResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.estado=1 and rel_sala_user.id_sala = salas_chat.identificador and ";
+			String query = "SELECT salas_chat.* FROM salas_chat  where salas_chat.username='";
 			String username = security.getUserPrincipal().getName();
-			query += "rel_sala_user.username = '" + username
+			query += username
 					+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
 					+ length + ";";
 
@@ -610,6 +611,15 @@ public class SalasResource {
 			} else {
 				throw new SalaNotFoundException();
 			}
+			
+			update = "insert into rel_sala_user (username, id_sala, estado) values ('"
+					+ security.getUserPrincipal().getName()
+					+ "',"
+					+ sala.getIdentificador() + ",1);";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			rs = stmt.getGeneratedKeys();
+			rs.close();
+			
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {

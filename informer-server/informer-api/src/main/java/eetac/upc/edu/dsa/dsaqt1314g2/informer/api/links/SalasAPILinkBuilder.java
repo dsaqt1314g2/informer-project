@@ -124,7 +124,7 @@ public class SalasAPILinkBuilder {
 		URI uriSalas;
 
 		uriSalas = uriInfo.getBaseUriBuilder().path(SalasResource.class)
-				.path(SalasResource.class, "getInvitacionesn").build();
+				.path(SalasResource.class, "getInvitaciones").build();
 
 		Link link = new Link();
 		link.setUri(URITemplateBuilder.buildTemplatedURI(uriSalas));
