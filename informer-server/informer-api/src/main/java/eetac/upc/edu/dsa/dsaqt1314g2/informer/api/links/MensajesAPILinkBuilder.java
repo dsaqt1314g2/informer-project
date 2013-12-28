@@ -4,93 +4,85 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriInfo;
 
-import eetac.upc.edu.dsa.rodrigo.libros.api.LibroResource;
-import eetac.upc.edu.dsa.rodrigo.libros.api.LibrosRootAPIResource;
-import eetac.upc.edu.dsa.rodrigo.libros.api.MediaType;
-import eetac.upc.edu.dsa.rodrigo.libros.api.model.Libro;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.ComentarioResource;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.ComentariosRootAPIResource;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.MediaType;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.MensajeResource;
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Comentario;
 
 public class MensajesAPILinkBuilder {
-    public final static Link buildURIRootAPI(UriInfo uriInfo) { //getBase -> http:blablabla/beeter-api/
-            URI uriRoot = uriInfo.getBaseUriBuilder().path(LibrosRootAPIResource.class).build();
-            Link link = new Link();
-            link.setUri(uriRoot.toString());
-            link.setRel("self bookmark"); //apunta a el mismo / pagina inicial
-            link.setTitle("Libros API");
-            link.setType(MediaType.LIBROS_API_LINK_COLLECTION); //devolver coleccion de enlaces
+	public final static Link buildURIRootAPI(UriInfo uriInfo) { // getBase ->
+																// http:blablabla/beeter-api/
+		URI uriRoot = uriInfo.getBaseUriBuilder().path(ComentariosRootAPIResource.class).build();
+		Link link = new Link();
+		link.setUri(uriRoot.toString());
+		link.setRel("self bookmark"); // apunta a el mismo / pagina inicial
+		link.setTitle("Libros API");
+		link.setType(MediaType.INFORMER_API_LINK_COLLECTION); // devolver
+																// coleccion de
+																// enlaces
 
-            return link;
-    }
+		return link;
+	}
 
-    public static final Link buildURILibros(UriInfo uriInfo, String rel) {
-            return buildURILibros(uriInfo, null, null, null, rel);
-    }
+	public static final Link buildURIComentarios(UriInfo uriInfo, String rel) {
+		return buildURIComentarios(uriInfo, 0, null, null, rel);
+	}
 
-    public static final Link buildURILibros(UriInfo uriInfo, String offset, String length, String username, String rel) {
-            URI uriStings;
-            if (offset == null && length == null)
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).build();        //devuelve http:blabla/stings
-            else {
-                    if (username == null)
-                            uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", offset).queryParam("length", length).build();
-                    else
-                            uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", offset).queryParam("length", length)
-                                            .queryParam("username", username).build();
-            }
+	public static final Link buildURIComentarios(UriInfo uriInfo, int offset, String length, String postid, String rel) {
+		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).build(postid);
+		Link self = new Link();
+		self.setUri(uriStings.toString());
+		self.setRel(rel);
+		self.setTitle("Comentario collection");
+		self.setType(MediaType.INFORMER_API_COMENTARIO_COLLECTION);
 
-            Link self = new Link();
-            self.setUri(uriStings.toString());
-            self.setRel(rel);
-            self.setTitle("Libro collection");
-            self.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
+		return self;
+	}
 
-            return self;
-    }
+	public static final Link buildTemplatedURIComentarios(UriInfo uriInfo, String rel) {
 
-    public static final Link buildTemplatedURIStings(UriInfo uriInfo, String rel) {
+		return buildTemplatedURIComentarios(uriInfo, rel, false);
+	}
 
-            return buildTemplatedURIStings(uriInfo, rel, false);
-    }
+	public static final Link buildTemplatedURIComentarios(UriInfo uriInfo, String rel, boolean username) {
+		URI uriStings;
+		if (username)
+			uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").queryParam("username", "{username}").build();
+		else
+			uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").build();
 
-    public static final Link buildTemplatedURIStings(UriInfo uriInfo, String rel, boolean username) {
-            URI uriStings;
-            if (username)
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}")
-                                    .queryParam("username", "{username}").build();
-            else
-                    uriStings = uriInfo.getBaseUriBuilder().path(LibroResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").build();
+		Link link = new Link();
+		link.setUri(URITemplateBuilder.buildTemplatedURI(uriStings));
+		link.setRel(rel);
+		if (username)
+			link.setTitle("Comentario collection resource filtered by {username}");
+		else
+			link.setTitle("Comentario collection resource");
+		link.setType(MediaType.INFORMER_API_COMENTARIO_COLLECTION);
 
-            Link link = new Link();
-            link.setUri(URITemplateBuilder.buildTemplatedURI(uriStings));
-            link.setRel(rel);
-            if (username)
-                    link.setTitle("Libro collection resource filtered by {username}");
-            else
-                    link.setTitle("Libro collection resource");
-            link.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
+		return link;
+	}
 
-            return link;
-    }
+	public final static Link buildURIComentario(UriInfo uriInfo, Comentario comentario) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).build();
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel("self");
+		link.setTitle("Comentario " + comentario.getIdentificador());
+		link.setType(MediaType.INFORMER_API_COMENTARIO);
 
-    public final static Link buildURILibro(UriInfo uriInfo, Libro libro) {
-            URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).build();
-            Link link = new Link();
-            link.setUri(stingURI.toString());
-            link.setRel("self");
-            link.setTitle("Libro " + libro.getLibroid());
-            link.setType(MediaType.LIBROS_API_LIBRO);
+		return link;
+	}
 
-            return link;
-    }
+	public final static Link buildURIMensajeId(UriInfo uriInfo, String salaid, int mensajeid, String rel) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(MensajeResource.class).path(MensajeResource.class, "getMensaje").build(salaid, mensajeid);
+		Link link = new Link();
+		link.setUri(stingURI.toString());
+		link.setRel(rel);
+		link.setTitle("Mensaje " + mensajeid);
+		link.setType(MediaType.INFORMER_API_COMENTARIO);
 
-    public final static Link buildURILibroId(UriInfo uriInfo, int libroid, String rel) {
-            URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path(LibroResource.class, "getLibro").build(libroid);
-            Link link = new Link();
-            link.setUri(stingURI.toString());
-            link.setRel(rel);
-            link.setTitle("Libro " + libroid);
-            link.setType(MediaType.LIBROS_API_LIBRO);
-
-            return link;
-    }
-
+		return link;
+	}
 }

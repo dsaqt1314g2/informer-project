@@ -49,30 +49,47 @@ public class MensajeResource {
 		// GETs: /salas/{salaid}/mensajes?{offset}{length} (Registered)(admin)
 		// (publicas y donde yo estoy)
 		// TODO: offset y fecha corregir
-		if ((offset == null) || (length == null)) {
-			offset = "0";
-			length = "10";
+		try {
+			int p = Integer.parseInt(salaid);
+			int a = Integer.parseInt(mensajeid);
+			if (p < 0)
+				throw new NumberFormatException();
+			if (a < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
 		}
+		
+		int ioffset = 0, ilength = 10;
+		if (offset == null)
+			offset = "0";
+		else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Offset debe ser un entero mayor o igual a 0.");
+			}
+		}
+		if (length == null)
+			length = "10";
+		else {
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
+			}
+		}
+		
 		long ifecha = 0;
 		if (fecha == null)
 			ifecha = 2147483647;
 		else
 			ifecha = Integer.parseInt(fecha);
-		int ioffset, ilength;
-		try {
-			ioffset = Integer.parseInt(offset);
-			if (ioffset < 0)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("offset must be an integer greater or equal than 0.");
-		}
-		try {
-			ilength = Integer.parseInt(length);
-			if (ilength < 1)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("length must be an integer greater or equal than 0.");
-		}
+		
 		int sala = Integer.parseInt(salaid);
 		if (sala < 0)
 			throw new SalaNotFoundException();
@@ -101,7 +118,7 @@ public class MensajeResource {
 						+ offset + ", " + (ilength+1) + ";";
 				ResultSet rss = stmt.executeQuery(query_sala);
 				while (rs.next()) {
-					if (mensajes_encontrados++ > ilength)
+					if (mensajes_encontrados++ == ilength)
 						break;
 					Mensaje m = new Mensaje();
 					m.setIdentificador(rs.getInt("identificador"));
@@ -137,6 +154,16 @@ public class MensajeResource {
 	@Produces(MediaType.INFORMER_API_MENSAJE)
 	public Response getMensaje(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid, @Context Request req) {
 		// GET: /posts/{postid}/comentarios/{comentarioid} (Registered)(admin)
+		try {
+			int p = Integer.parseInt(salaid);
+			int a = Integer.parseInt(mensajeid);
+			if (p < 0)
+				throw new NumberFormatException();
+			if (a < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
@@ -146,19 +173,24 @@ public class MensajeResource {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
 		Mensaje m = new Mensaje();
+		String username = security.getUserPrincipal().getName();
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT * FROM mensajes_chat WHERE id_sala=" + salaid + " and identificador=" + mensajeid + ";";
+			String query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + " and username=" + username + " and estado=1;";
 			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new UserNotFoundInSalaException();
+			query = "SELECT * FROM mensajes_chat WHERE mensajes_chat.id_sala=" + salaid + " and mensajes_chat.identificador=" + mensajeid + ";";
+			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				m.setIdentificador(rs.getInt("identificador"));
 				m.setId_sala(rs.getInt("id_sala"));
 				m.setUsername(rs.getString("username"));
 				m.setContenido(rs.getString("contenido"));
 				m.setLast_update(rs.getTimestamp("last_update"));
-//				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
+				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, m.getIdentificador(), "self"));
 			} else
-				throw new ComentarioNotFoundException();
+				throw new MensajeNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -168,24 +200,12 @@ public class MensajeResource {
 			} catch (Exception e) {
 			}
 		}
-
-		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(m.getLast_update().hashCode()));
-
-		// Verify if it matched with etag available in http request
 		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
-
-		// If ETag matches the rb will be non-null;
-		// Use the rb to return the response without any further processing
 		if (rb != null) {
 			return rb.cacheControl(cc).tag(eTag).build();
 		}
-
-		// If rb is null then either it is first time request; or resource is
-		// modified
-		// Get the updated representation and return with Etag attached to it
 		rb = Response.ok(m).cacheControl(cc).tag(eTag);
-
 		return rb.build();
 	}
 
@@ -195,6 +215,16 @@ public class MensajeResource {
 			@QueryParam("l") String length) {
 		// GETs: /salas/{salaid}/mensajes?{offset}{length} (Registered)(admin)
 		// (publicas y donde yo estoy)
+		try {
+			int p = Integer.parseInt(salaid);
+			int a = Integer.parseInt(mensajeid);
+			if (p < 0)
+				throw new NumberFormatException();
+			if (a < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		if ((offset == null) || (length == null)) {
 			offset = "0";
 			length = "10";
