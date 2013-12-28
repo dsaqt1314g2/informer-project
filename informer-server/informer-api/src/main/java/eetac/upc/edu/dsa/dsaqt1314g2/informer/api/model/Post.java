@@ -18,17 +18,15 @@ public class Post {
 	private int calificaciones_negativas;
 	private int revisado;
 	private String who_revised;
-	private int liked; //2 liked, 1 disliked
-	
-	
-	
-	private ArrayList<Link> links= new ArrayList<Link>();
+	private int liked; // 2 liked, 1 disliked
+
+	private ArrayList<Link> links = new ArrayList<Link>();
 
 	public void addLink(Link link) {
 		links.add(link);
 		return;
 	}
-	
+
 	public int getVisibilidad() {
 		return visibilidad;
 	}
@@ -92,8 +90,6 @@ public class Post {
 	public void setRevisado(int revisado) {
 		this.revisado = revisado;
 	}
-
-
 
 	public int getIdentificador() {
 		return identificador;

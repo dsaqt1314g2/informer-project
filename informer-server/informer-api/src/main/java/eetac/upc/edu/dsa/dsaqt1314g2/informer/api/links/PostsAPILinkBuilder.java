@@ -31,7 +31,7 @@ public class PostsAPILinkBuilder {
                     uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).build();        //devuelve http:blabla/stings
             else {
 //                    if (username == null)
-                            uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("offset", offset).queryParam("length", length).build();
+                            uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("o", offset).queryParam("l", length).build();
 //                    else
 //                            uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("offset", offset).queryParam("length", length)
 //                                            .queryParam("username", username).build();
@@ -89,5 +89,45 @@ public class PostsAPILinkBuilder {
             link.setType(MediaType.INFORMER_API_POST);
             return link;
     }
+    
+    public final static Link buildURILikePostId(UriInfo uriInfo, int postid, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "likePost").build(postid);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Post " + postid);
+		link.setType(MediaType.INFORMER_API_POST);
+		return link;
+	}
+    
+    public final static Link buildURIDislikePostId(UriInfo uriInfo, int postid, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "dislikePost").build(postid);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Post " + postid);
+		link.setType(MediaType.INFORMER_API_POST);
+		return link; 
+	}
+    
+    public final static Link buildURIDenunciarPostId(UriInfo uriInfo, int postid, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "denunciaPost").build(postid);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Post " + postid);
+		link.setType(MediaType.INFORMER_API_POST);
+		return link; 
+	}
+    
+    public final static Link buildURIRankingPosts(UriInfo uriInfo, String rank, int offset, int length, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "getRanking").queryParam("o", offset).queryParam("l", length).build(rank);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Ranking "+rank);
+		link.setType(MediaType.INFORMER_API_POST);
+		return link; 
+	}
 
 }
