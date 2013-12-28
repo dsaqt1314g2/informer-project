@@ -80,9 +80,8 @@ public class SalasResource {
 			stmt = con.createStatement();
 			String query = "SELECT salas_chat.* FROM salas_chat  where salas_chat.username='";
 			String username = security.getUserPrincipal().getName();
-			query += username
-					+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
-					+ length + ";";
+			query += username + "' ORDER BY nombre_sala asc LIMIT " + offset
+					+ ", " + length + ";";
 
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
@@ -117,8 +116,12 @@ public class SalasResource {
 				// sala.addLinks(SalasAPILinkBuilder
 				// .buildTemplatedURISalasInvitar(uriInfo,
 				// sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIAbandonarSala(uriInfo,
+								sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIDenegarInvitacion(uriInfo,
+								sala.getIdentificador()));
 
 				salas.add(sala);
 			}
@@ -142,7 +145,8 @@ public class SalasResource {
 				length, 2, "Categorias"));
 		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset,
 				length, 2, "Subcripciones"));
-		salas.addLink(SalasAPILinkBuilder.buildTemplatedURIgetInvitaciones(uriInfo));
+		salas.addLink(SalasAPILinkBuilder
+				.buildTemplatedURIgetInvitaciones(uriInfo));
 
 		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
@@ -221,8 +225,12 @@ public class SalasResource {
 				// sala.addLinks(SalasAPILinkBuilder
 				// .buildTemplatedURISalasInvitar(uriInfo,
 				// sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIAbandonarSala(uriInfo,
+								sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIDenegarInvitacion(uriInfo,
+								sala.getIdentificador()));
 
 			} else
 				throw new SalaNotFoundException();
@@ -365,8 +373,12 @@ public class SalasResource {
 				// sala.addLinks(SalasAPILinkBuilder
 				// .buildTemplatedURISalasInvitar(uriInfo,
 				// sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIAbandonarSala(uriInfo,
+								sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIDenegarInvitacion(uriInfo,
+								sala.getIdentificador()));
 
 				salas.add(sala);
 			}
@@ -413,13 +425,13 @@ public class SalasResource {
 		return rb.build();
 
 	}
-	
+
 	@GET
 	@Path("/invitaciones")
 	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
 	public Response getInvitaciones(@QueryParam("o") String offset,
 			@QueryParam("l") String length, @Context Request req) {
-		
+
 		int ioffset = 0, ilength = 10;
 		if ((offset == null) || (length == null)) {
 			offset = "0";
@@ -493,9 +505,12 @@ public class SalasResource {
 				// sala.addLinks(SalasAPILinkBuilder
 				// .buildTemplatedURISalasInvitar(uriInfo,
 				// sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
-
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIAbandonarSala(uriInfo,
+								sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIDenegarInvitacion(uriInfo,
+								sala.getIdentificador()));
 
 				salas.add(sala);
 			}
@@ -511,7 +526,6 @@ public class SalasResource {
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
 
-		
 		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
 
@@ -605,13 +619,17 @@ public class SalasResource {
 				// sala.addLinks(SalasAPILinkBuilder
 				// .buildTemplatedURISalasInvitar(uriInfo,
 				// sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIAbandonarSala(uriInfo,
+								sala.getIdentificador()));
+				sala.addLinks(SalasAPILinkBuilder
+						.buildTemplatedURIDenegarInvitacion(uriInfo,
+								sala.getIdentificador()));
 
 			} else {
 				throw new SalaNotFoundException();
 			}
-			
+
 			update = "insert into rel_sala_user (username, id_sala, estado) values ('"
 					+ security.getUserPrincipal().getName()
 					+ "',"
@@ -619,7 +637,7 @@ public class SalasResource {
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 			rs.close();
-			
+
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -800,13 +818,15 @@ public class SalasResource {
 
 		return (mensaje);
 	}
-	
-	@DELETE
+
+	@GET
 	@Path("/{salaid}/aceptar")
-	public void AceptarInvitacion(@PathParam("salaid") String salaid) {
+	public String AceptarInvitacion(@PathParam("salaid") String salaid) {
 		// TODO: DELETE: /posts/{postid} (admin)
 		Connection con = null;
 		Statement stmt = null;
+		String mensaje = "Has sido añadido satisfactoriamente a la sala "
+				+ salaid;
 		try {
 			con = ds.getConnection();
 		} catch (SQLException e) {
@@ -814,9 +834,11 @@ public class SalasResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "DELETE FROM salas_chat WHERE identificador="
-					+ salaid + ";";
-			int rows = stmt.executeUpdate(query);
+			String update = "UPDATE rel_sala_user SET estado=1 WHERE id_sala="
+					+ salaid + " and username ='"
+					+ security.getUserPrincipal().getName() + "'and estado= 0;";
+
+			int rows = stmt.executeUpdate(update);
 			if (rows == 0)
 				throw new SalaNotFoundException();
 		} catch (SQLException e) {
@@ -828,6 +850,7 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
+		return (mensaje);
 	}
 
 	@PUT
@@ -888,17 +911,16 @@ public class SalasResource {
 		}
 		sala.setIdentificador(Integer.parseInt(salaid));
 		// TODO Links
-		sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
-				"GET", "self"));
-		sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
-				"PUT", "self"));
+		sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala, "GET",
+				"self"));
+		sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala, "PUT",
+				"self"));
 		sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala,
 				"DELETE", "self"));
 		sala.addLinks(SalasAPILinkBuilder.buildURISala(uriInfo, "POST"));
 		if (sala.getVisibilidad() == 0)
-			sala.addLinks(SalasAPILinkBuilder
-					.buildTemplatedURISalasUnirse(uriInfo,
-							sala.getIdentificador(), false));
+			sala.addLinks(SalasAPILinkBuilder.buildTemplatedURISalasUnirse(
+					uriInfo, sala.getIdentificador(), false));
 		// else if (sala.getVisibilidad() == 1)
 		// sala.addLinks(SalasAPILinkBuilder
 		// .buildTemplatedURISalasUnirse(uriInfo,
@@ -910,9 +932,10 @@ public class SalasResource {
 		// sala.addLinks(SalasAPILinkBuilder
 		// .buildTemplatedURISalasInvitar(uriInfo,
 		// sala.getIdentificador()));
-		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
-		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
-
+		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(
+				uriInfo, sala.getIdentificador()));
+		sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(
+				uriInfo, sala.getIdentificador()));
 
 		return sala;
 	}
@@ -964,7 +987,8 @@ public class SalasResource {
 		try {
 			stmt = con.createStatement();
 			String query = "DELETE FROM rel_sala_user WHERE estado=1 and username='"
-					+ security.getUserPrincipal().getName() + "' and id_sala="
+					+ security.getUserPrincipal().getName()
+					+ "' and id_sala="
 					+ salaid + ";";
 			int rows = stmt.executeUpdate(query);
 			if (rows == 0)
@@ -980,6 +1004,7 @@ public class SalasResource {
 		}
 		return mensaje;
 	}
+
 	@DELETE
 	@Path("/{salaid}/denegarinvitacion")
 	public String DenegarInvitacion(@PathParam("salaid") String salaid,
@@ -998,7 +1023,8 @@ public class SalasResource {
 		try {
 			stmt = con.createStatement();
 			String query = "DELETE FROM rel_sala_user WHERE estado=0 and username='"
-					+ security.getUserPrincipal().getName() + "' and id_sala="
+					+ security.getUserPrincipal().getName()
+					+ "' and id_sala="
 					+ salaid + ";";
 			int rows = stmt.executeUpdate(query);
 			if (rows == 0)
