@@ -981,7 +981,7 @@ public class SalasResource {
 		return mensaje;
 	}
 	@DELETE
-	@Path("/{salaid}/invitacion")
+	@Path("/{salaid}/denegarinvitacion")
 	public String DenegarInvitacion(@PathParam("salaid") String salaid,
 			@Context Request req) {
 		// GET: /posts/{postid} (Registered)(admin)
