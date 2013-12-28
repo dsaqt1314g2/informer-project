@@ -126,6 +126,26 @@ public class PostsAPILinkBuilder {
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Ranking "+rank);
+		link.setType(MediaType.INFORMER_API_POST_COLLECTION);
+		return link; 
+	}
+    
+    public final static Link buildURIModificarPostId(UriInfo uriInfo, int postid, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "updatePost").build(postid);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Post "+postid);
+		link.setType(MediaType.INFORMER_API_POST);
+		return link; 
+	}
+    
+    public final static Link buildURIDeletePostId(UriInfo uriInfo, int postid, String rel) {
+        URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "deletePost").build(postid);
+		Link link = new Link();
+		link.setUri(postURI.toString());
+		link.setRel(rel);
+		link.setTitle("Post "+postid);
 		link.setType(MediaType.INFORMER_API_POST);
 		return link; 
 	}

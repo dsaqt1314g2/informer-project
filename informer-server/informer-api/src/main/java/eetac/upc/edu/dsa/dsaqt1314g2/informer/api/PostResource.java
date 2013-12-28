@@ -105,12 +105,15 @@ public class PostResource {
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
-				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				if (post.getIdentificador() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
 				post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
 				post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
 				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
+				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
+				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
 				posts.add(post);
 			}
 			rs.close();
@@ -183,12 +186,15 @@ public class PostResource {
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
-				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				if (post.getIdentificador() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
 				post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
 				post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
 				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
+				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
+				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
 			} else
 				throw new PostNotFoundException();
 			rs.close();
@@ -278,12 +284,15 @@ public class PostResource {
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
-				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				if (post.getIdentificador() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
 				post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
 				post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
 				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
+				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
+				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
 				posts.add(post);
 			}
 			rs.close();
@@ -380,7 +389,6 @@ public class PostResource {
 
 	@POST
 	@Path("/{postid}/like")
-	@Produces(MediaType.INFORMER_API_POST)
 	public String likePost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
 		try {
@@ -444,11 +452,9 @@ public class PostResource {
 	}
 
 	@POST
-	@Path("/{postid}/dislike")
-	@Produces(MediaType.INFORMER_API_POST)
-	public String dislikePost(@PathParam("postid") String postid) {
+	@Path("/{postid}/neutro")
+	public String eliminarVoto(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
-		
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -464,7 +470,79 @@ public class PostResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		
+
+		try {
+			stmt = con.createStatement();
+			String username = security.getUserPrincipal().getName();
+			// a ver si existe el post
+			String query = "SELECT COUNT(identificador) FROM posts Where identificador='" + postid + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) == 0)
+				throw new PostNotFoundException();
+			rs.close();
+
+			query = "SELECT COUNT(id), estado FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
+			rs = stmt.executeQuery(query);
+			rs.next();
+			if (rs.getInt(1) != 0) {
+				int estado = rs.getInt(2);
+				rs.close();
+				// like: estado de las relaciones --> 0=dislike, 1=like
+				// Eliminar megusta/nomegusta
+				con.setAutoCommit(false);
+				String insert = "DELETE FROM calificacion WHERE username='"+username+"' and id_post="+postid+";";
+				stmt.executeUpdate(insert);
+				String update;
+				if (estado == 1) update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "' and posts.calificaciones_positivas>0;";
+				else update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "' and posts.calificaciones_negativas>0;";
+				stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+				con.commit();
+				rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
+				if (rs.next()) {
+					result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
+				} else {
+					throw new PostNotFoundException();
+				}
+				rs.close();
+			} else
+				throw new PostVoteNotFoundException();
+		} catch (SQLException e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				throw new InternalServerException(e.getMessage());
+			}
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return result;
+	}
+
+	@POST
+	@Path("/{postid}/dislike")
+	public String dislikePost(@PathParam("postid") String postid) {
+		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		String result = "";
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
 
 		try {
 			stmt = con.createStatement();
@@ -511,7 +589,6 @@ public class PostResource {
 
 	@POST
 	@Path("/{postid}/denunciar")
-	// @Produces(MediaType.INFORMER_API_POST)
 	public String denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
@@ -529,7 +606,6 @@ public class PostResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		
 
 		try {
 			stmt = con.createStatement();
@@ -705,7 +781,7 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			String query = "SELECT 1 FROM posts WHERE identificador='"+postid+"';";
+			String query = "SELECT 1 FROM posts WHERE identificador='" + postid + "';";
 			ResultSet rs = stmt.executeQuery(query);
 			if (!rs.next())
 				throw new PostNotFoundException();
@@ -725,7 +801,7 @@ public class PostResource {
 		}
 		return "DELETED " + postid;
 	}
-	
+
 	@DELETE
 	@Path("/{postid}")
 	public String deletePost(@PathParam("postid") String postid) {
