@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+
+    <title>Beeter</title>
+ 
+  </head>
+  <body>
+  	<div style="margin:20 px; padding: 20px;">
+    	<div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">beeter</h3>
+            </div>
+            <div class="panel-body">
+              <form action="" id="contact-form" class="form-horizontal">
+		<fieldset>
+		  <legend>POST Sting</legend>
+		  
+		  <div class="control-group">
+		      <label class="control-label" for="username">Username</label>
+		      <div class="controls">
+		        <input type="text" class="input-xlarge" name="username" id="username">
+		      </div>
+		    </div>
+		  
+		  
+		    <div class="control-group">
+		      <label class="control-label" for="noimporta">Subject</label>
+		      <div class="controls">
+		        <input type="text" class="input-xlarge" name="subject" id="noimporta_subject" size='50' >
+		      </div>
+		    </div>
+		    
+		    
+		    <div class="control-group">
+		      <label class="control-label" for="noimporta2">Contenido</label>
+		      <div class="controls">
+		        <!-- <input type="text" class="input-xlarge" name="contenido" id="noimporta_contenido" size='50' value="Dicen que magisterio es super mega dificil!"> -->
+		        <textarea name='contenido' id='noimporta_contenido' rows='5' cols='52'></textarea> 
+		      </div>
+		    </div>
+		    
+
+		    <br>
+		    <div class="form-actions">
+		      <button type="submit" class="btn btn-primary btn-large" id="button_post_sting">POST sting</button>
+		      <!-- <button type="reset" class="btn">Cancel</button> -->
+		    </div>
+		  </fieldset>
+		</form>
+		
+		<span id='return'></span>
+            </div>
+          </div>
+    </div>
+		
+	
+<!-- jQuery via Google -->
+	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- Validate plugin -->
+	  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+      <script type="text/javascript" src="js/beeter.js"></script>
+  </body>
+</html>
