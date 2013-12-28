@@ -61,6 +61,7 @@ INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala
 INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('2', 'McD0n3ld', 'Aeronauticas Calientes', '1', MD5('pass'));
 INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('3', 'ropnom', 'Aeronauticas en bolas', '2', MD5('dificil'));
 INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('4', 'ropnom', 'Aeronautica', '0', MD5(''));
+INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('5', 'alicia', 'Sala 1337', '0', MD5(''));
 
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('1', 'ropnom', '1', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('2', 'McD0n3ld', '1', '0');
@@ -70,6 +71,47 @@ INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`)
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('6', 'ropnom', '4', '0');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('7', 'ropnom', '3', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('8', 'ropnom', '4', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('9', 'ropnom', '5', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('10', 'McD0n3ld', '5', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('11', 'alicia', '5', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('12', 'Creador', '5', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('13', 'blas', '5', '1');
 
 
-INSERT INTO `informerdb`.`mensajes_chat` (`identificador`, `id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', '1', 'ropnom', 'Este es un ejemplod e mensaje', CURRENT_TIMESTAMP);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'Hola', CURRENT_TIMESTAMP);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'Hay alguien ahi?', CURRENT_TIMESTAMP+1);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'McD0n3ld', 'Si, que pasa?', CURRENT_TIMESTAMP+2);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', '...', CURRENT_TIMESTAMP+3);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'McD0n3ld', 'te cuento un chiste?', CURRENT_TIMESTAMP+4);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'Nononono', CURRENT_TIMESTAMP+5);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'Resulta que he hecho un fetch y...', CURRENT_TIMESTAMP+6);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'me ha dado un conflicto de la ostia', CURRENT_TIMESTAMP+7);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'he tenido que borrar todo y volverlo a hacer', CURRENT_TIMESTAMP+8);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'McD0n3ld', 'vamos que las has liado parda no?', CURRENT_TIMESTAMP+9);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'mas o menos', CURRENT_TIMESTAMP+10);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'un poco mas y se crea un agujero negro en el server de github', CURRENT_TIMESTAMP+11);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'McD0n3ld', 'jajajajjaa', CURRENT_TIMESTAMP+12);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', 'ropnom', 'fin de la conversacion. :)', CURRENT_TIMESTAMP+13);
+
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'Hola', CURRENT_TIMESTAMP);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'Hay alguien ahi?', CURRENT_TIMESTAMP+1);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'yo, dime XD', CURRENT_TIMESTAMP+2);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'alicia', 'yo tambien ando por aqui, que pasa?', CURRENT_TIMESTAMP+3);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'nada, el Creador, que se ha enfadado', CURRENT_TIMESTAMP+4);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'blas', 'Creador? que pasa?', CURRENT_TIMESTAMP+5);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'Creador', 'que ropnom hizo un fetch y dio fail', CURRENT_TIMESTAMP+6);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'conflictos?', CURRENT_TIMESTAMP+7);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'Si', CURRENT_TIMESTAMP+8);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'Creador', 'ha hecho un agujero negro en el server de githun........', CURRENT_TIMESTAMP+9);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'alicia', 'no pasa nada. que nos absorba', CURRENT_TIMESTAMP+10);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'Creador', '-.-', CURRENT_TIMESTAMP+11);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'blas', 'jajajajjaa', CURRENT_TIMESTAMP+12);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'alicia', 'jajajjajaa', CURRENT_TIMESTAMP+13);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'jajajajjaja', CURRENT_TIMESTAMP+14);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'jajajajjajaj', CURRENT_TIMESTAMP+15);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'hola caracola', CURRENT_TIMESTAMP+16);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'alicia', '-.-', CURRENT_TIMESTAMP+17);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'blas', 'ya no sabes que poner?', CURRENT_TIMESTAMP+18);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'si', CURRENT_TIMESTAMP+19);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'ropnom', 'estais mal de la chota?', CURRENT_TIMESTAMP+20);
+INSERT INTO `informerdb`.`mensajes_chat` (`id_sala`, `username`, `contenido`, `last_update`) VALUES ('5', 'McD0n3ld', 'fin de la conversacion ;)', CURRENT_TIMESTAMP+21);
