@@ -17,7 +17,7 @@ public class MensajesAPILinkBuilder {
 		Link link = new Link();
 		link.setUri(uriRoot.toString());
 		link.setRel("self bookmark"); // apunta a el mismo / pagina inicial
-		link.setTitle("Libros API");
+		link.setTitle("Informer API");
 		link.setType(MediaType.INFORMER_API_LINK_COLLECTION); // devolver
 																// coleccion de
 																// enlaces
@@ -26,16 +26,16 @@ public class MensajesAPILinkBuilder {
 	}
 
 	public static final Link buildURIComentarios(UriInfo uriInfo, String rel) {
-		return buildURIComentarios(uriInfo, 0, null, null, rel);
+		return buildURIMensajes(uriInfo, 0, null, 0, null, rel);
 	}
 
-	public static final Link buildURIComentarios(UriInfo uriInfo, int offset, String length, String postid, String rel) {
-		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).build(postid);
+	public static final Link buildURIMensajes(UriInfo uriInfo, int offset, String length, long ifecha, String salaid, String rel) {
+		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).queryParam("f", ifecha).build(salaid);
 		Link self = new Link();
 		self.setUri(uriStings.toString());
 		self.setRel(rel);
-		self.setTitle("Comentario collection");
-		self.setType(MediaType.INFORMER_API_COMENTARIO_COLLECTION);
+		self.setTitle("Mensaje collection");
+		self.setType(MediaType.INFORMER_API_MENSAJE_COLLECTION);
 
 		return self;
 	}
@@ -47,19 +47,13 @@ public class MensajesAPILinkBuilder {
 
 	public static final Link buildTemplatedURIComentarios(UriInfo uriInfo, String rel, boolean username) {
 		URI uriStings;
-		if (username)
-			uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").queryParam("username", "{username}").build();
-		else
-			uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("offset", "{offset}").queryParam("length", "{length}").build();
+		uriStings = uriInfo.getBaseUriBuilder().path(MensajeResource.class).queryParam("o", "{offset}").queryParam("l", "{length}").queryParam("f", "{fecha}").build();
 
 		Link link = new Link();
 		link.setUri(URITemplateBuilder.buildTemplatedURI(uriStings));
 		link.setRel(rel);
-		if (username)
-			link.setTitle("Comentario collection resource filtered by {username}");
-		else
-			link.setTitle("Comentario collection resource");
-		link.setType(MediaType.INFORMER_API_COMENTARIO_COLLECTION);
+		link.setTitle("Mensaje collection resource");
+		link.setType(MediaType.INFORMER_API_MENSAJE_COLLECTION);
 
 		return link;
 	}
@@ -69,8 +63,8 @@ public class MensajesAPILinkBuilder {
 		Link link = new Link();
 		link.setUri(stingURI.toString());
 		link.setRel("self");
-		link.setTitle("Comentario " + comentario.getIdentificador());
-		link.setType(MediaType.INFORMER_API_COMENTARIO);
+		link.setTitle("Mensaje " + comentario.getIdentificador());
+		link.setType(MediaType.INFORMER_API_MENSAJE);
 
 		return link;
 	}
@@ -81,7 +75,7 @@ public class MensajesAPILinkBuilder {
 		link.setUri(stingURI.toString());
 		link.setRel(rel);
 		link.setTitle("Mensaje " + mensajeid);
-		link.setType(MediaType.INFORMER_API_COMENTARIO);
+		link.setType(MediaType.INFORMER_API_MENSAJE);
 
 		return link;
 	}

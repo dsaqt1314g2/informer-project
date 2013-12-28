@@ -4,14 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,9 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.ComentariosAPILinkBuilder;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.MensajesAPILinkBuilder;
-import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Comentario;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Mensaje;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.MensajeCollection;
 
@@ -44,22 +41,18 @@ public class MensajeResource {
 
 	@GET
 	@Produces(MediaType.INFORMER_API_COMENTARIO_COLLECTION)
-	public MensajeCollection getMensajes(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid, @QueryParam("o") String offset,
-			@QueryParam("l") String length, @QueryParam("f") String fecha) {
-		// GETs: /salas/{salaid}/mensajes?{offset}{length} (Registered)(admin)
+	public MensajeCollection getMensajes(@PathParam("salaid") String salaid, @QueryParam("o") String offset, @QueryParam("l") String length, @QueryParam("f") String fecha) {
+		// GETs: /salas/{salaid}/mensajes?{offset}{length}{fecha}
+		// (Registered)(admin)
 		// (publicas y donde yo estoy)
-		// TODO: offset y fecha corregir
 		try {
 			int p = Integer.parseInt(salaid);
-			int a = Integer.parseInt(mensajeid);
 			if (p < 0)
-				throw new NumberFormatException();
-			if (a < 0)
 				throw new NumberFormatException();
 		} catch (NumberFormatException e) {
 			throw new PostNotFoundException();
 		}
-		
+		// System.out.println(new Date().getTime());
 		int ioffset = 0, ilength = 10;
 		if (offset == null)
 			offset = "0";
@@ -83,22 +76,29 @@ public class MensajeResource {
 				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
 			}
 		}
-		
+
 		long ifecha = 0;
 		if (fecha == null)
-			ifecha = 2147483647;
-		else
-			ifecha = Integer.parseInt(fecha);
-		
+			ifecha = 0;
+		else {
+			try {
+				ifecha = Integer.parseInt(fecha);
+				if (ifecha < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Fecha debe ser un entero mayor o igual a 0.");
+			}
+		}
+
 		int sala = Integer.parseInt(salaid);
 		if (sala < 0)
 			throw new SalaNotFoundException();
-		
+
 		Connection con = null;
 		Statement stmt = null;
 		String username = security.getUserPrincipal().getName();
-		int mensajes_encontrados=0;
-		
+		int mensajes_encontrados = 0;
+
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -107,31 +107,37 @@ public class MensajeResource {
 		}
 		try {
 			String query;
+			ResultSet rs;
 			if (sala == 0)
-				query = "SELECT mensajes_chat.* FROM mensajes_chat LEFT JOIN rel_sala_user ON rel_sala_user.id_sala=mensajes_chat.id_sala and rel_sala_user.username='"+username+"' WHERE last_update<"+fecha+" ORDER BY last_update DESC LIMIT "+ offset + ", " + (ilength+1) + ";";
-			else
-				query = "SELECT * FROM mensajes_chat WHERE id_sala="+sala+" and last_update<"+fecha+" ORDER BY last_update DESC LIMIT "+ offset + ", " + (ilength+1) + ";";
-			ResultSet rs = stmt.executeQuery(query);
+				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
+			else {
+				query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + ";";
+				rs = stmt.executeQuery(query);
+				if (!rs.next())
+					throw new SalaNotFoundException();
+				query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + " and username='" + username + "' and estado=1;";
+				rs = stmt.executeQuery(query);
+				if (!rs.next())
+					throw new UserNotFoundInSalaException();
+				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE mensajes_chat.id_sala=" + salaid + " and last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + offset + ", "
+						+ (ilength + 1) + ";";
+			}
+			rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				sala = rs.getInt(1);
-				String query_sala = "select * from mensajes_chat where id_sala='" + sala + "' and last_update<" + ifecha + " ORDER BY last_update DESC LIMIT "
-						+ offset + ", " + (ilength+1) + ";";
-				ResultSet rss = stmt.executeQuery(query_sala);
-				while (rs.next()) {
-					if (mensajes_encontrados++ == ilength)
-						break;
-					Mensaje m = new Mensaje();
-					m.setIdentificador(rs.getInt("identificador"));
-					m.setId_sala(rs.getInt("id_sala"));
-					m.setUsername(rs.getString("username"));
-					m.setContenido(rs.getString("contenido"));
-					m.setLast_update(rs.getTimestamp("last_update"));
-//					m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
-					mensajes.add(m);
-				}
-				rss.close();
+				if (mensajes_encontrados++ == ilength)
+					break;
+				Mensaje m = new Mensaje();
+				m.setIdentificador(rs.getInt("identificador"));
+				m.setId_sala(rs.getInt("id_sala"));
+				m.setUsername(rs.getString("username"));
+				m.setContenido(rs.getString("contenido"));
+				m.setLast_update(rs.getTimestamp("last_update"));
+				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, m.getIdentificador(), "self"));
+				mensajes.add(m);
 			}
 			rs.close();
+			if (mensajes_encontrados == 0)
+				throw new MensajeCollectionNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -141,11 +147,13 @@ public class MensajeResource {
 			} catch (Exception e) {
 			}
 		}
-//		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, offset, length, null, "self"));
-//		if ((ioffset-ilength) > 0)
-//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString((ioffset-ilength)), length, null, "prev"));
-//		if (mensajes_encontrados > ilength)
-//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString((ioffset+ilength)), length, null, "next"));
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		if (prev >= 0)
+			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, prev, length, ifecha, salaid, "prev"));
+		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, ioffset, length, ifecha, salaid, "self"));
+		if (mensajes_encontrados > ilength)
+			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, next, length, ifecha, salaid, "next"));
 		return mensajes;
 	}
 
@@ -176,8 +184,14 @@ public class MensajeResource {
 		String username = security.getUserPrincipal().getName();
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + " and username=" + username + " and estado=1;";
-			ResultSet rs = stmt.executeQuery(query);
+			String query;
+			ResultSet rs;
+			query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + ";";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new SalaNotFoundException();
+			query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + " and username='" + username + "' and estado=1;";
+			rs = stmt.executeQuery(query);
 			if (!rs.next())
 				throw new UserNotFoundInSalaException();
 			query = "SELECT * FROM mensajes_chat WHERE mensajes_chat.id_sala=" + salaid + " and mensajes_chat.identificador=" + mensajeid + ";";
@@ -191,6 +205,7 @@ public class MensajeResource {
 				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, m.getIdentificador(), "self"));
 			} else
 				throw new MensajeNotFoundException();
+			rs.close();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -207,89 +222,6 @@ public class MensajeResource {
 		}
 		rb = Response.ok(m).cacheControl(cc).tag(eTag);
 		return rb.build();
-	}
-
-	@GET
-	@Produces(MediaType.INFORMER_API_MENSAJE_COLLECTION)
-	public MensajeCollection getTodosMensajes(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid, @QueryParam("o") String offset,
-			@QueryParam("l") String length) {
-		// GETs: /salas/{salaid}/mensajes?{offset}{length} (Registered)(admin)
-		// (publicas y donde yo estoy)
-		try {
-			int p = Integer.parseInt(salaid);
-			int a = Integer.parseInt(mensajeid);
-			if (p < 0)
-				throw new NumberFormatException();
-			if (a < 0)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new PostNotFoundException();
-		}
-		if ((offset == null) || (length == null)) {
-			offset = "0";
-			length = "10";
-		}
-
-		int ioffset, ilength;
-		try {
-			ioffset = Integer.parseInt(offset);
-			if (ioffset < 0)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("offset must be an integer greater or equal than 0.");
-		}
-		try {
-			ilength = Integer.parseInt(length);
-			if (ilength < 1)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("length must be an integer greater or equal than 0.");
-		}
-
-		Connection con = null;
-		Statement stmt = null;
-		int mensajes_encontrados=0;
-		try {
-			con = ds.getConnection();
-			stmt = con.createStatement();
-		} catch (SQLException e) {
-			throw new ServiceUnavailableException(e.getMessage());
-		}
-
-		try {
-			String query;
-			query = "select * FROM mensajes_chat WHERE id_sala=" + salaid + " ORDER BY publicacion_date desc LIMIT " + offset + ", " + (ilength+1) + ";";
-			ResultSet rs = stmt.executeQuery(query);
-			while (rs.next()) {
-				if (mensajes_encontrados++ > ilength)
-					break;
-				Mensaje m = new Mensaje();
-				m.setIdentificador(rs.getInt("identificador"));
-				m.setId_sala(rs.getInt("id_sala"));
-				m.setUsername(rs.getString("username"));
-				m.setContenido(rs.getString("contenido"));
-				m.setLast_update(rs.getTimestamp("last_update"));
-//				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(mensajeid), m.getIdentificador(), "self"));
-				mensajes.add(m);
-			}
-			rs.close();
-		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
-		} finally {
-			try {
-				con.close();
-				stmt.close();
-			} catch (Exception e) {
-			}
-		}
-		int prev = ioffset - ilength;
-		int next = ioffset + ilength;
-//		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, offset, length, null, "self"));
-//		if (prev > 0)
-//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(prev), length, null, "prev"));
-//		if (mensajes_encontrados > ilength)
-//			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, Integer.toString(next), length, null, "next"));
-		return mensajes;
 	}
 
 	@POST
@@ -309,14 +241,23 @@ public class MensajeResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-
+		String username = security.getUserPrincipal().getName();
 		try {
 			stmt = con.createStatement();
-			String update = "INSERT INTO mensajes_chat (id_sala,username,contenido) VALUES (" + salaid + ", '" + mensaje.getUsername() + "', '"
-					+ mensaje.getContenido() + "');";
+			String query;
+			ResultSet rs;
+			query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + ";";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new SalaNotFoundException();
+			query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + " and username='" + username + "' and estado=1;";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new UserNotFoundInSalaException();
+			String update = "INSERT INTO mensajes_chat (id_sala,username,contenido) VALUES (" + salaid + ", '" + mensaje.getUsername() + "', '" + mensaje.getContenido() + "');";
 			// TODO: Apostrofe y acentos
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
 				int identificador = rs.getInt(1);
 				rs.close();
@@ -329,7 +270,7 @@ public class MensajeResource {
 				mensaje.setUsername(rs.getString("username"));
 				mensaje.setContenido(rs.getString("contenido"));
 				mensaje.setLast_update(rs.getTimestamp("last_update"));
-//				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, Integer.parseInt(salaid), mensaje.getIdentificador(), "self"));
+				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, mensaje.getIdentificador(), "self"));
 			} else {
 				throw new ComentarioNotFoundException();
 			}
@@ -343,6 +284,60 @@ public class MensajeResource {
 			}
 		}
 		return mensaje;
+	}
+
+	@DELETE
+	@Path("/{mensajeid}")
+	public String deleteMensaje(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid) {
+		// GET: /posts/{postid}/comentarios/{comentarioid} (Registered)(admin)
+		if (!security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
+		try {
+			int p = Integer.parseInt(salaid);
+			int a = Integer.parseInt(mensajeid);
+			if (p < 0)
+				throw new NumberFormatException();
+			if (a < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query;
+			ResultSet rs;
+			query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + ";";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new SalaNotFoundException();
+			// query =
+			// "SELECT 1 FROM rel_sala_user WHERE id_sala="+salaid+" and username='"+username+"' and estado=1;";
+			// rs = stmt.executeQuery(query);
+			// if (!rs.next())
+			// throw new UserNotFoundInSalaException();
+			query = "DELETE FROM mensajes_chat WHERE mensajes_chat.id_sala=" + salaid + " and mensajes_chat.identificador=" + mensajeid + ";";
+			int rows = stmt.executeUpdate(query);
+			if (rows == 0)
+				throw new MensajeNotFoundException();
+			rs.close();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return "DELETED";
 	}
 
 }

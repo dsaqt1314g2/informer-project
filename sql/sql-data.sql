@@ -64,13 +64,13 @@ INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala
 INSERT INTO `informerdb`.`salas_chat` (`identificador`, `username`, `nombre_sala`, `visibilidad`, `password`) VALUES ('5', 'alicia', 'Sala 1337', '0', MD5(''));
 
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('1', 'ropnom', '1', '1');
-INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('2', 'McD0n3ld', '1', '0');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('2', 'McD0n3ld', '1', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('3', 'McD0n3ld', '2', '1');
-INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('4', 'ropnom', '3', '0');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('4', 'alicia', '3', '0');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('5', 'McD0n3ld', '3', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('6', 'ropnom', '4', '0');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('7', 'ropnom', '3', '1');
-INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('8', 'ropnom', '4', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('8', 'McD0n3ld', '4', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('9', 'ropnom', '5', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('10', 'McD0n3ld', '5', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('11', 'alicia', '5', '1');
