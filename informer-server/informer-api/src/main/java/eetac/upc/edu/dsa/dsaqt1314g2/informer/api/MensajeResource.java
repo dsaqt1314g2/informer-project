@@ -254,8 +254,7 @@ public class MensajeResource {
 			rs = stmt.executeQuery(query);
 			if (!rs.next())
 				throw new UserNotFoundInSalaException();
-			String update = "INSERT INTO mensajes_chat (id_sala,username,contenido) VALUES (" + salaid + ", '" + mensaje.getUsername() + "', '" + mensaje.getContenido() + "');";
-			// TODO: Apostrofe y acentos
+			String update = "INSERT INTO mensajes_chat (id_sala,username,contenido) VALUES (" + salaid + ", '" + mensaje.getUsername() + "', '" + mensaje.getContenido().replace("'", "´") + "');";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 			if (rs.next()) {

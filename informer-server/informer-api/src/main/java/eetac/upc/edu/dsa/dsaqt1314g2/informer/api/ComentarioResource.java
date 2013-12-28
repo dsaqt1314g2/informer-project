@@ -241,8 +241,7 @@ public class ComentarioResource {
 			rs.next();
 			if (rs.getInt(1) == 0)
 				throw new PostNotFoundException();
-			String update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido() + "')";
-			// TODO: Apostrofe y acentos
+			String update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido().replace("'", "´") + "')";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 			if (rs.next()) {

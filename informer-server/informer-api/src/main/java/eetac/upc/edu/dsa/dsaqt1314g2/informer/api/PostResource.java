@@ -370,7 +370,7 @@ public class PostResource {
 
 		try {
 			stmt = con.createStatement();
-			String update = "insert into posts(username, visibilidad, contenido) values ('" + post.getUsername() + "','" + post.getVisibilidad() + "','" + post.getContenido() + "');";
+			String update = "insert into posts(asunto, username, visibilidad, contenido) values ('"+post.getAsunto().replace("'", "´")+"','" + post.getUsername() + "','" + post.getVisibilidad() + "','" + post.getContenido().replace("'", "´") + "');";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
