@@ -19,10 +19,13 @@ insert into posts(username, visibilidad, contenido, numcomentarios, calificacion
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',3,'Post eliminado',0,6,6,2);
 
 INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('1', '1', 'ropnom', '0', 'Esto es un comentario', CURRENT_TIMESTAMP, '1', 'ropnom');
-INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('2', '2', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '1', 'ropnom');
-INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('3', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
-INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('4', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
-INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('5', '4', 'McD0n3ld', '0', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('2', '2', 'McD0n3ld', '1', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '1', 'ropnom');
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('3', '4', 'McD0n3ld', '1', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('4', '4', 'McD0n3ld', '1', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('5', '4', 'McD0n3ld', '2', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('6', '9', 'McD0n3ld', '2', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('7', '9', 'McD0n3ld', '3', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
+INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('8', '9', 'McD0n3ld', '10', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
 
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('1', 'ropnom', 'McD0n3ld','1'); 
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('2', 'McD0n3ld', 'ropnom','1');
@@ -47,6 +50,7 @@ INSERT INTO `informerdb`.`calificacion` (`username`, `id_post`, `estado`) VALUES
 INSERT INTO `informerdb`.`calificacion` (`username`, `id_post`, `estado`) VALUES ('alicia', '10', '1');
 
 INSERT INTO `informerdb`.`denuncias_comentario` (`id`, `username`, `id_comentario`) VALUES ('1', 'McD0n3ld', '1');
+INSERT INTO `informerdb`.`denuncias_comentario` (`id`, `username`, `id_comentario`) VALUES ('2', 'alicia', '6');
 
 INSERT INTO `informerdb`.`denuncias_post` (`username`, `id_post`) VALUES ('McD0n3ld', '6');
 INSERT INTO `informerdb`.`denuncias_post` (`username`, `id_post`) VALUES ('McD0n3ld', '7');
