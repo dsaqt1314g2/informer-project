@@ -81,6 +81,9 @@
 		<role-name>registered</role-name>
 	</security-role>
 	<security-role>
+		<role-name>moderador</role-name>
+	</security-role>
+	<security-role>
 		<role-name>admin</role-name>
 	</security-role>
 
@@ -103,6 +106,7 @@
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>registered</role-name>
+			<role-name>moderador</role-name>
 		</auth-constraint>
 	</security-constraint>
 

@@ -9,7 +9,7 @@ public class Post {
 	private int identificador;
 	private String username;
 	private int visibilidad; // 0=anonimo, 1=nombre para amigos, 2=publico, 3=no
-								// visible, 5=pendiente de moderar
+								// visible, visibilidad+10=pendiente de moderar
 	private String asunto;
 	private String contenido;
 	private Date publicacion_date;

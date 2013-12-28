@@ -7,6 +7,9 @@ insert into user_roles values ('blas', 'registered');
 insert into users values('Administrador', MD5('Administrador'), 'Administrador', 'admin@admin.com');
 insert into user_roles values ('Administrador', 'admin');
 
+insert into users values('moderador', MD5('moderador'), 'moderador', 'moderador@moderador.com');
+insert into user_roles values ('moderador', 'moderador');
+
 
 insert into users(username, userpass, name, email) values ('ropnom',md5('ropnom'),'Rodrigo','rodri@go.com');
 insert into users(username, userpass, name, email) values ('McD0n3ld',md5('McD0n3ld'),'Raul','raul@go.com');

@@ -5,6 +5,7 @@ insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuel
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('roc','Roc Messeger',true,'1980-06-06','roc@go.com',1);
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('alicia','Alicia',true,'1980-06-06','alicia@acme.com',1);
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('blas','Blas',true,'1980-06-06','blas@acme.com',1);
+insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('moderador','Moderador',true,'1970-06-06','moderador@moderador.com',1);
 
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('ropnom',0,'Seguiremos los pasos del creador',1,3,0,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('McD0n3ld',0,'Los sicarios os persiguen',1,0,3,0);
@@ -14,7 +15,7 @@ insert into posts(username, visibilidad, contenido, numcomentarios, calificacion
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('alicia',2,'Post publico',0,0,3,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',2,'Post publico',0,2,1,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',0,'Post anonimo',0,6,6,2);
-insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',5,'Post para revisar',0,6,6,2);
+insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',10,'Post para revisar',0,6,6,2);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('blas',3,'Post eliminado',0,6,6,2);
 
 INSERT INTO `informerdb`.`comentarios` (`identificador`, `id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('1', '1', 'ropnom', '0', 'Esto es un comentario', CURRENT_TIMESTAMP, '1', 'ropnom');

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -167,7 +168,7 @@ public class PostResource {
 			if (rs.next()) {
 				if (rs.getInt("id_post") == rs.getInt("identificador"))
 					throw new PostDenunciadoException();
-				if (rs.getInt("visibilidad") == 5)
+				if (rs.getInt("visibilidad") > 9)
 					throw new PostPendienteDeRevisionException();
 				if (rs.getInt("visibilidad") == 3)
 					throw new PostNotFoundException();
@@ -320,7 +321,7 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post createPost(Post post) {
 		// POST: /posts (Registered)(admin)
-		//TODO: Comprobar que existen los campos
+		// TODO: Comprobar que existen los campos
 		if (post.getAsunto().length() > 50)
 			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
 		if (post.getAsunto().length() < 5)
@@ -382,6 +383,13 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public String likePost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		String result = "";
 		Connection con = null;
 		Statement stmt = null;
@@ -418,7 +426,7 @@ public class PostResource {
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
 			if (rs.next()) {
-				result = "{ \"calificaciones_negativas\": "+rs.getInt("calificaciones_positivas")+", \"calificaciones_positivas\": "+rs.getInt("calificaciones_negativas")+"}";
+				result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -440,6 +448,14 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public String dislikePost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/like (1=like, 0 dislike) (Registered)(admin)
+		
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		String result = "";
 		Connection con = null;
 		Statement stmt = null;
@@ -448,6 +464,7 @@ public class PostResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
+		
 
 		try {
 			stmt = con.createStatement();
@@ -475,7 +492,7 @@ public class PostResource {
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
 			if (rs.next()) {
-				result = "{ \"calificaciones_negativas\": "+rs.getInt("calificaciones_positivas")+", \"calificaciones_positivas\": "+rs.getInt("calificaciones_negativas")+"}";
+				result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -498,6 +515,13 @@ public class PostResource {
 	public String denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -505,6 +529,7 @@ public class PostResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
+		
 
 		try {
 			stmt = con.createStatement();
@@ -525,15 +550,12 @@ public class PostResource {
 			String insert = "INSERT INTO denuncias_post (username,id_post) values ('" + username + "'," + postid + ");";
 			stmt.executeUpdate(insert);
 
-			// comprobar si hay mas de 20 denuncias y cambiar visibilidad a 5 si
-			// los hay
 			int MAX_DENUNCIAS = 20;
-			//TODO: Si ya hay 20 denuncias, cualquiera que denuncia ocultara el post
-			query = "SELECT COUNT(id) FROM denuncias_post WHERE id_post='" + postid + "';";
+			query = "SELECT COUNT(id), revisado FROM denuncias_post, posts WHERE id_post='" + postid + "' and id_post=identificador;";
 			rs = stmt.executeQuery(query);
 			rs.next();
-			if (rs.getInt(1) >= MAX_DENUNCIAS) {
-				insert = "UPDATE posts SET visibilidad=5, posts.publicacion_date=posts.publicacion_date WHERE identificador='" + postid + "';";
+			if (rs.getInt(1) >= MAX_DENUNCIAS * (rs.getInt(2) + 1)) {
+				insert = "UPDATE posts SET visibilidad=visibilidad+10, posts.publicacion_date=posts.publicacion_date WHERE identificador='" + postid + "';";
 				stmt.executeUpdate(insert);
 			}
 		} catch (SQLException e) {
@@ -553,10 +575,16 @@ public class PostResource {
 	public String moderarPost(@PathParam("postid") String postid) {
 		// PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
 
-		// TODO: Cambiar rol a moderador
-		// if (security.isUserInRole("registered")) {
-		// throw new ForbiddenException("You are not allowed...");
-		// }
+		if (!security.isUserInRole("moderador")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 
 		Connection con = null;
 		Statement stmt = null;
@@ -569,9 +597,10 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-
-			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='" + username + "', posts.publicacion_date=posts.publicacion_date WHERE identificador=" + postid + ";";
-			stmt.executeUpdate(update);
+			String update = "UPDATE posts SET revisado=revisado+1, who_revisado='" + username + "', publicacion_date=publicacion_date, visibilidad=visibilidad-10 WHERE identificador=" + postid + " and visibilidad>9;";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
+				throw new PostNotRevisableException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -589,7 +618,14 @@ public class PostResource {
 	@Consumes(MediaType.INFORMER_API_POST)
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post updatePost(@PathParam("postid") String postid, Post post) {
-		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+		// PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
 		Connection con = null;
@@ -603,11 +639,17 @@ public class PostResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
-			stmt.executeUpdate(update);
-			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE identificador=" + postid + ";";
+			String query = "SELECT 1 FROM posts WHERE identificador='" + postid + "';";
 			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new PostNotFoundException();
+			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
+				throw new PostNotYoursException();
+			query = "SELECT amigos.friend, posts.*, calificacion.estado, denuncias_post.id_post FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN denuncias_post ON denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username + "' WHERE identificador=" + postid + ";";
+			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				post.setIdentificador(rs.getInt("identificador"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
@@ -618,32 +660,16 @@ public class PostResource {
 				post.setWho_revised(rs.getString("who_revisado"));
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
-				if (username.equals(rs.getString("username")))
-					post.setUsername(username);
-				else {
-					switch (post.getVisibilidad()) {
-					case 0:
-						post.setUsername("Anónimo");
-						break;
-					case 1:
-						String usr = rs.getString("username");
-						if (usr == null)
-							post.setUsername("Anónimo");
-						else
-							post.setUsername(usr);
-						break;
-					case 2:
-						post.setUsername(rs.getString("username"));
-						break;
-					}
-				}
+				post.setContenido(rs.getString("contenido"));
+				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
-				// TODO: Links si la visibilidad lo permite.
+				post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
+				post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
+				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
 			} else
 				throw new PostNotFoundException();
-			// TODO: Error de el post no es tuyo. no da esa informacion ahora
 			rs.close();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
@@ -657,10 +683,17 @@ public class PostResource {
 		return post;
 	}
 
-	@DELETE
+	@PUT
 	@Path("/{postid}")
-	public String deleteComentario(@PathParam("postid") String postid) {
+	public String deletePostVisibilidad(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -670,9 +703,52 @@ public class PostResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "DELETE FROM posts WHERE identificador=" + postid + ";";
-			int rows = stmt.executeUpdate(query);
-			if (rows == 0)
+			// comprobar que el que modifica es quien ha creado el post
+			String username = security.getUserPrincipal().getName();
+			String query = "SELECT 1 FROM posts WHERE identificador='"+postid+"';";
+			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new PostNotFoundException();
+			String update = "UPDATE posts SET visibilidad=3, publicacion_date=publicacion_date WHERE identificador=" + postid + " and username='" + username + "';";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
+				throw new PostNotYoursException();
+			rs.close();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return "DELETED " + postid;
+	}
+	
+	@DELETE
+	@Path("/{postid}")
+	public String deletePost(@PathParam("postid") String postid) {
+		// DELETE: /posts/{postid} (admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String update = "DELETE FROM posts WHERE identificador=" + postid + ";";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
 				throw new PostNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
