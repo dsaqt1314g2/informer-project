@@ -8,6 +8,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,6 +31,8 @@ import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.ComentarioCollection;
 @Path("/posts/{postid}/comentarios")
 public class ComentarioResource {
 
+	private final static String anonymous = "Anónimo";
+
 	@Context
 	private UriInfo uriInfo;
 
@@ -43,32 +46,42 @@ public class ComentarioResource {
 	@Produces(MediaType.INFORMER_API_COMENTARIO_COLLECTION)
 	public ComentarioCollection getComentarios(@PathParam("postid") String postid, @QueryParam("o") String offset, @QueryParam("l") String length) {
 		// GETs: /posts?{offset}{length} (Registered)(admin)
-		if ((offset == null) || (length == null)) {
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		int ioffset = 0, ilength = 10;
+		if (offset == null)
 			offset = "0";
+		else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Offset debe ser un entero mayor o igual a 0.");
+			}
+		}
+		if (length == null)
 			length = "10";
-		}
-			
-		int ioffset, ilength;
-		try {
-			ioffset = Integer.parseInt(offset);
-			if (ioffset < 0)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("offset must be an integer greater or equal than 0.");
-		}
-		try {
-			ilength = Integer.parseInt(length);
-			if (ilength < 1)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("length must be an integer greater or equal than 0.");
+		else {
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
+			}
 		}
 
 		// Sting for each one and store them in the StingCollection.
 		Connection con = null;
 		Statement stmt = null;
 		String username = security.getUserPrincipal().getName();
-		int comentarios_encontrados=0;
+		int comentarios_encontrados = 0;
 		try {
 			con = ds.getConnection();
 			stmt = con.createStatement();
@@ -77,11 +90,11 @@ public class ComentarioResource {
 		}
 
 		try {
-			String query;
-			query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post="+postid+" ORDER BY publicacion_date desc LIMIT " + offset + ", " + (ilength+1) + ";";
+			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador WHERE comentarios.id_post=" + postid + " and posts.visibilidad<3 ORDER BY comentarios.publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				if (comentarios_encontrados++ > ilength)
+				if (comentarios_encontrados++ == ilength)
 					break;
 				Comentario c = new Comentario();
 				c.setIdentificador(rs.getInt("identificador"));
@@ -91,26 +104,19 @@ public class ComentarioResource {
 				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				c.setRevisado(rs.getInt("revisado"));
 				c.setWho_revisado(rs.getString("who_revisado"));
-				if (username.equals(rs.getString("username")))
-					c.setUsername(username);
-				else {
-					switch (c.getVisibilidad()) {
-						case 0: c.setUsername("Anónimo");
-								break;
-						case 1: String usr = rs.getString("username");
-								if (usr == null)
-									c.setUsername("Anónimo");
-								else
-									c.setUsername(usr);
-								break;
-						case 2: c.setUsername(rs.getString("username"));
-								break;
-					}
-				}
-				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), c.getIdentificador(), "self"));
+				c.setUsername(comentarioAnonimo(username, rs.getString("username"), rs.getString("friend"), c.getVisibilidad()));
+				if (c.getIdentificador() != 1)
+					c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() - 1, "prev"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador(), "self"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() + 1, "next"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, c.getIdentificador(), "denunciar"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
 				comentarios.add(c);
 			}
 			rs.close();
+			if (comentarios_encontrados == 0)
+				throw new ComentarioCollectionNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -122,20 +128,26 @@ public class ComentarioResource {
 		}
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
-		comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, offset, length, null, "self"));
-		if (prev > 0)
-			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, Integer.toString(prev), length, null, "prev"));
+		if (prev >= 0)
+			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, prev, length, postid, "prev"));
+		comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, postid, "self"));
 		if (comentarios_encontrados > ilength)
-			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, Integer.toString(next), length, null, "next"));
+			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, next, length, postid, "next"));
 		return comentarios;
 	}
 
 	@GET
 	@Path("/{comentarioid}")
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
-	public Response getComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid, @Context Request req) {
-		// GET: /posts/{postid}/comentarios/{comentarioid}   (Registered)(admin)
-		// TODO: Hace falta que el comentarioid pertenzca a postid?
+	public Response getComentario(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid, @Context Request req) {
+		// GET: /posts/{postid}/comentarios/{comentarioid} (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
@@ -148,9 +160,17 @@ public class ComentarioResource {
 		Comentario c = new Comentario();
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post=" + postid + " and identificador="+comentarioid+";";
+			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad, denuncias_comentario.id_comentario FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador LEFT JOIN denuncias_comentario ON denuncias_comentario.id_comentario=comentarios.identificador and denuncias_comentario.username='" + username
+					+ "' WHERE comentarios.id_post=" + postid + " and comentarios.identificador=" + comentarioid + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
+				if (rs.getInt("id_comentario") == rs.getInt("identificador"))
+					throw new ComentarioDenunciadoException();
+				if (rs.getInt("visibilidad") > 9)
+					throw new ComentarioPendienteDeRevisionException();
+				if (rs.getInt("visibilidad") == 3)
+					throw new ComentarioNotFoundException();
 				c.setIdentificador(rs.getInt("identificador"));
 				c.setId_post(rs.getInt("id_post"));
 				c.setVisibilidad(rs.getInt("visibilidad"));
@@ -158,23 +178,14 @@ public class ComentarioResource {
 				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				c.setRevisado(rs.getInt("revisado"));
 				c.setWho_revisado(rs.getString("who_revisado"));
-				if (username.equals(rs.getString("username")))
-					c.setUsername(username);
-				else {
-					switch (c.getVisibilidad()) {
-						case 0: c.setUsername("Anónimo");
-								break;
-						case 1: String usr = rs.getString("username");
-								if (usr == null)
-									c.setUsername("Anónimo");
-								else
-									c.setUsername(usr);
-								break;
-						case 2: c.setUsername(rs.getString("username"));
-								break;
-					}
-				}
-				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), c.getIdentificador(), "self"));
+				c.setUsername(comentarioAnonimo(username, rs.getString("username"), rs.getString("friend"), c.getVisibilidad()));
+				if (c.getIdentificador() != 1)
+					c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() - 1, "prev"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador(), "self"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() + 1, "next"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, c.getIdentificador(), "denunciar"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
 			} else
 				throw new ComentarioNotFoundException();
 		} catch (SQLException e) {
@@ -186,24 +197,12 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-
-		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(c.getPublicacion_date().hashCode()));
-
-		// Verify if it matched with etag available in http request
 		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
-
-		// If ETag matches the rb will be non-null;
-		// Use the rb to return the response without any further processing
 		if (rb != null) {
 			return rb.cacheControl(cc).tag(eTag).build();
 		}
-
-		// If rb is null then either it is first time request; or resource is
-		// modified
-		// Get the updated representation and return with Etag attached to it
 		rb = Response.ok(c).cacheControl(cc).tag(eTag);
-
 		return rb.build();
 	}
 
@@ -211,9 +210,18 @@ public class ComentarioResource {
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
 	public Comentario createComentario(@PathParam("postid") String postid, Comentario comentario) {
-		// TODO: POST: /posts{postid}/comentarios/   (Registered)(admin)
+		// TODO: POST: /posts{postid}/comentarios/ (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		if (comentario.getContenido().length() > 2048)
-			throw new BadRequestException("Longitud del asunto excede el limite de 2048 caracteres.");
+			throw new BadRequestException("Longitud del comentario excede el limite de 2048 caracteres.");
+		if (comentario.getContenido().length() < 3)
+			throw new BadRequestException("Longitud del comentario muy pequeña.");
 		if (comentario.getVisibilidad() < 0 || comentario.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
 		comentario.setUsername(security.getUserPrincipal().getName());
@@ -233,17 +241,15 @@ public class ComentarioResource {
 			rs.next();
 			if (rs.getInt(1) == 0)
 				throw new PostNotFoundException();
-			String update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES ("+postid+", '"+comentario.getUsername()+"', "+comentario.getVisibilidad()+", '"+comentario.getContenido()+"')";
-			//TODO: Apostrofe y acentos
+			String update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido() + "')";
+			// TODO: Apostrofe y acentos
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
 				int identificador = rs.getInt(1);
 				rs.close();
-
 				rs = stmt.executeQuery("SELECT * FROM comentarios WHERE identificador='" + identificador + "';");
 				rs.next();
-
 				comentario.setIdentificador(rs.getInt("identificador"));
 				comentario.setId_post(rs.getInt("id_post"));
 				comentario.setUsername(rs.getString("username"));
@@ -252,7 +258,13 @@ public class ComentarioResource {
 				comentario.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				comentario.setRevisado(rs.getInt("revisado"));
 				comentario.setWho_revisado(rs.getString("who_revisado"));
-				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), comentario.getIdentificador(), "self"));
+				if (comentario.getIdentificador() != 1)
+					comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador() - 1, "prev"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador(), "self"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador() + 1, "next"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, comentario.getIdentificador(), "denunciar"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, comentario.getIdentificador(), "modificar"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, comentario.getIdentificador(), "eliminar"));
 			} else {
 				throw new ComentarioNotFoundException();
 			}
@@ -270,8 +282,16 @@ public class ComentarioResource {
 
 	@POST
 	@Path("/{comentarioid}/denunciar")
-	public String denunciaComentario(@PathParam("postid") String postid,@PathParam("comentarioid") String comentarioid) {
-		//POST: /posts/{postid}/comentarios/{comentarioid} /denunciar (1=denunciar, 0 desdenunciar)  (Registered)
+	public String denunciaComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
+		// POST: /posts/{postid}/comentarios/{comentarioid} /denunciar
+		// (1=denunciar, 0 desdenunciar) (Registered)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -307,11 +327,11 @@ public class ComentarioResource {
 			// comprobar si hay mas de 20 denuncias y cambiar visibilidad a 5 si
 			// los hay
 			int MAX_DENUNCIAS = 20;
-			query = "SELECT COUNT(id) FROM denuncias_comentario WHERE id_comentario='" + comentarioid + "';";
+			query = "SELECT COUNT(id), revisado FROM denuncias_comentario, comentarios WHERE id_comentario='" + comentarioid + "' and id_comentario=comentarios.identificador;";
 			rs = stmt.executeQuery(query);
 			rs.next();
-			if (rs.getInt(1) >= MAX_DENUNCIAS) {
-				insert = "UPDATE comentarios SET visibilidad=5 WHERE identificador='" + comentarioid + "';";
+			if (rs.getInt(1) >= MAX_DENUNCIAS * (rs.getInt(2) + 1)) {
+				insert = "UPDATE comentarios SET visibilidad=visibilidad+10 WHERE identificador='" + comentarioid + "';";
 				stmt.executeUpdate(insert);
 			}
 		} catch (SQLException e) {
@@ -330,8 +350,16 @@ public class ComentarioResource {
 	@Path("/{comentarioid}")
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
-	public Comentario updateComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid, Comentario comentario) {
-		// PUT: /posts/{postid}/comentarios/{comentarioid}  (Registered-Propietario) => visibilidad.
+	public Comentario updateComentario(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid, Comentario comentario) {
+		// PUT: /posts/{postid}/comentarios/{comentarioid}
+		// (Registered-Propietario) => visibilidad.
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		if (comentario.getVisibilidad() < 0 || comentario.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
 		Connection con = null;
@@ -345,10 +373,23 @@ public class ComentarioResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			String update = "UPDATE comentarios SET visibilidad=" + comentario.getVisibilidad() + " WHERE identificador=" + comentarioid + " and username='" + username + "';";
-			stmt.executeUpdate(update);
-			String query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post=" + postid + " and identificador="+comentarioid+";";
+			String query = "SELECT 1 FROM posts WHERE identificador='" + postid + "';";
 			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new PostNotFoundException();
+
+			query = "SELECT 1 FROM comentarios, posts WHERE comentarios.identificador='" + comentarioid + "' and comentarios.identificador=posts.identificador;";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new ComentarioNotFoundException();
+
+			String update = "UPDATE comentarios SET visibilidad=" + comentario.getVisibilidad() + " WHERE identificador=" + comentarioid + " and username='" + username + "';";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
+				throw new ComentarioNotYoursException();
+
+			query = "SELECT amigos.friend, comentarios.* FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username + "' and amigos.username=comentarios.username and amigos.estado=1 WHERE id_post=" + postid + " and identificador=" + comentarioid + ";";
+			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				comentario.setIdentificador(rs.getInt("identificador"));
 				comentario.setId_post(rs.getInt("id_post"));
@@ -357,23 +398,14 @@ public class ComentarioResource {
 				comentario.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				comentario.setRevisado(rs.getInt("revisado"));
 				comentario.setWho_revisado(rs.getString("who_revisado"));
-				if (username.equals(rs.getString("username")))
-					comentario.setUsername(username);
-				else {
-					switch (comentario.getVisibilidad()) {
-						case 0: comentario.setUsername("Anónimo");
-								break;
-						case 1: String usr = rs.getString("username");
-								if (usr == null)
-									comentario.setUsername("Anónimo");
-								else
-									comentario.setUsername(usr);
-								break;
-						case 2: comentario.setUsername(rs.getString("username"));
-								break;
-					}
-				}
-				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, Integer.parseInt(postid), comentario.getIdentificador(), "self"));
+				comentario.setUsername(comentarioAnonimo(username, rs.getString("username"), rs.getString("friend"), comentario.getVisibilidad()));
+				if (comentario.getIdentificador() != 1)
+					comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador() - 1, "prev"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador(), "self"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, comentario.getIdentificador() + 1, "next"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, comentario.getIdentificador(), "denunciar"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, comentario.getIdentificador(), "modificar"));
+				comentario.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, comentario.getIdentificador(), "eliminar"));
 			} else
 				throw new ComentarioNotFoundException();
 		} catch (SQLException e) {
@@ -393,7 +425,18 @@ public class ComentarioResource {
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
 	public String moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
-		// PUT: /posts/{postid}/comentarios/{comentarioid}/moderar   (admin) => revisado y who_revisado
+		// PUT: /posts/{postid}/comentarios/{comentarioid}/moderar (admin) =>
+		// revisado y who_revisado
+		if (!security.isUserInRole("moderador")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -405,9 +448,7 @@ public class ComentarioResource {
 			stmt = con.createStatement();
 			// comprobar que el que modifica es quien ha creado el post
 			String username = security.getUserPrincipal().getName();
-			// String username = "ropnom";
-
-			String update = "UPDATE comentarios SET revisado=revisado+1, who_revisado='" + username + "' WHERE identificador=" + comentarioid + ";";
+			String update = "UPDATE comentarios SET revisado=revisado+1, who_revisado='" + username + "', publicacion_date=publicacion_date, visibilidad=visibilidad-10 WHERE identificador=" + comentarioid + " and visibilidad>9;";
 			stmt.executeUpdate(update);
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
@@ -421,10 +462,18 @@ public class ComentarioResource {
 		return "MODERADO";
 	}
 
-	@DELETE
+	@PUT
 	@Path("/{comentarioid}")
-	public String deleteComentario(@PathParam("comentarioid") String comentarioid,@PathParam("postid") String postid) {
-		// DELETE: /posts/{postid}/commentarios/{comentarioid} (Registered-Propietario)
+	public String deleteComentarioVisibilidad(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
+		// PUT: /posts/{postid}/comentarios/{comentarioid}
+		// (Registered-Propietario) => visibilidad.
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -434,7 +483,66 @@ public class ComentarioResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "DELETE FROM comentarios WHERE identificador=" + comentarioid + " and id_post="+postid+";";
+			// comprobar que el que modifica es quien ha creado el post
+			String username = security.getUserPrincipal().getName();
+			String query = "SELECT 1 FROM posts WHERE identificador='" + postid + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new PostNotFoundException();
+			query = "SELECT 1 FROM comentarios, posts WHERE comentarios.identificador='" + comentarioid + "' and comentarios.identificador=posts.identificador and comentarios.visibilidad!=3;";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new ComentarioNotFoundException();
+			String update;
+			if (!security.isUserInRole("moderador")) {
+				update = "UPDATE comentarios SET visibilidad=3 WHERE identificador=" + comentarioid + " and username='" + username + "';";
+			} else
+				update = "UPDATE comentarios SET visibilidad=3 WHERE identificador=" + comentarioid + ";";
+			int lineas_afectadas = stmt.executeUpdate(update);
+			if (lineas_afectadas == 0)
+				throw new ComentarioNotYoursException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return "DELETED " + comentarioid;
+	}
+
+	@DELETE
+	@Path("/{comentarioid}")
+	public String deleteComentario(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
+		// DELETE: /posts/{postid}/commentarios/{comentarioid}
+		// (Registered-Propietario)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT 1 FROM posts WHERE identificador='" + postid + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new PostNotFoundException();
+			query = "SELECT 1 FROM comentarios, posts WHERE comentarios.identificador='" + comentarioid + "' and comentarios.identificador=posts.identificador and comentarios.visibilidad!=3;";
+			rs = stmt.executeQuery(query);
+			if (!rs.next())
+				throw new ComentarioNotFoundException();
+			query = "DELETE FROM comentarios WHERE identificador=" + comentarioid + " and id_post=" + postid + ";";
 			int rows = stmt.executeUpdate(query);
 			if (rows == 0)
 				throw new ComentarioNotFoundException();
@@ -448,5 +556,20 @@ public class ComentarioResource {
 			}
 		}
 		return "ELIMINADO";
+	}
+
+	private String comentarioAnonimo(String yo, String autor, String amigo, int visibilidad) {
+		if (yo.equals(autor))
+			return yo;
+		if (visibilidad == 0) {
+			return anonymous;
+		}
+		if (visibilidad == 1) {
+			if (amigo == null)
+				return anonymous;
+			return autor;
+		}
+		// if (visibilidad == 2)
+		return autor;
 	}
 }
