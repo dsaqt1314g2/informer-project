@@ -64,5 +64,8 @@ INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`)
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('4', 'ropnom', '3', '0');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('5', 'McD0n3ld', '3', '1');
 INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('6', 'ropnom', '4', '0');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('7', 'ropnom', '3', '1');
+INSERT INTO `informerdb`.`rel_sala_user` (`id`, `username`, `id_sala`, `estado`) VALUES ('8', 'ropnom', '4', '1');
+
 
 INSERT INTO `informerdb`.`mensajes_chat` (`identificador`, `id_sala`, `username`, `contenido`, `last_update`) VALUES ('1', '1', 'ropnom', 'Este es un ejemplod e mensaje', CURRENT_TIMESTAMP);
