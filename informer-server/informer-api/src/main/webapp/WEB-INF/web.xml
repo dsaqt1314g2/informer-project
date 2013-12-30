@@ -52,7 +52,7 @@
 
 		<init-param>
 			<param-name>cors.exposedHeaders</param-name>
-			<param-value>Content-Type, Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+			<param-value>Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Credentials</param-value>
 		</init-param>
 
 		<init-param>

@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.ComentariosAPILinkBuilder;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.links.PostsAPILinkBuilder;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Post;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.PostCollection;
@@ -95,6 +96,7 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -115,6 +117,7 @@ public class PostResource {
 					post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
 				if (post.getLiked() != 0)
 					post.addLink(PostsAPILinkBuilder.buildURINeutroPostId(uriInfo, post.getIdentificador(), "eliminar voto"));
+				post.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, Integer.toString(post.getIdentificador()), "self"));
 				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
 				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
 				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
@@ -370,7 +373,7 @@ public class PostResource {
 
 		try {
 			stmt = con.createStatement();
-			String update = "insert into posts(asunto, username, visibilidad, contenido) values ('"+post.getAsunto().replace("'", "´")+"','" + post.getUsername() + "','" + post.getVisibilidad() + "','" + post.getContenido().replace("'", "´") + "');";
+			String update = "insert into posts(asunto, username, visibilidad, contenido) values ('" + post.getAsunto().replace("'", "´") + "','" + post.getUsername() + "','" + post.getVisibilidad() + "','" + post.getContenido().replace("'", "´") + "');";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
@@ -452,9 +455,10 @@ public class PostResource {
 			query = "SELECT COUNT(id), estado FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
 			rs = stmt.executeQuery(query);
 			rs.next();
+			int estado = rs.getInt("estado");
 			if (rs.getInt(1) != 0) {
-				if (rs.getInt("estado") == 2) // like: estado de las relaciones
-												// --> 1=dislike, 2=like
+				if (estado == 2) // like: estado de las relaciones
+									// --> 1=dislike, 2=like
 					throw new LikeAlreadyFoundException();
 				else
 					insert = "UPDATE calificacion SET estado=2 WHERE id_post=" + postid + " and username='" + username + "';";
@@ -462,14 +466,17 @@ public class PostResource {
 				insert = "INSERT INTO calificacion (username,id_post,estado) values ('" + username + "'," + postid + ",2);";
 			rs.close();
 			stmt.executeUpdate(insert);
-
 			// actualizar contador del post
 			String update;
 			update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas+1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "';";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			if (estado == 1) {
+				update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "';";
+				stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			}
 			rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
 			if (rs.next()) {
-				result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
+				result = "{ \"calificaciones_positivas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_negativas\": " + rs.getInt("calificaciones_negativas") + "}";
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -523,13 +530,13 @@ public class PostResource {
 			if (rs.getInt(1) != 0) {
 				int estado = rs.getInt(2);
 				rs.close();
-				// like: estado de las relaciones --> 0=dislike, 1=like
+				// like: estado de las relaciones --> 1=dislike, 2=like
 				// Eliminar megusta/nomegusta
 				con.setAutoCommit(false);
 				String insert = "DELETE FROM calificacion WHERE username='" + username + "' and id_post=" + postid + ";";
 				stmt.executeUpdate(insert);
 				String update;
-				if (estado == 1)
+				if (estado == 2)
 					update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "' and posts.calificaciones_positivas>0;";
 				else
 					update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "' and posts.calificaciones_negativas>0;";
@@ -537,13 +544,15 @@ public class PostResource {
 				con.commit();
 				rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
 				if (rs.next()) {
-					result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
+					result = "{ \"calificaciones_positivas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_negativas\": " + rs.getInt("calificaciones_negativas") + "}";
 				} else {
 					throw new PostNotFoundException();
 				}
 				rs.close();
-			} else
+			} else {
+				con.rollback();
 				throw new PostVoteNotFoundException();
+			}
 		} catch (SQLException e) {
 			try {
 				con.rollback();
@@ -596,9 +605,10 @@ public class PostResource {
 			query = "SELECT COUNT(id), estado FROM calificacion Where id_post='" + postid + "' and username='" + username + "';";
 			rs = stmt.executeQuery(query);
 			rs.next();
+			int estado = rs.getInt("estado");
 			if (rs.getInt(1) != 0) {
-				if (rs.getInt("estado") == 1) // like: estado de las relaciones
-												// --> 1=dislike, 2=like
+				if (estado == 1) // like: estado de las relaciones
+									// --> 1=dislike, 2=like
 					throw new DislikeAlreadyFoundException();
 				else
 					insert = "UPDATE calificacion SET estado=1 WHERE id_post=" + postid + " and username='" + username + "';";
@@ -610,9 +620,13 @@ public class PostResource {
 			// actualizar contador del post
 			String update = "UPDATE posts SET posts.calificaciones_negativas=posts.calificaciones_negativas+1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "';";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			if (estado == 2) {
+				update = "UPDATE posts SET posts.calificaciones_positivas=posts.calificaciones_positivas-1, posts.publicacion_date=posts.publicacion_date WHERE posts.identificador='" + postid + "';";
+				stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			}
 			rs = stmt.executeQuery("SELECT posts.calificaciones_positivas, posts.calificaciones_negativas FROM posts WHERE posts.identificador='" + postid + "';");
 			if (rs.next()) {
-				result = "{ \"calificaciones_negativas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_positivas\": " + rs.getInt("calificaciones_negativas") + "}";
+				result = "{ \"calificaciones_positivas\": " + rs.getInt("calificaciones_positivas") + ", \"calificaciones_negativas\": " + rs.getInt("calificaciones_negativas") + "}";
 			} else {
 				throw new PostNotFoundException();
 			}
@@ -631,7 +645,7 @@ public class PostResource {
 
 	@POST
 	@Path("/{postid}/denunciar")
-	public String denunciaPost(@PathParam("postid") String postid) {
+	public void denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
 		try {
@@ -685,7 +699,6 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		return "DENUNCIADO";
 	}
 
 	@PUT

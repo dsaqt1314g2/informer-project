@@ -1,0 +1,60 @@
+#post-container {
+	width: 532px;
+}
+
+#post-autor {
+	position: absolute;
+}
+
+#post-asunto {
+	position: relative;
+	text-align: right;
+	left: 0px;
+}
+
+.post-contenido {
+	padding: 5px;
+	background-color: #F2F2F2; 
+}
+
+.post-date {
+	position: relative;
+	padding: 3px;
+	text-align: right;
+	background-color: #F2F2F2; 
+}
+
+.post-calificaciones_positivas {
+	position: absolute;
+	text-align: left;
+}
+
+.post-calificaciones_positivas A:link {	color: #42A444; }
+.post-calificaciones_positivas A:hover {	color: #42A444; }
+.post-calificaciones_positivas A:active {	color: #42A444; }
+.post-calificaciones_positivas A:visited {	color: #42A444; }
+
+.post-calificaciones_negativas {
+	position: relative;
+	text-align: left;
+	width: 196px;
+	left: 150px;
+}
+
+.post-calificaciones_negativas A:link { color: #FF8255; }
+.post-calificaciones_negativas A:hover { color: #FF8255; }
+.post-calificaciones_negativas A:active { color: #FF8255; }
+.post-calificaciones_negativas A:visited { color: #FF8255; }
+
+.post-denuncia {
+	position: relative;
+	text-align: right;
+	top: -20px;
+	width: 150px;
+	left: 350px;
+}
+
+.post-denuncia A:link { color: #3905A0; }
+.post-denuncia A:hover { color: #3905A0; }
+.post-denuncia A:active { color: #3905A0; }
+.post-denuncia A:visited { color: #3905A0; }
