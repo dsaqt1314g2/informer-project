@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Informer</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style_posts.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
+  </head>
+
+  <body>
+    <div style="margin:20 px; padding: 20px;">
+      <div class='post-container'>
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              <div class="post-autor" id="post-mi-publicacion">
+                <select id="mi-post-visibilidad" style="height: 20px; width: 120px;">
+                  <option value="0">Anónimo</option>
+                  <option value="1">Sólo amigos</option>
+                  <option value="2">Público</option>
+                </select>
+              </div>
+            </h3>
+            <div class="post-asunto"><input type="text" id="mi-resumen" style="height:20px;width:300px;" placeholder="Resumen"/></div>
+          </div>
+          <div class="panel-body">
+            <div class="post-contenido"><textarea class="mi-post-txtarea" id="mi-genialidad" placeholder="Qué genialidad voy a postear..."></textarea></div><br>
+            <button type="button" class="btn btn-default" onClick="processIdea()">Transmitir idea</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SCRIPTS -->
+	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/create_post.js"></script>
+    <!-- notificaciones -->
+    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
+  </body>
+</html>

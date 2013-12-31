@@ -31,21 +31,21 @@ $(document).ready(function(){
         	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
 			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
 			if (p.liked == 2)
-				htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="#" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
+				htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
 			else
-				htmlString += '<div class="post-calificaciones_positivas" id="like'+p.identificador+'"><a href="#" onClick="processLike('+p.identificador+',2)">Me gusta ('+p.calificaciones_positivas+')</a></div>';
+				htmlString += '<div class="post-calificaciones_positivas" id="like'+p.identificador+'"><a href="javascript:void(0);" onClick="processLike('+p.identificador+',2)">Me gusta ('+p.calificaciones_positivas+')</a></div>';
 			if (p.liked == 1)
-				htmlString += '<div class="post-calificaciones_negativas" id="neutro_dislike'+p.identificador+'"><a href="#" onClick="processNeutro('+p.identificador+',3)">Ya no es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+				htmlString += '<div class="post-calificaciones_negativas" id="neutro_dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',3)">Ya no es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
 			else
-				htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="#" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
-			htmlString += '<div class="post-denuncia"><a href="#" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
+				htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+			htmlString += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
 			if (p.numcomentarios == 1)
-				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="#" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
+				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
 			else
-				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="#" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentarios</a></div>';
+				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentarios</a></div>';
 			htmlString += '<div class="post-comentarios-container" id="comentarios-container'+p.identificador+'"></div><br>';
 			htmlString += '<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">';
-			htmlString += '			     <textarea id="mi-comentario'+p.identificador+'" maxlength=255 placeholder="Escribe un comentario..." onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
+			htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
 /*			htmlString += '			   <div class="dropdown-menu pull-right">';
 			htmlString += '				  <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu1" data-toggle="dropdown">';
 			htmlString += '				    Dropdown';
@@ -108,7 +108,7 @@ function processComentarios(identificador, caso) {
 	if (caso == 1) {
 		$('#comentarios-container'+identificador).html("");
 		var contenido = document.getElementById('num-comentarios'+identificador).innerHTML;
-		$('#div-num-comentarios'+identificador).html('<a href="#" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',0)">'+contenido+'</a>');
+		$('#div-num-comentarios'+identificador).html('<a href="javascript:void(0);" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',0)">'+contenido+'</a>');
 	}
 	else {
 		var url = API_BASE_URL+"posts/"+identificador+"/comentarios";
@@ -134,13 +134,13 @@ function processComentarios(identificador, caso) {
 	        	htmlString += '<div class="bs-callout bs-callout-info" id="comentario'+c.identificador+'">';
 	        	htmlString += '<h4>'+c.username+'</h4> (Publicado el '+ (new Date(c.publicacion_date)).toLocaleDateString()+' a las '+(new Date(c.publicacion_date)).toLocaleTimeString()+')';
 	        	htmlString += '<p>'+c.contenido+'</p>';
-	        	htmlString += '<div class="comentario-denuncia"><a href="#" id="denuncia'+c.identificador+'" onClick="processDenunciaComentario('+identificador+','+c.identificador+')">Denunciar</a></div>';
+	        	htmlString += '<div class="comentario-denuncia"><a href="javascript:void(0);" id="denuncia'+c.identificador+'" onClick="processDenunciaComentario('+identificador+','+c.identificador+')">Denunciar</a></div>';
 	        	htmlString += '</div>';
 	        	//htmlString += '</span>';
 	        	cont = cont+1;
 		    });
-		    if (cont == 1) $('#div-num-comentarios'+identificador).html('<a href="#" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',1)">'+cont+' comentario</a>');
-		    else $('#div-num-comentarios'+identificador).html('<a href="#" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',1)">'+cont+' comentarios</a>');
+		    if (cont == 1) $('#div-num-comentarios'+identificador).html('<a href="javascript:void(0);" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',1)">'+cont+' comentario</a>');
+		    else $('#div-num-comentarios'+identificador).html('<a href="javascript:void(0);" id="num-comentarios'+identificador+'" onClick="processComentarios('+identificador+',1)">'+cont+' comentarios</a>');
 			$('#comentarios-container'+identificador).html(htmlString);
 		})
 	    .fail(function (jqXHR, textStatus) {
@@ -222,11 +222,11 @@ function processLike(identificador, id) {
 	})
     .done(function (data, status, jqxhr) {
     	if (id == 2)
-    		$('#like'+identificador).html('<a href="#" onClick="processNeutro('+identificador+',2)">Ya no me gusta ('+data.calificaciones_positivas+')</a>');
+    		$('#like'+identificador).html('<a href="javascript:void(0);" onClick="processNeutro('+identificador+',2)">Ya no me gusta ('+data.calificaciones_positivas+')</a>');
     	if (id == 1)
-    		$('#neutro_like'+identificador).html('<a href="#" onClick="processNeutro('+identificador+',1)">Ya no me gusta ('+data.calificaciones_positivas+')</a>');
-    	$('#neutro_dislike'+identificador).html('<a href="#" onClick="processDislike('+identificador+',3)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
-    	$('#dislike'+identificador).html('<a href="#" onClick="processDislike('+identificador+',4)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    		$('#neutro_like'+identificador).html('<a href="javascript:void(0);" onClick="processNeutro('+identificador+',1)">Ya no me gusta ('+data.calificaciones_positivas+')</a>');
+    	$('#neutro_dislike'+identificador).html('<a href="javascript:void(0);" onClick="processDislike('+identificador+',3)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    	$('#dislike'+identificador).html('<a href="javascript:void(0);" onClick="processDislike('+identificador+',4)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
 		console.log(status);
 	})
     .fail(function (jqXHR, textStatus) {
@@ -249,13 +249,13 @@ function processNeutro(identificador, id) {
 	})
     .done(function (data, status, jqxhr) {
     	if (id == 2)
-    		$('#like'+identificador).html('<a href="#" onClick="processLike('+identificador+',2)">Me gusta ('+data.calificaciones_positivas+')</a>');
+    		$('#like'+identificador).html('<a href="javascript:void(0);" onClick="processLike('+identificador+',2)">Me gusta ('+data.calificaciones_positivas+')</a>');
     	if (id == 1)
-    		$('#neutro_like'+identificador).html('<a href="#" onClick="processLike('+identificador+',1)">Me gusta ('+data.calificaciones_positivas+')</a>');
+    		$('#neutro_like'+identificador).html('<a href="javascript:void(0);" onClick="processLike('+identificador+',1)">Me gusta ('+data.calificaciones_positivas+')</a>');
     	if (id == 3)
-    		$('#neutro_dislike'+identificador).html('<a href="#" onClick="processDislike('+identificador+',3)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    		$('#neutro_dislike'+identificador).html('<a href="javascript:void(0);" onClick="processDislike('+identificador+',3)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
     	if (id == 4)
-    		$('#dislike'+identificador).html('<a href="#" onClick="processDislike('+identificador+',4)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    		$('#dislike'+identificador).html('<a href="javascript:void(0);" onClick="processDislike('+identificador+',4)">Esto es una puta mierda ('+data.calificaciones_negativas+')</a>');
 		console.log(status);
 	})
     .fail(function (jqXHR, textStatus) {
@@ -278,11 +278,11 @@ function processDislike(identificador, id) {
 	})
     .done(function (data, status, jqxhr) {
     	if (id == 3)
-    		$('#neutro_dislike'+identificador).html('<a href="#" onClick="processNeutro('+identificador+',3)">Ya no es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    		$('#neutro_dislike'+identificador).html('<a href="javascript:void(0);" onClick="processNeutro('+identificador+',3)">Ya no es una puta mierda ('+data.calificaciones_negativas+')</a>');
     	if (id == 4)
-    		$('#dislike'+identificador).html('<a href="#" onClick="processNeutro('+identificador+',4)">Ya no es una puta mierda ('+data.calificaciones_negativas+')</a>');
-    	$('#like'+identificador).html('<a href="#" onClick="processLike('+identificador+',2)">Me gusta ('+data.calificaciones_positivas+')</a>');
-    	$('#neutro_like'+identificador).html('<a href="#" onClick="processLike('+identificador+',1)">Me gusta ('+data.calificaciones_positivas+')</a>');
+    		$('#dislike'+identificador).html('<a href="javascript:void(0);" onClick="processNeutro('+identificador+',4)">Ya no es una puta mierda ('+data.calificaciones_negativas+')</a>');
+    	$('#like'+identificador).html('<a href="javascript:void(0);" onClick="processLike('+identificador+',2)">Me gusta ('+data.calificaciones_positivas+')</a>');
+    	$('#neutro_like'+identificador).html('<a href="javascript:void(0);" onClick="processLike('+identificador+',1)">Me gusta ('+data.calificaciones_positivas+')</a>');
 		console.log(status);
 	})
     .fail(function (jqXHR, textStatus) {

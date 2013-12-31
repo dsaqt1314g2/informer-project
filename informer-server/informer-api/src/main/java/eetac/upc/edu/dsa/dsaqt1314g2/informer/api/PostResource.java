@@ -350,16 +350,18 @@ public class PostResource {
 	public Post createPost(Post post) {
 		// POST: /posts (Registered)(admin)
 		// TODO: Comprobar que existen los campos
-		if (post.getAsunto().length() > 50)
-			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
-		if (post.getAsunto().length() < 5)
-			throw new BadRequestException("Longitud del asunto demasiado corto.");
+//		if (post.getAsunto().length() > 50)
+//			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
+//		if (post.getAsunto().length() < 5)
+//			throw new BadRequestException("Longitud del asunto demasiado corto.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del contenido excede el limite de 2048 caracteres.");
-		if (post.getContenido().length() < 10)
+		if (post.getContenido().length() < 1)
 			throw new BadRequestException("Longitud del contenido demasiado corto.");
 		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
+		if (post.getAsunto().length() == 0)
+			post.setAsunto("Sin asunto");
 
 		post.setUsername(security.getUserPrincipal().getName());
 

@@ -9,7 +9,8 @@
 .post-asunto {
 	position: relative;
 	text-align: right;
-	left: 0px;
+	left: 200px;
+	width: 300px;
 }
 
 .post-contenido {
@@ -85,5 +86,17 @@ border-left: 3px solid #eee;
 }
 
 textarea {
-	width: 380px; height: 25px; overflow:auto; resize:none;
+	overflow:hidden; 
+	resize:none; 
+	white-space: pre;
+	border: 2px 
+	solid #D2EBFF;
+}
+
+textarea.mi-comentario-txtarea {
+	width: 380px; height: 25px; 
+}
+
+textarea.mi-post-txtarea {
+	width: 500px; height: 25px; 
 }
