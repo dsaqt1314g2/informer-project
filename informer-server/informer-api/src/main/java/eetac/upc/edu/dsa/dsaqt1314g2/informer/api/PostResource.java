@@ -88,8 +88,8 @@ public class PostResource {
 			// usuario normal. No selecciona los de visiblidad > 2
 			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
 					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE posts.visibilidad<3 and identificador NOT IN(SELECT id_post FROM posts,denuncias_post WHERE denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username
-					+ "') ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
-
+					+ "') ORDER BY identificador DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
+//TODO: Cambiar el identificador por publicacion_date
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (posts_encontrados++ == ilength)
