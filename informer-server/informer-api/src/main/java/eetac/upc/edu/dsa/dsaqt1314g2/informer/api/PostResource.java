@@ -88,8 +88,8 @@ public class PostResource {
 			// usuario normal. No selecciona los de visiblidad > 2
 			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
 					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE posts.visibilidad<3 and identificador NOT IN(SELECT id_post FROM posts,denuncias_post WHERE denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username
-					+ "') ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
-
+					+ "') ORDER BY identificador DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
+//TODO: Cambiar el identificador por publicacion_date
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (posts_encontrados++ == ilength)
@@ -350,16 +350,18 @@ public class PostResource {
 	public Post createPost(Post post) {
 		// POST: /posts (Registered)(admin)
 		// TODO: Comprobar que existen los campos
-		if (post.getAsunto().length() > 50)
-			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
-		if (post.getAsunto().length() < 5)
-			throw new BadRequestException("Longitud del asunto demasiado corto.");
+//		if (post.getAsunto().length() > 50)
+//			throw new BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
+//		if (post.getAsunto().length() < 5)
+//			throw new BadRequestException("Longitud del asunto demasiado corto.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del contenido excede el limite de 2048 caracteres.");
-		if (post.getContenido().length() < 10)
+		if (post.getContenido().length() < 1)
 			throw new BadRequestException("Longitud del contenido demasiado corto.");
 		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
+		if (post.getAsunto().length() == 0)
+			post.setAsunto("Sin asunto");
 
 		post.setUsername(security.getUserPrincipal().getName());
 

@@ -1,15 +1,16 @@
-#post-container {
+.post-container {
 	width: 532px;
 }
 
-#post-autor {
+.post-autor {
 	position: absolute;
 }
 
-#post-asunto {
+.post-asunto {
 	position: relative;
 	text-align: right;
-	left: 0px;
+	left: 200px;
+	width: 300px;
 }
 
 .post-contenido {
@@ -58,3 +59,44 @@
 .post-denuncia A:hover { color: #3905A0; }
 .post-denuncia A:active { color: #3905A0; }
 .post-denuncia A:visited { color: #3905A0; }
+
+.bs-callout-info {
+background-color: #f4f8fa;
+border-color: #bce8f1;
+}
+
+.bs-callout {
+margin: 2px 0;
+padding: 2px;
+border-left: 3px solid #eee;
+}
+
+.comentario-denuncia {
+	position: relative;
+	text-align: right;
+}
+
+.comentario-denuncia A:link { color: #3905A0; }
+.comentario-denuncia A:hover { color: #3905A0; }
+.comentario-denuncia A:active { color: #3905A0; }
+.comentario-denuncia A:visited { color: #3905A0; }
+
+.post-mi-comentario-container {
+	width: 500px;
+}
+
+textarea {
+	overflow:hidden; 
+	resize:none; 
+	white-space: pre;
+	border: 2px 
+	solid #D2EBFF;
+}
+
+textarea.mi-comentario-txtarea {
+	width: 380px; height: 25px; 
+}
+
+textarea.mi-post-txtarea {
+	width: 500px; height: 25px; 
+}

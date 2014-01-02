@@ -91,7 +91,9 @@ public class ComentarioResource {
 
 		try {
 			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador WHERE comentarios.id_post=" + postid + " and posts.visibilidad<3 ORDER BY comentarios.publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
+					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador WHERE comentarios.id_post=" + postid
+					+ " and posts.visibilidad<3 and comentarios.identificador NOT IN(SELECT id_comentario FROM comentarios,denuncias_comentario WHERE denuncias_comentario.id_comentario=comentarios.identificador and denuncias_comentario.username='" + username
+					+ "')ORDER BY comentarios.publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (comentarios_encontrados++ == ilength)
@@ -110,8 +112,10 @@ public class ComentarioResource {
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador(), "self"));
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() + 1, "next"));
 				c.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, c.getIdentificador(), "denunciar"));
-				c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
-				c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
 				comentarios.add(c);
 			}
 			rs.close();
@@ -184,8 +188,10 @@ public class ComentarioResource {
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador(), "self"));
 				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() + 1, "next"));
 				c.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, c.getIdentificador(), "denunciar"));
-				c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
-				c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
 			} else
 				throw new ComentarioNotFoundException();
 		} catch (SQLException e) {
@@ -230,6 +236,7 @@ public class ComentarioResource {
 		Statement stmt = null;
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
@@ -241,8 +248,11 @@ public class ComentarioResource {
 			rs.next();
 			if (rs.getInt(1) == 0)
 				throw new PostNotFoundException();
-			String update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido().replace("'", "´") + "')";
+			String update = "UPDATE posts SET numcomentarios=numcomentarios+1 WHERE identificador=" + postid + ";";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido().replace("'", "´") + "')";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			con.commit();
 			rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
 				int identificador = rs.getInt(1);
@@ -268,6 +278,11 @@ public class ComentarioResource {
 				throw new ComentarioNotFoundException();
 			}
 		} catch (SQLException e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				throw new ServiceUnavailableException(e.getMessage());
+			}
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -281,7 +296,7 @@ public class ComentarioResource {
 
 	@POST
 	@Path("/{comentarioid}/denunciar")
-	public String denunciaComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
+	public void denunciaComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
 		// POST: /posts/{postid}/comentarios/{comentarioid} /denunciar
 		// (1=denunciar, 0 desdenunciar) (Registered)
 		try {
@@ -342,7 +357,6 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		return "COMENTARIO DENUNCIADO";
 	}
 
 	@PUT
