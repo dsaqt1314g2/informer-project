@@ -1,0 +1,114 @@
+  <!DOCTYPE html>
+  <!-- Comenzamos con el html del index -->
+  <html lang="es">
+  <!-- idioma principal castellano -->
+    <head>
+    <!-- Informer UPC : descripcion -->
+      <meta charset="utf-8">
+      <title>Informer UPC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
+      <meta name="author" content="DSA_projet EETAC UPC">
+
+      <!-- Los estilos utilizados bootstrap -->
+      <link href="css/bootstrap.css" rel="stylesheet">
+      <!-- Esto indica como es el padin de lo que ba debajo del menu borde superior e inferior -->
+      <style type="text/css">
+        body {
+          padding-top: 40px;
+          padding-bottom: 40px;
+          overflow: hidden; 
+        }
+        #iframe1 {
+      position:absolute;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      overflow: scroll; 
+      }
+      </style>
+      <!-- creo que es el estilo escogido .. revisar esto-->
+      <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+      <!-- HTML5 shim, for IE6-8 support of HTML5 elements Tenemos que bucar y añadirlo -->
+      <!--[if lt IE 9]>
+        <script src="/js/html5shiv.js"></script>
+      <![endif]-->
+
+      <!-- Fav and touch icons ??¿¿¿ Esto que es y cuando se usa??¿¿ -->
+      <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-144-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-72-precomposed.png">
+                      <link rel="apple-touch-icon-precomposed" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-57-precomposed.png">
+                                     <link rel="shortcut icon" href="http://getbootstrap.com/2.3.2/assets/ico/favicon.png">
+    </head>
+
+    <body>
+
+      <nav><div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">        
+          <div class="container"> 
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>            
+            <a class="brand"   href="#" onclick="Welcome()">Informer Web</a>                      
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="active"><a href="#whatis" onClick="whais()">¿Que es?</a></li>
+                <li><a href="#why" onClick="why()" >¿Por que? </a></li>              
+                <li><a href="#about">About</a></li>
+                <li><a href="#register">Registrarse</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Nav header</li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <form class="navbar-form pull-right">
+                <input class="span2" id="username" type="text" placeholder="Email">
+                <input class="span2"  id="userpass"  type="password" placeholder="Password">
+                <button type="submit" id="button_login" class="btn">Conectarse</button>
+              </form>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div>
+      </div></nav>
+
+    
+
+      <span id="target_website"><iframe id="iframe1" src="main.html" scrolling=auto frameborder="0"></iframe></span>
+
+     
+
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="js/extra/jquery.js"></script>
+      <script src="js/extra/bootstrap-transition.js"></script>
+      <script src="js/extra/bootstrap-alert.js"></script>
+      <script src="js/extra/bootstrap-modal.js"></script>
+      <script src="js/extra/bootstrap-dropdown.js"></script>
+      <script src="js/extra/bootstrap-scrollspy.js"></script>
+      <script src="js/extra/bootstrap-tab.js"></script>
+      <script src="js/extra/bootstrap-tooltip.js"></script>
+      <script src="js/extra/bootstrap-popover.js"></script>
+      <script src="js/extra/bootstrap-button.js"></script>
+      <script src="js/extra/bootstrap-collapse.js"></script>
+      <script src="js/extra/bootstrap-carousel.js"></script>
+      <script src="js/extra/bootstrap-typeahead.js"></script>
+      <script src="js/variable.js"></script>
+      <script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
+      <script src="js/login.js"></script>
+      <script src="js/index.js"></script>
+
+    </body>
+  </html>
