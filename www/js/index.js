@@ -1,29 +1,17 @@
 function Welcome() {
-	var htmlString = '<iframe id="iframe1" src="http://getbootstrap.com/components/" frameborder="0"></iframe>';
+	var htmlString = '<iframe id="iframe1" src="main.html" frameborder="0"></iframe>';
 	$('#target_website').html(htmlString);
 }
 
-function Nuevo() {
-	var htmlString = '<iframe id="iframe1" src="new.html" frameborder="0"></iframe>';
+function whais() {
+	var htmlString = '<iframe id="iframe1" src="explicacion.html" frameborder="0"></iframe>';
 	$('#target_website').html(htmlString);
+	console.log("htmlString");
 }
 
-function Editar() {
-	var htmlString = '<iframe id="iframe1" src="edit.html" frameborder="0"></iframe>';
+function why() {
+	var htmlString = '<iframe id="iframe1" src="explicacion.html#why" frameborder="0"></iframe>';
 	$('#target_website').html(htmlString);
+	console.log("htmlString");
 }
 
-function Get() {
-	var htmlString = '<iframe id="iframe1" src="get.html" frameborder="0"></iframe>';
-	$('#target_website').html(htmlString);
-}
-
-function Delete() {
-	var htmlString = '<iframe id="iframe1" src="delete.html" frameborder="0"></iframe>';
-	$('#target_website').html(htmlString);
-}
-
-function GetLista() {
-	var htmlString = '<iframe id="iframe1" src="lista.html" frameborder="0"></iframe>';
-	$('#target_website').html(htmlString);
-}
