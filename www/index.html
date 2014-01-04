@@ -1,59 +1,119 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link href="css/style.css" rel="stylesheet">
-    <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
-    <title>Informer</title>
-    
-    
- <style type="text/css">
-body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-   overflow: hidden;
-}
-#iframe1 {
-    position:absolute;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-}
-</style>
+  <!-- Comenzamos con el html del index -->
+  <html lang="es">
+  <!-- idioma principal castellano -->
+    <head>
+    <!-- Informer UPC : descripcion -->
+      <meta charset="utf-8">
+      <title>Informer UPC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
+      <meta name="author" content="DSA_projet EETAC UPC">
 
-  </head>
-  <body> 
-  
-  <nav class="navbar navbar-inverse" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" onClick="Welcome()">Informer</a>
+      <!-- Los estilos utilizados bootstrap -->
+      <link href="css/bootstrap.css" rel="stylesheet">
+      <!-- Esto indica como es el padin de lo que ba debajo del menu borde superior e inferior -->
+      <style type="text/css">
+        body {
+          padding-top: 40px;
+          padding-bottom: 40px;
+          overflow: hidden; 
+        }
+        #iframe1 {
+      position:absolute;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      overflow: scroll; 
+      }
+      </style>
+      <!-- creo que es el estilo escogido .. revisar esto-->
+      <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+      <!-- HTML5 shim, for IE6-8 support of HTML5 elements Tenemos que bucar y añadirlo -->
+      <!--[if lt IE 9]>
+        <script src="/js/html5shiv.js"></script>
+      <![endif]-->
+
+      <!-- Fav and touch icons ??¿¿¿ Esto que es y cuando se usa??¿¿ -->
+      <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-144-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-72-precomposed.png">
+                      <link rel="apple-touch-icon-precomposed" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-57-precomposed.png">
+                                     <link rel="shortcut icon" href="http://getbootstrap.com/2.3.2/assets/ico/favicon.png">
+    </head>
+
+    <body>
+
+      <nav><div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">        
+          <div class="container"> 
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>            
+            <a class="brand"   href="#">Informer Conected</a>                      
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="active"><a href="#post" onClick="Post()">Post</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#SalasConectado" onClick="SalasConectado()">Conectado</a></li>
+                    <li><a href="#Unirse" onClick="SalasUnirse()">Ver/Unirse a Sala</a></li>
+                    <li><a href="#Invitaciones" onClick="SalasInvitaciones()">Invitaciones</a></li>
+                    <li><a href="#Crear&Editar" onClick="SalasCrearEditar()">Crear/editar</a></li>
+                    <li class="divider"></li>                    
+                  </ul>          
+                <li><a href="#MiPerfil" onClick="TuPerfil()">Tu Perfil</a></li>                
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Nav header</li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                  </ul>
+                </li>
+              </ul>
+               <!-- Poner aqui el usuario y el cerrar sesion                            
+            </div><!--/.nav-collapse -->
+          </div>
         </div>
+      </div></nav>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
-          <ul class="nav navbar-nav">
-            <li><a href="#" onClick="Nuevo()"></a></li>
-            <li><a href="#" onClick="Editar()">EDIT</a></li>
-            <li><a href="#" onClick="Get()">GET</a></li>
-            <li><a href="#" onClick="Delete()">DELETE</a></li>
-            <li><a href="#" onClick="GetLista()">GET LISTA</a></li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </nav>
-      <span id="target_website"><iframe id="iframe1" src="http://rtve.es/" frameborder="0"></iframe></span>
+    
+      <div id="principal">
+      <span id="target_website"><iframe id="iframe1" src="main.html" scrolling=auto frameborder="0"></iframe></span></div>
+      
 
-	<script type="text/javascript" src="js/index.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  </body>
-</html>
+     
+      
+     
+
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="js/extra/jquery.js"></script>
+      <script src="js/extra/bootstrap-transition.js"></script>
+      <script src="js/extra/bootstrap-alert.js"></script>
+      <script src="js/extra/bootstrap-modal.js"></script>
+      <script src="js/extra/bootstrap-dropdown.js"></script>
+      <script src="js/extra/bootstrap-scrollspy.js"></script>
+      <script src="js/extra/bootstrap-tab.js"></script>
+      <script src="js/extra/bootstrap-tooltip.js"></script>
+      <script src="js/extra/bootstrap-popover.js"></script>
+      <script src="js/extra/bootstrap-button.js"></script>
+      <script src="js/extra/bootstrap-collapse.js"></script>
+      <script src="js/extra/bootstrap-carousel.js"></script>
+      <script src="js/extra/bootstrap-typeahead.js"></script>
+       <script src="js/variable.js"></script>
+      <script src="js/login.js"></script>
+      <script src="js/informer.js"></script>
+
+    </body>
+  </html>
