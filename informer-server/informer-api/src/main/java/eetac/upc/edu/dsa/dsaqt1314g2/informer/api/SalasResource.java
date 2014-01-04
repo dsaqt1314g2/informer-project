@@ -125,6 +125,16 @@ public class SalasResource {
 
 				salas.add(sala);
 			}
+			
+			rs.close();
+			query = "SELECT Count(identificador) FROM salas_chat  where salas_chat.username='"+username+"'";
+			rs = stmt.executeQuery(query);
+			if(rs.next())
+			{
+				salas.setCount(rs.getInt("Count(identificador)"));
+			}
+			rs.close();
+			
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -315,24 +325,36 @@ public class SalasResource {
 		try {
 			stmt = con.createStatement();
 			String query = "";
+			String query2 = "";
 			if (icategoria == 0)
+			{
 				query = "SELECT * FROM salas_chat where visibilidad=0 ORDER BY nombre_sala asc LIMIT "
 						+ offset + ", " + length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad=0;";
+			}
 			else if (icategoria == 1)
+			{
 				query = "SELECT * FROM salas_chat where visibilidad=1 ORDER BY nombre_sala asc LIMIT "
 						+ offset + ", " + length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad=1;";
+			}
 			else if (icategoria == 2) {
 				String username = security.getUserPrincipal().getName();
 				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
 				query += "rel_sala_user.username = '" + username
 						+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
 						+ length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
+				query2 += "rel_sala_user.username = '" + username+"';";
+				
 			} else if (icategoria == 3) {
 				String username = security.getUserPrincipal().getName();
 				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=1 and ";
 				query += "rel_sala_user.username = '" + username
 						+ "' ORDER BY nombre_sala asc LIMIT " + offset + ", "
 						+ length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=1 and ";
+				query2 += "rel_sala_user.username = '" + username+"';";
 			}
 
 			ResultSet rs = stmt.executeQuery(query);
@@ -382,6 +404,14 @@ public class SalasResource {
 
 				salas.add(sala);
 			}
+			rs.close();
+			rs = stmt.executeQuery(query2);
+			
+			if(rs.next())
+			{
+				salas.setCount(rs.getInt("Count(identificador)"));
+			}
+			rs.close();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -514,6 +544,15 @@ public class SalasResource {
 
 				salas.add(sala);
 			}
+			rs.close();
+			String query2 = "SELECT Count(identificador) FROM salas_chat, rel_sala_user  where  rel_sala_user.estado=0 and rel_sala_user.id_sala = salas_chat.identificador and ";
+			query2 += "rel_sala_user.username = '" + security.getUserPrincipal().getName()+"';";
+			rs = stmt.executeQuery(query2);			
+			if(rs.next())
+			{
+				salas.setCount(rs.getInt("Count(identificador)"));
+			}
+			rs.close();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
