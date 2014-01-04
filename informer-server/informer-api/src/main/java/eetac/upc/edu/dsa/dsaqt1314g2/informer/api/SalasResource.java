@@ -717,11 +717,11 @@ public class SalasResource {
 					}
 				} else {
 					// TODO: execepciones
-					throw new SalaNotFoundException();
+					throw new SalaUserExistException();
 				}
 
 			} else {
-
+				throw new SalaUserExistException();
 			}
 
 		} catch (SQLException e) {
