@@ -1,0 +1,62 @@
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+    background-color: #A99F77; 
+}
+
+.chat_container {
+	width: 550px;
+	height: 700px;
+	overflow-y: auto;
+}
+
+.mensaje {
+	position: relative;
+	width: 450px;
+	background-color: #FFF5C5;
+	border-radius: 5px;
+	padding: 5px 10px 5px 10px;
+	border: solid 1px;
+}
+
+.mio {
+	background-color: #FFF0A9;
+	left: 50px;
+}
+
+.username {
+	font-weight: bold;
+	width: 100px;
+}
+
+.time {
+	position: relative;
+	text-align: right;
+	width: 100px;
+	left: 330px;
+	top: -20px;
+	color: #808080;
+}
+
+.contenedor {
+	width: 450px;
+	height: 20px;
+}
+
+textarea {
+	overflow:hidden; 
+	resize:none; 
+	white-space: pre;
+	border: 2px 
+	solid #D7AF00;
+}
+
+
+textarea.mi-mensaje-txtarea{
+	width: 550px; height: 75px; 
+}

@@ -40,7 +40,7 @@ public class MensajeResource {
 	MensajeCollection mensajes = new MensajeCollection();
 
 	@GET
-	@Produces(MediaType.INFORMER_API_COMENTARIO_COLLECTION)
+	@Produces(MediaType.INFORMER_API_MENSAJE_COLLECTION)
 	public MensajeCollection getMensajes(@PathParam("salaid") String salaid, @QueryParam("o") String offset, @QueryParam("l") String length, @QueryParam("f") String fecha) {
 		// GETs: /salas/{salaid}/mensajes?{offset}{length}{fecha}
 		// (Registered)(admin)
@@ -82,7 +82,7 @@ public class MensajeResource {
 			ifecha = 0;
 		else {
 			try {
-				ifecha = Integer.parseInt(fecha);
+				ifecha = Long.parseLong(fecha);
 				if (ifecha < 0)
 					throw new NumberFormatException();
 			} catch (NumberFormatException e) {
@@ -119,7 +119,7 @@ public class MensajeResource {
 				rs = stmt.executeQuery(query);
 				if (!rs.next())
 					throw new UserNotFoundInSalaException();
-				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE mensajes_chat.id_sala=" + salaid + " and last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + offset + ", "
+				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE mensajes_chat.id_sala=" + salaid + " and last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update ASC LIMIT " + offset + ", "
 						+ (ilength + 1) + ";";
 			}
 			rs = stmt.executeQuery(query);
@@ -269,6 +269,7 @@ public class MensajeResource {
 				mensaje.setUsername(rs.getString("username"));
 				mensaje.setContenido(rs.getString("contenido"));
 				mensaje.setLast_update(rs.getTimestamp("last_update"));
+//				System.out.println(mensaje.getLast_update().getTime());
 				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, mensaje.getIdentificador(), "self"));
 			} else {
 				throw new ComentarioNotFoundException();

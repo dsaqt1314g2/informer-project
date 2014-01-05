@@ -1,11 +1,16 @@
 var API_BASE_URL = "http://localhost:8080/informer-api/";
+var loaded = 0;
+var offset = 1;
+var length = 5;
 
 
 $(document).ready(function(){
-	var offset = 1;
-	var length = 10;
+	getListPosts();
+});
+
+function getListPosts() {
 	var url = API_BASE_URL+"posts?o="+offset+"&l="+length;
- 
+	var url = API_BASE_URL+"posts?o="+offset+"&l="+length;
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -22,7 +27,8 @@ $(document).ready(function(){
 	})
 	.done(function (data, status, jqxhr) {
 		//var posts = $.parseJSON(jqxhr.responseText);
-		var htmlString = "<div class='post-container'>";
+		var htmlString = "<div class='post-container' id='post-container'>";
+		if (loaded > 0) htmlString += document.getElementById('post-container').innerHTML;
 	    $.each(data.posts, function(i,p){	
 	    	htmlString += '<span id="post'+p.identificador+'">';  
         	htmlString += '<div class="panel panel-primary">';  
@@ -69,7 +75,7 @@ $(document).ready(function(){
     .fail(function (jqXHR, textStatus) {
 		console.log(textStatus);
 	});
-});
+}
 
 
 function postComentario(postid) {
@@ -289,3 +295,33 @@ function processDislike(identificador, id) {
 		console.log(textStatus+" "+url);
 	});	
 }
+
+
+//extra
+
+function getheight() {
+    var myWidth = 0,
+        myHeight = 0;
+    if (typeof(window.innerWidth) == 'number') {
+        //Non-IE
+        myWidth = window.innerWidth;
+        myHeight = window.innerHeight;
+    } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+        //IE 6+ in 'standards compliant mode'
+        myWidth = document.documentElement.clientWidth;
+        myHeight = document.documentElement.clientHeight;
+    } else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
+        //IE 4 compatible
+        myWidth = document.body.clientWidth;
+        myHeight = document.body.clientHeight;
+    }
+    var scrolledtonum = window.pageYOffset + myHeight + 2;
+    var heightofbody = document.body.offsetHeight;
+    if (scrolledtonum >= heightofbody) {
+    	loaded++;
+    	offset += length;
+        getListPosts();
+    }
+}
+
+window.onscroll = getheight;
