@@ -26,10 +26,10 @@ public class MensajesAPILinkBuilder {
 	}
 
 	public static final Link buildURIComentarios(UriInfo uriInfo, String rel) {
-		return buildURIMensajes(uriInfo, 0, null, 0, null, rel);
+		return buildURIMensajes(uriInfo, 0, null, "0", null, rel);
 	}
 
-	public static final Link buildURIMensajes(UriInfo uriInfo, int offset, String length, long ifecha, String salaid, String rel) {
+	public static final Link buildURIMensajes(UriInfo uriInfo, int offset, String length, String ifecha, String salaid, String rel) {
 		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).queryParam("f", ifecha).build(salaid);
 		Link self = new Link();
 		self.setUri(uriStings.toString());

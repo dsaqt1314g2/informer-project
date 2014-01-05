@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -41,7 +43,7 @@ public class MensajeResource {
 
 	@GET
 	@Produces(MediaType.INFORMER_API_MENSAJE_COLLECTION)
-	public MensajeCollection getMensajes(@PathParam("salaid") String salaid, @QueryParam("o") String offset, @QueryParam("l") String length, @QueryParam("f") String fecha) {
+	public MensajeCollection getMensajes(@PathParam("salaid") String salaid, @QueryParam("o") String offset, @QueryParam("l") String length, @QueryParam("f") String fecha, @QueryParam("id") String identificador) {
 		// GETs: /salas/{salaid}/mensajes?{offset}{length}{fecha}
 		// (Registered)(admin)
 		// (publicas y donde yo estoy)
@@ -76,16 +78,29 @@ public class MensajeResource {
 				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
 			}
 		}
-
-		long ifecha = 0;
-		if (fecha == null)
-			ifecha = 0;
+		int iidentificador = 0;
+		if (identificador == null)
+			identificador = "0";
 		else {
 			try {
-				ifecha = Long.parseLong(fecha);
-				if (ifecha < 0)
+				iidentificador = Integer.parseInt(identificador);
+				if (iidentificador < 1)
 					throw new NumberFormatException();
 			} catch (NumberFormatException e) {
+				throw new BadRequestException("Identificador debe ser un entero mayor o igual a 0.");
+			}
+		}
+		
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		String ifecha;
+		if (fecha == null) {
+			fecha = "0";
+			ifecha = dt.format(new Date(0));
+		}
+		else {
+			try {
+				ifecha = dt.format(new Date(Long.parseLong(fecha)));
+			} catch (Exception e) {
 				throw new BadRequestException("Fecha debe ser un entero mayor o igual a 0.");
 			}
 		}
@@ -109,7 +124,7 @@ public class MensajeResource {
 			String query;
 			ResultSet rs;
 			if (sala == 0)
-				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
+				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE last_update>'" + ifecha + "' and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + offset + ", " + (ilength + 1) + ";";
 			else {
 				query = "SELECT 1 FROM rel_sala_user WHERE id_sala=" + salaid + ";";
 				rs = stmt.executeQuery(query);
@@ -119,13 +134,11 @@ public class MensajeResource {
 				rs = stmt.executeQuery(query);
 				if (!rs.next())
 					throw new UserNotFoundInSalaException();
-				query = "SELECT * FROM mensajes_chat, rel_sala_user WHERE mensajes_chat.id_sala=" + salaid + " and last_update>" + ifecha + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update ASC LIMIT " + offset + ", "
-						+ (ilength + 1) + ";";
+				query = "(SELECT * FROM mensajes_chat, rel_sala_user WHERE mensajes_chat.id_sala=" + salaid + " and mensajes_chat.identificador>" + iidentificador + " and rel_sala_user.username='" + username + "' and mensajes_chat.id_sala=rel_sala_user.id_sala ORDER BY last_update DESC LIMIT " + ioffset + ", "
+						+ (ilength) + ") ORDER BY last_update ASC;";
 			}
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				if (mensajes_encontrados++ == ilength)
-					break;
 				Mensaje m = new Mensaje();
 				m.setIdentificador(rs.getInt("identificador"));
 				m.setId_sala(rs.getInt("id_sala"));
@@ -134,6 +147,7 @@ public class MensajeResource {
 				m.setLast_update(rs.getTimestamp("last_update"));
 				m.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, m.getIdentificador(), "self"));
 				mensajes.add(m);
+				mensajes_encontrados++;
 			}
 			rs.close();
 			if (mensajes_encontrados == 0)
@@ -150,10 +164,10 @@ public class MensajeResource {
 		int prev = ioffset - ilength;
 		int next = ioffset + ilength;
 		if (prev >= 0)
-			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, prev, length, ifecha, salaid, "prev"));
-		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, ioffset, length, ifecha, salaid, "self"));
-		if (mensajes_encontrados > ilength)
-			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, next, length, ifecha, salaid, "next"));
+			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, prev, length, fecha, salaid, "prev"));
+		mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, ioffset, length, fecha, salaid, "self"));
+		if (mensajes_encontrados == ilength)
+			mensajes.addLink(MensajesAPILinkBuilder.buildURIMensajes(uriInfo, next, length, fecha, salaid, "next"));
 		return mensajes;
 	}
 
@@ -269,7 +283,7 @@ public class MensajeResource {
 				mensaje.setUsername(rs.getString("username"));
 				mensaje.setContenido(rs.getString("contenido"));
 				mensaje.setLast_update(rs.getTimestamp("last_update"));
-//				System.out.println(mensaje.getLast_update().getTime());
+				System.out.println(mensaje.getLast_update() + " <-- --> " + mensaje.getLast_update().getTime());
 				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, mensaje.getIdentificador(), "self"));
 			} else {
 				throw new ComentarioNotFoundException();

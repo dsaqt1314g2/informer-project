@@ -1,12 +1,12 @@
 var API_BASE_URL = "http://localhost:8080/informer-api/";
 var loaded = 0;
-var offset = 1;
+var offset = 0;
 var length = 100;
 var minombre = 'McD0n3ld';
-var fecha = Number(new Date());
 var usuarioAnterior = "";
-
+var fecha = Number(new Date());
 var salaid = 5;
+var lastIdentificador = 0;
 
 
 
@@ -15,7 +15,7 @@ $(document).ready(function(){
 });
 
 function getListMensajes() {
-	var url = API_BASE_URL+"salas/"+salaid+"/mensajes?o="+offset+"&l="+length;
+	var url = API_BASE_URL+"salas/"+salaid+"/mensajes?l="+length;
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -46,8 +46,9 @@ function getListMensajes() {
 	   			htmlString += '<div class="time">'+(new Date(m.last_update)).getHours()+':'+(new Date(m.last_update)).getMinutes()+':'+(new Date(m.last_update)).getSeconds()+'</div></div>';
 	   		} else
 	   			htmlString += '<br>';
-	   		htmlString += m.contenido;
+	   		htmlString += m.contenido //+ '('+m.identificador+')'
 	   		usuarioAnterior = m.username;
+	   		lastIdentificador = m.identificador;
 	    });
 	    htmlString += '<span id="last-message"></span></div>'
 	    htmlString += '<br>'
@@ -106,6 +107,7 @@ function postMensaje() {
 		} else {
 			document.getElementById('last-message').innerHTML += "<br>"+m.contenido;
 		}
+		lastIdentificador = m.identificador;
 		el.scrollTop = 99999999999999999;
 		console.log(data);
 	})
@@ -116,8 +118,9 @@ function postMensaje() {
 }
 
 function checkUpdates() {
-	var url = API_BASE_URL+"salas/"+salaid+"/mensajes?o=1&l=1&f="+fecha;
-	console.log(url);
+	var url = API_BASE_URL+"salas/"+salaid+"/mensajes?id="+lastIdentificador;
+	fecha = Number(new Date());
+	//console.log(url);
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -156,6 +159,7 @@ function checkUpdates() {
 	   		if (started == 0) document.getElementById('last-message').innerHTML += "<br>"+m.contenido;
 	   		else htmlString += m.contenido;
 	   		usuarioAnterior = m.username;
+	   		lastIdentificador = m.identificador;
 	    });
 	    if (started == 1) {
 	    	htmlString += '<span id="last-message"></span></div>'
@@ -163,14 +167,12 @@ function checkUpdates() {
 	    	el.innerHTML = el.innerHTML + htmlString;
 	    }
 		el.scrollTop = 99999999999999999;
-		console.log(data);
+		//console.log(data);
 	})
     .fail(function (jqXHR, textStatus) {
-		console.log(textStatus+" "+url);
-		console.log(comentario);
+		//console.log(textStatus+" "+url);
 	});	
 }
-
 
 var t=setInterval(checkUpdates,1000);
 
@@ -195,9 +197,7 @@ function getheight() {
     var scrolledtonum = window.pageYOffset + myHeight + 2;
     var heightofbody = document.body.offsetHeight;
     if (scrolledtonum >= heightofbody) {
-    	loaded++;
-    	offset += length;
-        getListPosts();
+
     }
 }
 
