@@ -27,11 +27,11 @@ function getLogin(username, userpass) {
 	.done(function (data, status, jqxhr) {
 		$.cookie("username", username);
 		$.cookie("userpass", userpass);
-		window.location = "http://localhost:8000/informer-auth/web/index.html";
+		window.location = "http://localhost/informer-project/index.html";
 		console.log(data);
 	})
     .fail(function (jqXHR, textStatus) {
-    	window.location = "http://localhost:8000/informer-auth/web/login.html";
+    	//window.location = "http://localhost/informer-project/login.html";
 		console.log(textStatus);
 	});
 }

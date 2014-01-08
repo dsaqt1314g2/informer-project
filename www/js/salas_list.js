@@ -8,6 +8,7 @@ $(document).ready(function() {
 });
 
 function Pintar() {
+	console.log("PIMN");
 	
 	var offset = 0;
 	var length = 5;
@@ -194,15 +195,20 @@ function Unirse(id) {
 						var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: "
 								+ id + ".<p>" + data + "</div>";						
 						$("#tabla_publica").html(Stringhtml);
-						setTimeout(Pintar(),60000);							 
+						//setTimeout(Pintar(),10000);							 
+						setTimeout(function () {
+							Pintar();
+						},3000);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
 						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";							
 						$("#tabla_publica").html(Stringhtml);
-						setTimeout(Pintar(),60000);					
-						
+						//setTimeout(Pintar(),10000);					
+						setTimeout(function () {
+							Pintar();
+						},3000);
 					});
 }
 function PonerPass(id) {

@@ -1,5 +1,4 @@
 var pagpublica = 0;
-var pagprivada = 0;
 
 $(document).ready(function() {
 
@@ -64,16 +63,16 @@ function GetInvitaciones(url, offset, length) {
 						var Stringpaginacion= "";
 						if(pagpublica==0)
 							{
-							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0,1)'>0 <span class='sr-only'>(current)</span></a></li>";
+							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0)'>0 <span class='sr-only'>(current)</span></a></li>";
 							var i = 1;
 							while(i<numpag)
 								{
-									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" </a></li>";
+									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" </a></li>";
 									i++;
 								}
 							console.log(numpag);
 							if(numpag>1){
-								Stringpaginacion += "<li><a href='#' OnClick='Paginacion(1,1)'>&raquo;</a></li>";	
+								Stringpaginacion += "<li><a href='#' OnClick='Paginacion(1)'>&raquo;</a></li>";	
 							}
 							Stringpaginacion +="</ul>";
 							}
@@ -82,24 +81,24 @@ function GetInvitaciones(url, offset, length) {
 							{
 							
 							Stringpaginacion = "<ul class='pagination'>";							
-							Stringpaginacion += "<li><a href='#Prev' OnClick='Paginacion("+(pagpublica-1)+",1)'>&laquo;</a></li>";
+							Stringpaginacion += "<li><a href='#Prev' OnClick='Paginacion("+(pagpublica-1)+")'>&laquo;</a></li>";
 							console.log(Stringpaginacion);
 							var i = 0;
 							while(i<numpag)
 								{
 									if(i==pagpublica)
 										{
-										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" <span class='sr-only'>(current)</span></a></li>";
+										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" <span class='sr-only'>(current)</span></a></li>";
 										}
 									else
 										{
-										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" </a></li>";
+										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" </a></li>";
 										}
 									
 									i++;
 								}
 							if(numpag>pagpublica+1)
-								Stringpaginacion += "<li><a href='#' OnClick='Paginacion("+pagpublica+1+",1)'>&raquo;</a></li></ul>";
+								Stringpaginacion += "<li><a href='#' OnClick='Paginacion("+pagpublica+1+")'>&raquo;</a></li></ul>";
 							
 							}
 						$("#paginacion").html(Stringpaginacion);
@@ -176,11 +175,10 @@ function Rechazar(id) {
 					});
 }
 
-function Paginacion(pag,tabla) {
+function Paginacion(pag) {
 	var offset = 0;
 	var url = API_BASE_URL + "salas/invitaciones";
-	if(tabla==1)
-		{
+	
 		pagpublica = pag;		
 		if(pag>0)
 			{
@@ -188,14 +186,6 @@ function Paginacion(pag,tabla) {
 			}
 		
 		GetInvitaciones(url, offset, 5);	
-		}
-	else
-		{
-		pagprivada = pag;		
-		if(pag>0)
-			{
-			offset = (pag)*5;
-			}		
-		GetInvitaciones(url, offset, 5);	
-		}
+	
+	
 }
