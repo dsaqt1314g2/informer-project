@@ -1,5 +1,3 @@
-var API_BASE_URL = "http://localhost:8080/informer-api/";
-
 function processIdea() {
 	var url = API_BASE_URL+"posts";
 	var visibilidad = $('#mi-post-visibilidad').val();

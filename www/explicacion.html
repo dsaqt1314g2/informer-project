@@ -22,6 +22,7 @@
 
     </head>
     <body>
+    <span id="contenedor-barra"></span>
     <div class="container">
      <!-- Main hero unit for a primary marketing message or call to action -->
         <div class="hero-unit">
@@ -75,6 +76,10 @@
       <script src="js/extra/jquery.js"></script>
       
   	 
-      
+      <script type="text/javascript">
+        $("document").ready(function() {
+            $('#contenedor-barra').load('barra.html');
+        });
+   		</script>	
     </body>
   </html>

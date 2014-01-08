@@ -38,50 +38,14 @@
       <!-- Fav and touch icons ??¿¿¿ Esto que es y cuando se usa??¿¿ -->
       <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-144-precomposed.png">
       <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-72-precomposed.png">
-                      <link rel="apple-touch-icon-precomposed" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-57-precomposed.png">
-                                     <link rel="shortcut icon" href="http://getbootstrap.com/2.3.2/assets/ico/favicon.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-72-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" href="http://getbootstrap.com/2.3.2/assets/ico/apple-touch-icon-57-precomposed.png">
+      <link rel="shortcut icon" href="http://getbootstrap.com/2.3.2/assets/ico/favicon.png">
     </head>
 
     <body>
 
-      <nav><div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">        
-          <div class="container"> 
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>            
-            <a class="brand"   href="#" onclick="Welcome()">Informer Web</a>                      
-            <div class="nav-collapse collapse">
-              <ul class="nav">
-                <li class="active"><a href="#whatis" onClick="whais()">¿Que es?</a></li>
-                <li><a href="#why" onClick="why()" >¿Por que? </a></li>              
-                <li><a href="#about">About</a></li>
-                <li><a href="#register">Registrarse</a></li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li class="nav-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                  </ul>
-                </li>
-              </ul>
-              <form class="navbar-form pull-right">
-                <input class="span2" id="username" type="text" placeholder="Email">
-                <input class="span2"  id="userpass"  type="password" placeholder="Password">
-                <button type="submit" id="button_login" class="btn">Conectarse</button>
-              </form>
-            </div><!--/.nav-collapse -->
-          </div>
-        </div>
-      </div></nav>
+      <span id="contenedor-barra"></span>
 
     
 
@@ -109,6 +73,10 @@
       <script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
       <script src="js/login.js"></script>
       <script src="js/index.js"></script>
-
+		<script type="text/javascript">
+        $("document").ready(function() {
+            $('#contenedor-barra').load('barra.html');
+        });
+   		</script>	
     </body>
   </html>

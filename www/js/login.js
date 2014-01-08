@@ -1,4 +1,3 @@
-
 $("#button_login").click(function(e){
 	e.preventDefault();
 	var username = $('#username').val();
@@ -7,7 +6,7 @@ $("#button_login").click(function(e){
 });
 
 function getLogin(username, userpass) {
-	var url = AUTH_BASE_URL + username;
+	var url = API_BASE_URL + "users/"+username;
  
 	$.ajax({
 		url : url,
@@ -25,9 +24,11 @@ function getLogin(username, userpass) {
 	    },
 	})
 	.done(function (data, status, jqxhr) {
-		$.cookie("username", username);
-		$.cookie("userpass", userpass);
-		window.location = "http://localhost/informer-project/index.html";
+		//$.cookie("username", username);
+		//$.cookie("userpass", userpass);
+		document.cookie="username="+username;
+		document.cookie="userpass="+userpass;
+		window.location = "http://localhost/informer-project/main.html";
 		console.log(data);
 	})
     .fail(function (jqXHR, textStatus) {

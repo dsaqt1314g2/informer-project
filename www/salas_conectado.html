@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
   </head>
   <body>
-
+<span id="contenedor-barra"></span>
 <div id="post-container">
   <div id="tabla_contenidos">
         <span>
@@ -56,6 +56,11 @@
     <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
     <script src="js/variable.js"></script>
     <script src="js/salas_conectado.js"></script>
+    <script type="text/javascript">
+        $("document").ready(function() {
+            $('#contenedor-barra').load('barra.html');
+        });
+   		</script>
     
   </body>
 </html>

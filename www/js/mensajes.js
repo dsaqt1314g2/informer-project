@@ -1,4 +1,3 @@
-var API_BASE_URL = "http://localhost:8080/informer-api/";
 var loaded = 0;
 var offset = 0;
 var length = 100;

@@ -11,6 +11,7 @@
   </head>
 
   <body onLoad="getRankingPosts(3)">
+  <span id="contenedor-barra"></span>
     <div style="margin:20 px; padding: 20px;">
           <span id="res_get_ranking_posts"></span>  
     </div>
@@ -23,5 +24,11 @@
     <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
     <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
+    <script type="text/javascript" src="js/variable.js"></script>
+    <script type="text/javascript">
+        $("document").ready(function() {
+            $('#contenedor-barra').load('barra.html');
+        });
+   		</script>
   </body>
 </html>
