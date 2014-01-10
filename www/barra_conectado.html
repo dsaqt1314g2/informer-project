@@ -1,0 +1,65 @@
+<script src="js/variable.js"></script>
+<nav>
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">        
+      <div class="container"> 
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>            
+        <a class="brand" href="#">Inf&oacute;rmanos!</a>                      
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="active"><a href="post_viewer.html">Post</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="salas_conectado.html">Conectado</a></li>
+                <li><a href="salas_viewer.html">Ver/Unirse a Sala</a></li>
+                <li><a href="salas_invitacion.html">Invitaciones</a></li>
+                <li><a href="salas_edit.html">Crear/editar</a></li>
+                <li class="divider"></li>                    
+              </ul>          
+            <li><a href="miperfil.html">Tu Perfil</a></li>                
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right" style="float: right!important;">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span id="myname-barra"></span>
+                <script>
+                var name = "username=";
+                var username = "";
+                  var ca = document.cookie.split(';');
+                  for(var i=0; i<ca.length; i++) 
+                    {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name)==0) username= c.substring(name.length,c.length);
+                    }
+                    document.getElementById("myname-barra").innerHTML = username;
+                </script>
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                  <li><a href="#" onClick="logOut()">Salir</a></li>
+              </ul>
+            </li>
+          </ul>
+           <!-- Poner aqui el usuario y el cerrar sesion                            
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+</nav>

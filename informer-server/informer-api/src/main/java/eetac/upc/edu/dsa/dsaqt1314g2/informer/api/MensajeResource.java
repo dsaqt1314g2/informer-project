@@ -283,7 +283,7 @@ public class MensajeResource {
 				mensaje.setUsername(rs.getString("username"));
 				mensaje.setContenido(rs.getString("contenido"));
 				mensaje.setLast_update(rs.getTimestamp("last_update"));
-				System.out.println(mensaje.getLast_update() + " <-- --> " + mensaje.getLast_update().getTime());
+//				System.out.println(mensaje.getLast_update() + " <-- --> " + mensaje.getLast_update().getTime());
 				mensaje.addLink(MensajesAPILinkBuilder.buildURIMensajeId(uriInfo, salaid, mensaje.getIdentificador(), "self"));
 			} else {
 				throw new ComentarioNotFoundException();

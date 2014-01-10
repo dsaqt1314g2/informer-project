@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title>Informer</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
-    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-  </head>
+   <meta charset="utf-8">
+      <title>Informer UPC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
+      <meta name="author" content="DSA_projet EETAC UPC">
 
-  <body onLoad="getListPosts()"	>
+      <!-- Los estilos utilizados bootstrap -->
+      <link href="css/bootstrap.css" rel="stylesheet">
+      <link href="css/style_posts.css" rel="stylesheet">
+      <!-- Esto indica como es el padin de lo que ba debajo del menu borde superior e inferior -->
+      <style type="text/css">
+        body {
+           margin: 0;
+           overflow: auto;             
+        }
+
+        
+      </style>
+      <!-- creo que es el estilo escogido .. revisar esto-->
+      <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+  </head>
+  <body onLoad="getListPosts()" >
   <span id="contenedor-barra"></span>
-    <div style="margin:20 px; padding: 20px;">
+  <div class="container">
+   <div style="margin:20 px; padding-top: 70px;">
           <span id="res_get_list_posts"></span>  
     </div>
-   
-
-   <div class="dropdown">
-  <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu1" data-toggle="dropdown">
-    Dropdown
-    <span class="caret"></span>
-  </button>
-<div class="dropdown">
-  <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu1" data-toggle="dropdown">
-    Dropdown
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-    <li role="presentation" class="divider"></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-  </ul>
-</div>
+  </div> <!-- /container -->
     <!-- SCRIPTS -->
-	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/posts.js"></script>
-    <!-- notificaciones -->
-    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-    <script type="text/javascript" src="js/variable.js"></script>
-    <script type="text/javascript">
-        $("document").ready(function() {
-            $('#contenedor-barra').load('barra.html');
-        });
-   		</script>
+    
+    <script src="js/extra/jquery.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/posts.js"></script>
+    <script src="js/variable.js"></script>
+    <script src="js/extra/bootstrap-transition.js"></script>
+    <script src="js/extra/bootstrap-alert.js"></script>
+    <script src="js/extra/bootstrap-modal.js"></script>
+    <script src="js/extra/bootstrap-dropdown.js"></script>
+    <script src="js/extra/bootstrap-scrollspy.js"></script>
+    <script src="js/extra/bootstrap-tab.js"></script>
+    <script src="js/extra/bootstrap-tooltip.js"></script>
+    <script src="js/extra/bootstrap-popover.js"></script>
+    <script src="js/extra/bootstrap-button.js"></script>
+    <script src="js/extra/bootstrap-collapse.js"></script>
+    <script src="js/extra/bootstrap-carousel.js"></script>
+    <script src="js/extra/bootstrap-typeahead.js"></script>
+    
+    
   </body>
 </html>
