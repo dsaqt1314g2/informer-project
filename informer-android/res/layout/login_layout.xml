@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/degradado"
     android:fillViewport="true" >
 
     <RelativeLayout
@@ -44,6 +45,7 @@
                 android:layout_marginBottom="20dip"
                 android:layout_marginTop="5dip"
                 android:inputType="text"
+                android:text="alicia"
                 android:singleLine="true" />
 
             <TextView
@@ -58,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:inputType="textPassword"
+                android:text="alicia"
                 android:singleLine="true" />
 
             <Button

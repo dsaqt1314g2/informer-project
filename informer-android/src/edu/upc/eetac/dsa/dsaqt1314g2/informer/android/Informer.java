@@ -43,49 +43,36 @@ public class Informer extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate()");
-	 
+		Log.d(TAG, "STARTING INFORMER()");
+
 		AssetManager assetManager = getAssets();
 		Properties config = new Properties();
 		try {
 			config.load(assetManager.open("config.properties"));
 			serverAddress = config.getProperty("server.address");
 			serverPort = config.getProperty("server.port");
-	 
+
 			Log.d(TAG, "Configured server " + serverAddress + ":" + serverPort);
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage(), e);
 			finish();
 		}
 		setContentView(R.layout.informer_layout);
-	 
+
 		postList = new ArrayList<Post>();
 		adapter = new PostAdapter(this, postList);
 		setListAdapter(adapter);
-	 
-		SharedPreferences prefs = getSharedPreferences("beeter-profile", Context.MODE_PRIVATE);
-		final String username = prefs.getString("username", null);
-		final String password = prefs.getString("password", null);
-	 
-		Authenticator.setDefault(new Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password
-						.toCharArray());
-			}
-		});
-		Log.d(TAG, "authenticated with " + username + ":" + password);
-	 
+
 		api = new InformerAPI();
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort
-					+ "/better-api/Posts?&offset=0&length=20");
+			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts?&o=0&l=5");
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
 			finish();
 		}
 		(new FetchPostsTask()).execute(url);
-	 
+
 	}
 
 	// Progresso void (indeterminado), result PostCollection (lo que devuelve)
@@ -95,7 +82,7 @@ public class Informer extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			pd = new ProgressDialog(Informer.this);
-			pd.setTitle("ProgressDialog...");
+			pd.setTitle("Escuchando...");
 			pd.setCancelable(false); // no es cancelable
 			pd.setIndeterminate(true);
 			pd.show();
@@ -165,7 +152,7 @@ public class Informer extends ListActivity {
 		case R.id.miWrite:
 			URL url = null;
 			try {
-				url = new URL("http://" + serverAddress + ":" + serverPort + "/better-api/Posts");
+				url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts");
 			} catch (MalformedURLException e) {
 				Log.d(TAG, e.getMessage(), e);
 			}
