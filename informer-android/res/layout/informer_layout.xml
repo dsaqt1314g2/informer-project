@@ -5,10 +5,12 @@
     android:background="@drawable/degradado"
     android:orientation="vertical" >
 
-<!-- list para que lo cargue la herencia ListActivity -->
-    <ListView 
+    <!-- list para que lo cargue la herencia ListActivity -->
+
+    <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" 
+        android:divider="#C9C9C9"/>
 
 </LinearLayout>

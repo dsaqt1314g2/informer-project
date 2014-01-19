@@ -25,36 +25,35 @@ public class InformerAPI {
 	public PostCollection getPosts(URL url) { // URL direccion del recurso -->
 												// http://s:p/beeter-api/sings?o=x&&l=Y
 		PostCollection posts = new PostCollection();
-		
+
 		HttpURLConnection urlConnection = null;
 		try {
 			urlConnection = (HttpURLConnection) url.openConnection();
-		
+
 			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_POST_COLLECTION);
 			urlConnection.setRequestMethod("GET");
 			urlConnection.setDoInput(true);
 			urlConnection.connect(); // se hace la conexion
-			
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				sb.append(line);
 			}
-			
+
 			// sb.toString() es la respuesta JSON
 			JSONObject jsonObject = new JSONObject(sb.toString()); // org.json
 			JSONArray jsonLinks = jsonObject.getJSONArray("links"); // org.json
 			parseLinks(jsonLinks, posts.getLinks());
-			
+
 			JSONArray jsonPosts = jsonObject.getJSONArray("posts");
-			
+
 			for (int i = 0; i < jsonPosts.length(); i++) {
 				JSONObject jsonPost = jsonPosts.getJSONObject(i);
 				Post post = parsePost(jsonPost);
 				posts.add(post);
 			}
-			Log.d(TAG,"holaaa");
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage(), e);
 			return null;
@@ -106,6 +105,31 @@ public class InformerAPI {
 		}
 
 		return post;
+	}
+
+	public Boolean postCalificacion(URL url) {
+		HttpURLConnection urlConnection = null;
+		try {
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return true;
 	}
 
 	public User getUser(final String username, final String password, String url_string) {
@@ -161,16 +185,18 @@ public class InformerAPI {
 
 	private Post parsePost(JSONObject source) throws JSONException, ParseException {
 		Post post = new Post();
-		if (source.has("content"))
-			post.setContenido(source.getString("contenido"));
+		// if (source.has("contenido"))
+		post.setContenido(source.getString("contenido"));
 		String tsLastModified = source.getString("publicacion_date").replace("T", " ");
 		post.setPublicacion_date(sdf.parse(tsLastModified));
 		post.setIdentificador(source.getInt("identificador"));
 		post.setAsunto(source.getString("asunto"));
 		post.setUsername(source.getString("username"));
+		post.setLiked(source.getInt("liked"));
+		post.setNumcomentarios(source.getInt("numcomentarios"));
 
-//		JSONArray jsonStingLinks = source.getJSONArray("links");
-//		parseLinks(jsonStingLinks, post.getLinks());
+		// JSONArray jsonStingLinks = source.getJSONArray("links");
+		// parseLinks(jsonStingLinks, post.getLinks());
 		return post;
 	}
 

@@ -36,7 +36,8 @@
                 android:id="@+id/lUsername"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/login_l_username" />
+                android:text="@string/login_l_username"
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/etUsername"
@@ -52,7 +53,8 @@
                 android:id="@+id/lPassword"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/login_l_password" />
+                android:text="@string/login_l_password"
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -79,9 +81,11 @@
                 android:layout_marginTop="40dip"
                 android:clickable="true"
                 android:gravity="center"
+                android:onClick="register"
                 android:text="@string/login_l_register"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#0b84aa" />
+                android:textColor="#FFFFFF" />
+
         </LinearLayout>
     </RelativeLayout>
 

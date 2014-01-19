@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Post;
@@ -57,6 +58,17 @@ public class Informer extends ListActivity {
 			Log.e(TAG, e.getMessage(), e);
 			finish();
 		}
+
+		SharedPreferences prefs = getSharedPreferences("informer-profile", Context.MODE_PRIVATE);
+		final String username = prefs.getString("username", null);
+		final String password = prefs.getString("userpass", null);
+
+		Authenticator.setDefault(new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password.toCharArray());
+			}
+		});
+
 		setContentView(R.layout.informer_layout);
 
 		postList = new ArrayList<Post>();
@@ -115,29 +127,12 @@ public class Informer extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Post Post = postList.get(position);
-
-		// HATEOAS version
-		URL url = null;
-		try {
-			url = new URL(Post.getLinks().get(0).getUri());
-		} catch (MalformedURLException e) {
-			return;
-		}
-
-		// No HATEOAS
-		// URL url = null;
-		// try {
-		// url = new URL("http://" + serverAddress + ":" + serverPort
-		// + "/better-api/Posts/" + id);
-		// } catch (MalformedURLException e) {
-		// return;
-		// }
-		Log.d(TAG, url.toString());
-
-		Intent intent = new Intent(this, PostDetail.class);
-		intent.putExtra("url", url.toString());
-		startActivity(intent);
+		View tv = ((ViewGroup) v).getChildAt(0);
+		tv = ((ViewGroup) tv).getChildAt(1);
+		if (tv.getVisibility() == View.GONE)
+			tv.setVisibility(View.VISIBLE);
+		else
+			tv.setVisibility(View.GONE);
 	}
 
 	@Override

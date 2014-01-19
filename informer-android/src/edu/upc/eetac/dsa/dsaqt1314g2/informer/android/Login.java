@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class Login extends Activity {
 
 		SharedPreferences prefs = getSharedPreferences("informer-profile", Context.MODE_PRIVATE);
 		String username = prefs.getString("username", null);
-		String password = prefs.getString("password", null);
+		String password = prefs.getString("userpass", null);
 
 		if ((username != null) && (password != null)) {
 			Intent intent = new Intent(this, Informer.class);
@@ -62,6 +63,11 @@ public class Login extends Activity {
 		String username = etUsername.getText().toString();
 		String password = etPassword.getText().toString();
 		(new FetchUsersTask()).execute(username, password, "http://"+serverAddress+":"+serverPort+"/informer-api/users/" + username);
+	}
+	
+	public void register(View v) {
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+serverAddress+":"+serverPort+"/informer-auth/register.jsp"));
+		startActivity(browserIntent);
 	}
 
 	private void startInformerActivity() {

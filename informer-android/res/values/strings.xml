@@ -12,4 +12,11 @@
     <string name="login_l_signin">Identificarme</string>
     <string name="login_l_register">Regístrame en Informer</string>
 
+    <string name="megusta">Me gusta</string>
+    <string name="nomegusta">Puta mierda</string>
+    <string name="comentar">Comentar</string>
+    
+    <string name="comentarios"> comentario</string>
+    
+    <string name="color_post">#FFF9E9</string>
 </resources>
