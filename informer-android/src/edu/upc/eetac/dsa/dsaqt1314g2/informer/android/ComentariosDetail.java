@@ -1,13 +1,9 @@
 package edu.upc.eetac.dsa.dsaqt1314g2.informer.android;
 
-import java.io.IOException;
-import java.net.Authenticator;
 import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Properties;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -16,18 +12,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Comentario;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.ComentarioCollection;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
@@ -49,10 +42,10 @@ public class ComentariosDetail extends ListActivity {
 	String postid;
 	String username;
 
-	String URL;
+	String uri;
 	String contenido;
 	int visibilidad = -1;
-	
+
 	int offset = 0;
 	final int length = 7;
 	boolean end = false;
@@ -65,29 +58,10 @@ public class ComentariosDetail extends ListActivity {
 
 		Intent intent = getIntent();
 		postid = intent.getStringExtra("postid");
-
-		AssetManager assetManager = getAssets();
-		Properties config = new Properties();
-		try {
-			config.load(assetManager.open("config.properties"));
-			serverAddress = config.getProperty("server.address");
-			serverPort = config.getProperty("server.port");
-
-			Log.d(TAG, "Configured server " + serverAddress + ":" + serverPort);
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage(), e);
-			finish();
-		}
+		uri = intent.getStringExtra("comentarios");
 
 		SharedPreferences prefs = getSharedPreferences("informer-profile", Context.MODE_PRIVATE);
 		username = prefs.getString("username", null);
-		final String password = prefs.getString("userpass", null);
-
-		Authenticator.setDefault(new Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password.toCharArray());
-			}
-		});
 
 		setTitle("Comentarios");
 		setContentView(R.layout.comentarios_layout);
@@ -97,25 +71,26 @@ public class ComentariosDetail extends ListActivity {
 		setListAdapter(adapter);
 
 		api = new InformerAPI();
-		
+
 		getListView().setOnScrollListener(new OnScrollListener() {
-		    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		    	if (getListView().getLastVisiblePosition() == (adapter.getCount() - 1) && end) {
-		    		getComentarios();
-		    		end=false;
-		    	}
-		    }
-		    public void onScrollStateChanged(AbsListView view, int scrollState) {
-		    }
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (getListView().getLastVisiblePosition() == (adapter.getCount() - 1) && end) {
+					getComentarios();
+					end = false;
+				}
+			}
+
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			}
 		});
 		getComentarios();
 
 	}
-	
+
 	private void getComentarios() {
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios?o="+offset+"&l="+length);
+			url = new URL(uri + "?o=" + offset + "&l=" + length);
 			offset += length;
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
@@ -162,7 +137,7 @@ public class ComentariosDetail extends ListActivity {
 			}
 			if (pd != null) {
 				pd.dismiss();
-			}				
+			}
 		}
 	}
 
@@ -172,7 +147,6 @@ public class ComentariosDetail extends ListActivity {
 	}
 
 	public void publicar(View v) {
-		URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios";
 		contenido = ((EditText) findViewById(R.id.contenido)).getText().toString();
 		if (contenido == "")
 			return;
@@ -182,7 +156,7 @@ public class ComentariosDetail extends ListActivity {
 		ab.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface d, int choice) {
 				visibilidad = choice;
-				(new PublicarTask()).execute(URL, contenido, Integer.toString(visibilidad));
+				(new PublicarTask()).execute(uri, contenido, Integer.toString(visibilidad));
 				((EditText) findViewById(R.id.contenido)).setText("");
 				Log.d(TAG, "jasidjansiodnsadn" + Integer.toString(visibilidad));
 			}
@@ -237,13 +211,13 @@ public class ComentariosDetail extends ListActivity {
 			public void onClick(DialogInterface d, int choice) {
 				if (!soyyo) {
 					if (choice == 0) {
-						String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios/" + comentarioList.get(position).getIdentificador() + "/denunciar";
+						String URL = comentarioList.get(position).getLinkByRel("denunciar");
 						(new DenunciarComentarioTask()).execute(URL, Integer.toString(position));
 					} else
 						Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();
 				} else {
 					if (choice <= 3) {
-						String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios/" + comentarioList.get(position).getIdentificador();
+						String URL = comentarioList.get(position).getLinkByRel("modificar");
 						(new UpdateVisibilidadTask()).execute(URL, Integer.toString(choice));
 					} else
 						Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();

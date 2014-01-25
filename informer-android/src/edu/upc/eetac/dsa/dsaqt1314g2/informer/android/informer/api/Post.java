@@ -128,5 +128,14 @@ public class Post {
 	public void setLiked(int liked) {
 		this.liked = liked;
 	}
+	
+	public String getLinkByRel(String rel) {
+		int i = 0;
+		while(!links.get(i).getRel().equals(rel)) {
+//			Log.d("asda",links.get(i).getRel()+"   "+i);
+			i++;
+		}
+		return links.get(i).getUri();
+	}
 
 }

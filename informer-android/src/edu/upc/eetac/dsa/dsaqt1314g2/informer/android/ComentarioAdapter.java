@@ -12,7 +12,7 @@ import android.widget.TextView;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Comentario;
 
 public class ComentarioAdapter extends BaseAdapter {
-	private final static String TAG = ComentarioAdapter.class.toString();
+	//private final static String TAG = ComentarioAdapter.class.toString();
 	private ArrayList<Comentario> data;
 	private LayoutInflater inflater;
 	private Context context;

@@ -1,16 +1,12 @@
 package edu.upc.eetac.dsa.dsaqt1314g2.informer.android;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Properties;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -122,7 +118,8 @@ public class PostAdapter extends BaseAdapter {
 				// URL = data.get(position).getLinks().get(i).getUri();
 				// (new LikeTask()).execute(URL);
 				// }
-				String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/like";
+				String URL = data.get(position).getLinkByRel("like");
+				//String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/like";
 				(new LikeTask()).execute(URL);
 				((TextView) v).setTextColor(Color.GREEN);
 				((TextView)((ViewGroup)v.getParent()).getChildAt(3)).setTextColor(Color.BLACK);
@@ -132,7 +129,8 @@ public class PostAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "NO ME GUSTA Me ha pulsado " + data.get(position).getIdentificador());
-				String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/dislike";
+				String URL = data.get(position).getLinkByRel("dislike");
+				//String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/dislike";
 				(new LikeTask()).execute(URL);
 				((TextView) v).setTextColor(Color.RED);
 				((TextView)((ViewGroup)v.getParent()).getChildAt(1)).setTextColor(Color.BLACK);
@@ -144,6 +142,7 @@ public class PostAdapter extends BaseAdapter {
 				Log.d(TAG, "COMENTAR Me ha pulsado " + data.get(position).getIdentificador());
 				Intent intent = new Intent(context, ComentariosDetail.class);
 				intent.putExtra("postid", Integer.toString(data.get(position).getIdentificador()));
+				intent.putExtra("comentarios", data.get(position).getLinkByRel("comentarios"));
 				context.startActivity(intent);
 			}
 		});
@@ -153,6 +152,7 @@ public class PostAdapter extends BaseAdapter {
 				Log.d(TAG, "VER COMENTARIOS Me ha pulsado " + data.get(position).getIdentificador());
 				Intent intent = new Intent(context, ComentariosDetail.class);
 				intent.putExtra("postid", Integer.toString(data.get(position).getIdentificador()));
+				intent.putExtra("comentarios", data.get(position).getLinkByRel("comentarios"));
 				context.startActivity(intent);
 			}
 		});

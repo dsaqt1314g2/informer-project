@@ -29,7 +29,8 @@ public class ComentariosAPILinkBuilder {
 	}
 
 	public static final Link buildURIComentarios(UriInfo uriInfo, int offset, String length, String postid, String rel) {
-		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).build(postid);
+		//URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).queryParam("o", offset).queryParam("l", length).build(postid);
+		URI uriStings = uriInfo.getBaseUriBuilder().path(ComentarioResource.class).build(postid);
 		Link self = new Link();
 		self.setUri(uriStings.toString());
 		self.setRel(rel);

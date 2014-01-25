@@ -11,15 +11,15 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 public class InformerAPI {
 	private final static String TAG = InformerAPI.class.toString();
+	@SuppressLint("SimpleDateFormat")
 	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public PostCollection getPosts(URL url) { // URL direccion del recurso -->
@@ -131,8 +131,6 @@ public class InformerAPI {
 		}
 		return true;
 	}
-	
-	
 
 	public User getUser(final String username, final String password, String url_string) {
 		User user = new User();
@@ -179,7 +177,11 @@ public class InformerAPI {
 			Link link = new Link();
 			link.setRel(jsonLink.getString("rel"));
 			link.setTitle(jsonLink.getString("title"));
-			link.setType(jsonLink.getString("type"));
+			try {
+				link.setType(jsonLink.getString("type"));
+			} catch(JSONException e) {
+				
+			}
 			link.setUri(jsonLink.getString("uri"));
 			links.add(link);
 		}
@@ -197,8 +199,8 @@ public class InformerAPI {
 		post.setLiked(source.getInt("liked"));
 		post.setNumcomentarios(source.getInt("numcomentarios"));
 
-		// JSONArray jsonStingLinks = source.getJSONArray("links");
-		// parseLinks(jsonStingLinks, post.getLinks());
+		JSONArray jsonPostLinks = source.getJSONArray("links");
+		parseLinks(jsonPostLinks, post.getLinks());
 		return post;
 	}
 
@@ -264,7 +266,7 @@ public class InformerAPI {
 
 		return jsonPost;
 	}
-	
+
 	public Comentario createComentario(URL url, String contenido, String visibilidad) {
 		Comentario c = new Comentario();
 		c.setContenido(contenido);
@@ -308,7 +310,7 @@ public class InformerAPI {
 		}
 		return c;
 	}
-	
+
 	private JSONObject createJsonComentario(Comentario comentario) throws JSONException {
 		JSONObject jsonComentario = new JSONObject();
 		jsonComentario.put("contenido", comentario.getContenido());

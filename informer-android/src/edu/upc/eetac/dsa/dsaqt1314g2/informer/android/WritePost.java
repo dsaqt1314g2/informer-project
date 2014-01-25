@@ -16,7 +16,7 @@ import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Post;
 
 public class WritePost extends Activity {
 
-	private final static String TAG = WritePost.class.toString();
+	//private final static String TAG = WritePost.class.toString();
 
 	private class PostTask extends AsyncTask<String, Void, Post> {
 		private URL url;

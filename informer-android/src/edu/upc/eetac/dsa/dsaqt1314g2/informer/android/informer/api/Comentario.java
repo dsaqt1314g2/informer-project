@@ -93,5 +93,11 @@ public class Comentario {
 	public void setLinks(ArrayList<Link> links) {
 		this.links = links;
 	}
+	
+	public String getLinkByRel(String rel) {
+		int i = 0;
+		while(!links.get(i).getRel().equals(rel)) i++;
+		return links.get(i).getUri();
+	}
 
 }

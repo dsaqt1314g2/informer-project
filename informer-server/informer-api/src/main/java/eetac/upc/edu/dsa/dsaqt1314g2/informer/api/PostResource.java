@@ -117,7 +117,7 @@ public class PostResource {
 					post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
 				if (post.getLiked() != 0)
 					post.addLink(PostsAPILinkBuilder.buildURINeutroPostId(uriInfo, post.getIdentificador(), "eliminar voto"));
-				post.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, Integer.toString(post.getIdentificador()), "self"));
+				post.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, Integer.toString(post.getIdentificador()), "comentarios"));
 				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
 				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
 				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
