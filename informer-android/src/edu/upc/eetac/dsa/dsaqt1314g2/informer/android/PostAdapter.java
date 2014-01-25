@@ -94,10 +94,14 @@ public class PostAdapter extends BaseAdapter {
 			viewHolder.tvComentarios.setText(data.get(position).getNumcomentarios() + " comentario");
 		else
 			viewHolder.tvComentarios.setText(data.get(position).getNumcomentarios() + " comentario" + "s");
-		if (data.get(position).getLiked() == 2)
+		if (data.get(position).getLiked() == 2) {
 			viewHolder.tvMeGusta.setTextColor(Color.GREEN);
-		else if (data.get(position).getLiked() == 1)
+			viewHolder.tvNoMeGusta.setTextColor(Color.BLACK);
+		}
+		else if (data.get(position).getLiked() == 1) {
+			viewHolder.tvMeGusta.setTextColor(Color.BLACK);
 			viewHolder.tvNoMeGusta.setTextColor(Color.RED);
+		}
 		viewHolder.tvMeGusta.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

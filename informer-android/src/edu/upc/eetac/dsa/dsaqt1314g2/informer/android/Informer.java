@@ -178,8 +178,22 @@ public class Informer extends ListActivity {
 			Intent intent = new Intent(this, WritePost.class);
 			intent.putExtra("url", url);
 			startActivity(intent);
+			finish();
 			return true;
 
+		case R.id.salir:
+			this.getSharedPreferences("informer-profile", 0).edit().clear().commit();
+
+			Authenticator.setDefault(new Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(null, null);
+				}
+			});
+			intent = new Intent(this, Login.class);
+			startActivity(intent);
+			finish();
+			return true;
+			
 		default:
 			return super.onOptionsItemSelected(item);
 		}

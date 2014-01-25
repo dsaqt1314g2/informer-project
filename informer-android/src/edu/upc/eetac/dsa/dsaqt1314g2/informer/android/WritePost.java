@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -62,10 +63,10 @@ public class WritePost extends Activity {
 	}
  
 	public void cancel(View v) {
-		finish();
+		showPosts();
 	}
  
-	public void postSting(View v) {
+	public void postPost(View v) {
 		EditText etSubject = (EditText) findViewById(R.id.etSubject);
 		EditText etContent = (EditText) findViewById(R.id.etContent);
 		Spinner etvisibilidad = (Spinner) findViewById(R.id.spinner_visibilidad);
@@ -81,5 +82,22 @@ public class WritePost extends Activity {
 		Intent intent = new Intent(this, Informer.class);
 		startActivity(intent);
 		finish();
+	}
+	
+	
+	// 2.0 and above
+	@Override
+	public void onBackPressed() {
+		showPosts();
+	}
+
+	// Before 2.0
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	showPosts();
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
 	}
 }

@@ -23,6 +23,7 @@
     <string name="imagen_perfil_description">Imagen de perfil</string>
     <string name="notify_posts_nomore">Has alcanzado el final de la lista de cotilleos</string>
     <string name="notify_comentarios_nomore">Has alcanzado el final de la lista de comentarios</string>
+    <string name="menu_salir">Cerrar sesión</string>
 
     <string-array name="spinner_post_visibilidad">
         <item>Anónimo</item>
