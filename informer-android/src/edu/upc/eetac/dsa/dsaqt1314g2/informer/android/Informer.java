@@ -21,6 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Post;
@@ -39,6 +42,11 @@ public class Informer extends ListActivity {
 
 	String serverAddress = "";
 	String serverPort = "";
+
+	int offset = 0;
+	final int length = 7;
+	
+	boolean end = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -76,15 +84,32 @@ public class Informer extends ListActivity {
 		setListAdapter(adapter);
 
 		api = new InformerAPI();
+
+		getListView().setOnScrollListener(new OnScrollListener() {
+		    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		    	if (getListView().getLastVisiblePosition() == (adapter.getCount() - 1) && end) {
+		    		getPosts();
+		    		end=false;
+		    	}
+		    }
+		    public void onScrollStateChanged(AbsListView view, int scrollState) {
+		    }
+		});
+		getPosts();
+	}
+
+
+
+	private void getPosts() {
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts?&o=0&l=100");
+			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts?o=" + offset + "&l=" + length);
+			offset += length;
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
 			finish();
 		}
 		(new FetchPostsTask()).execute(url);
-
 	}
 
 	// Progresso void (indeterminado), result PostCollection (lo que devuelve)
@@ -102,21 +127,20 @@ public class Informer extends ListActivity {
 
 		@Override
 		protected PostCollection doInBackground(URL... params) {
-			PostCollection Posts = api.getPosts(params[0]);
-			return Posts;
+			return api.getPosts(params[0]);
 		}
 
 		@Override
 		protected void onPostExecute(PostCollection result) {
-			// ArrayList<Post> Posts = new
-			// ArrayList<Post>(result.getPosts());
-			// for (Post s : Posts) {
-			// Log.d(TAG, s.getPostId() + "-" + s.getSubject());
-			// }
-			addPosts(result);
+			if (result == null)
+				Toast.makeText(Informer.this, getString(R.string.notify_posts_nomore), Toast.LENGTH_SHORT).show();
+			else 
+				addPosts(result);
 			if (pd != null) {
 				pd.dismiss();
 			}
+			if (result != null)
+				end=true;
 		}
 	}
 
@@ -154,13 +178,11 @@ public class Informer extends ListActivity {
 			Intent intent = new Intent(this, WritePost.class);
 			intent.putExtra("url", url);
 			startActivity(intent);
-
 			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	
+
 }

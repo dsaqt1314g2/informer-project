@@ -9,6 +9,7 @@
 
     <ListView
         android:id="@android:id/list"
+        android:tag="listaPost"
         android:layout_width="match_parent"
         android:layout_height="match_parent" 
         android:divider="#C9C9C9"/>

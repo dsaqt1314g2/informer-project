@@ -22,10 +22,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Comentario;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.ComentarioCollection;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
@@ -50,6 +52,10 @@ public class ComentariosDetail extends ListActivity {
 	String URL;
 	String contenido;
 	int visibilidad = -1;
+	
+	int offset = 0;
+	final int length = 7;
+	boolean end = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -91,15 +97,31 @@ public class ComentariosDetail extends ListActivity {
 		setListAdapter(adapter);
 
 		api = new InformerAPI();
+		
+		getListView().setOnScrollListener(new OnScrollListener() {
+		    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		    	if (getListView().getLastVisiblePosition() == (adapter.getCount() - 1) && end) {
+		    		getComentarios();
+		    		end=false;
+		    	}
+		    }
+		    public void onScrollStateChanged(AbsListView view, int scrollState) {
+		    }
+		});
+		getComentarios();
+
+	}
+	
+	private void getComentarios() {
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios?o=1&l=1000");
+			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios?o="+offset+"&l="+length);
+			offset += length;
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
 			finish();
 		}
 		(new FetchComentariosTask()).execute(url);
-
 	}
 
 	// Progresso void (indeterminado), result PostCollection (lo que devuelve)
@@ -124,16 +146,23 @@ public class ComentariosDetail extends ListActivity {
 		@Override
 		protected void onPostExecute(ComentarioCollection result) {
 			if (result == null) {
-				result = new ComentarioCollection();
-				Comentario c = new Comentario();
-				c.setContenido(getString(R.string.no_hay_comentarios));
-				c.setUsername("");
-				result.add(c);
+				if (comentarioList.size() != 0)
+					Toast.makeText(ComentariosDetail.this, getString(R.string.notify_comentarios_nomore), Toast.LENGTH_SHORT).show();
+				else {
+					result = new ComentarioCollection();
+					Comentario c = new Comentario();
+					c.setContenido(getString(R.string.no_hay_comentarios));
+					c.setUsername("");
+					result.add(c);
+				}
 			}
-			addComentarios(result);
+			if (result != null) {
+				addComentarios(result);
+				end = true;
+			}
 			if (pd != null) {
 				pd.dismiss();
-			}
+			}				
 		}
 	}
 
