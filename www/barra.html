@@ -1,20 +1,16 @@
 <script src="js/variable.js"></script>
 <nav>
   <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">        
-      <div class="container"> 
-        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>            
-        <a class="brand" href="main.html">Informer Web</a>                      
-        <div class="nav-collapse collapse">
-          <ul class="nav">
-            <li class="active"><a href="explicacion.html">&iquest;Que es?</a></li>
-            <li><a href="explicacion.html#why">&iquest;Por que? </a></li>              
+    <div class="container">        
+      <div class="container"><div class="navbar-header"><a class="navbar-brand" href="index.html">Informer Web</a></div> 
+               
+                              
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="explicacion.html">¿Que es?</a></li>
+            <li><a href="explicacion.html#why">¿Por que? </a></li>              
             <li><a href="#about">About</a></li>
-            <li><a href="http://localhost:8080/informer-auth/register.jsp">Registrarse</a></li>
+            <li><a href="http://localhost:8000/informer-auth/register.jsp">Registrarse</a></li>
             <li class="dropdown">
               <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -29,12 +25,25 @@
             </li>
           </ul>
           <div class="navbar-form pull-right" id="my-user-informer">
-            <input class="span2" id="username" type="text" placeholder="Usuario">&nbsp;&nbsp;
-            <input class="span2"  id="userpass"  type="password" placeholder="Contrase&ntilde;a">&nbsp;&nbsp;
-            <button id="button_login" onClick="getLogin()" class="btn">Conectarse</button>
+            <input class="span2 form-control" id="username" type="text" placeholder="Usuario">&nbsp;&nbsp;
+            <input class="span2 form-control" id="userpass" type="password" placeholder="Contraseña">&nbsp;&nbsp;
+            <button id="button_login" onclick="getLogin()" class="btn btn-default">Conectarse</button>
           </div>
         </div><!--/.nav-collapse -->
       </div>
     </div>
   </div>
 </nav>
+
+	  <script src="js/extra/bootstrap-transition.js"></script>
+      <script src="js/extra/bootstrap-alert.js"></script>
+      <script src="js/extra/bootstrap-modal.js"></script>
+      <script src="js/extra/bootstrap-dropdown.js"></script>
+      <script src="js/extra/bootstrap-scrollspy.js"></script>
+      <script src="js/extra/bootstrap-tab.js"></script>
+      <script src="js/extra/bootstrap-tooltip.js"></script>
+      <script src="js/extra/bootstrap-popover.js"></script>
+      <script src="js/extra/bootstrap-button.js"></script>
+      <script src="js/extra/bootstrap-collapse.js"></script>
+      <script src="js/extra/bootstrap-carousel.js"></script>
+      <script src="js/extra/bootstrap-typeahead.js"></script>

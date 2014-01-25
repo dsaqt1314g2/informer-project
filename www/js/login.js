@@ -2,6 +2,7 @@ function getLogin() {
 	var username = $('#username').val();
 	var userpass = $('#userpass').val();
 	var url = API_BASE_URL + "users/"+username;
+	var urlredirect = "http://localhost:8000/informer-auth/web";
 	console.log("url: " + url);
  
 	$.ajax({
@@ -19,15 +20,13 @@ function getLogin() {
 	        request.setRequestHeader("Authorization", "Basic "+ btoa(username+':'+userpass));
 	    },
 	    success: function (data, status, jqxhr) {
-			//$.cookie("username", username);
-			//$.cookie("userpass", userpass);
 			document.cookie="username="+username;
 			document.cookie="userpass="+userpass;
-			window.location = "http://localhost/informer-project/post_viewer.html";
+			window.location = urlredirect +"/post_viewer.html";
 			console.log(data);
 		},
 	    error: function (jqXHR, textStatus) {
-	    	//window.location = "http://localhost/informer-project/login.html";
+	    	window.location = urlredirect +"/login.html";
 			console.log(textStatus);
 		}
 	});
@@ -54,11 +53,14 @@ function logOut() {
 $("document").ready(function() {
 	var username=getCookie("username");
 	var userpass=getCookie("userpass");
-	if (username!="" && userpass!= "") 
+	//$('#contenedor-barra').load('barra.html');
+	
+	//$('#contenedor-barra').load('barra_conectado.html');
+	if (username!= "" && userpass!= "") 
     	$('#contenedor-barra').load('barra_conectado.html');
     else
-    	//$('#contenedor-barra').load('barra.html');
-    	$('#contenedor-barra').load('barra_conectado.html');
+    	$('#contenedor-barra').load('barra.html');
+    	
     console.log(username+":"+userpass);
 });
 
