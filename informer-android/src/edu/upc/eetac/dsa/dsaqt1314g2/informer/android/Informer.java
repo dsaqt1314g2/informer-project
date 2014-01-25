@@ -78,7 +78,7 @@ public class Informer extends ListActivity {
 		api = new InformerAPI();
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts?&o=0&l=5");
+			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts?&o=0&l=100");
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
 			finish();
@@ -161,4 +161,6 @@ public class Informer extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	
 }

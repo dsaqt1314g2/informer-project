@@ -1,11 +1,16 @@
 package edu.upc.eetac.dsa.dsaqt1314g2.informer.android;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Properties;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -85,10 +90,10 @@ public class PostAdapter extends BaseAdapter {
 		viewHolder.tvUsername.setText(username);
 		viewHolder.tvDate.setText(date);
 		viewHolder.tvContent.setText(content);
-		if (data.get(position).getNumcomentarios() == 1) //TODO: GET @STRING
+		if (data.get(position).getNumcomentarios() == 1) // TODO: GET @STRING
 			viewHolder.tvComentarios.setText(data.get(position).getNumcomentarios() + " comentario");
 		else
-			viewHolder.tvComentarios.setText(data.get(position).getNumcomentarios() + " comentario"+"s");
+			viewHolder.tvComentarios.setText(data.get(position).getNumcomentarios() + " comentario" + "s");
 		if (data.get(position).getLiked() == 2)
 			viewHolder.tvMeGusta.setTextColor(Color.GREEN);
 		else if (data.get(position).getLiked() == 1)
@@ -131,6 +136,18 @@ public class PostAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "COMENTAR Me ha pulsado " + data.get(position).getIdentificador());
+				Intent intent = new Intent(context, ComentariosDetail.class);
+				intent.putExtra("postid", Integer.toString(data.get(position).getIdentificador()));
+				context.startActivity(intent);
+			}
+		});
+		viewHolder.tvComentarios.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "VER COMENTARIOS Me ha pulsado " + data.get(position).getIdentificador());
+				Intent intent = new Intent(context, ComentariosDetail.class);
+				intent.putExtra("postid", Integer.toString(data.get(position).getIdentificador()));
+				context.startActivity(intent);
 			}
 		});
 		return convertView;

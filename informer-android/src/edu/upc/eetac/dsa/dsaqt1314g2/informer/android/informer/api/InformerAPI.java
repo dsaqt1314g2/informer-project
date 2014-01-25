@@ -131,6 +131,8 @@ public class InformerAPI {
 		}
 		return true;
 	}
+	
+	
 
 	public User getUser(final String username, final String password, String url_string) {
 		User user = new User();
@@ -254,10 +256,190 @@ public class InformerAPI {
 	}
 
 	private JSONObject createJsonPost(Post post) throws JSONException {
-		JSONObject jsonSting = new JSONObject();
-		jsonSting.put("asunto", post.getAsunto());
-		jsonSting.put("contenido", post.getContenido());
+		JSONObject jsonPost = new JSONObject();
+		jsonPost.put("asunto", post.getAsunto());
+		jsonPost.put("contenido", post.getContenido());
 
-		return jsonSting;
+		return jsonPost;
+	}
+	
+	public Comentario createComentario(URL url, String contenido) {
+		Comentario c = new Comentario();
+		c.setContenido(contenido);
+		c.setVisibilidad(0);
+		HttpURLConnection urlConnection = null;
+		try {
+			JSONObject jsonComentario = createJsonComentario(c);
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_COMENTARIO);
+			urlConnection.setRequestProperty("Content-Type", MediaType.INFORMER_API_COMENTARIO);
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			PrintWriter writer = new PrintWriter(urlConnection.getOutputStream());
+			writer.println(jsonComentario.toString());
+			writer.close();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+
+			jsonComentario = new JSONObject(sb.toString());
+			c = parseComentario(jsonComentario);
+		} catch (JSONException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (ParseException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return c;
+	}
+	
+	private JSONObject createJsonComentario(Comentario comentario) throws JSONException {
+		JSONObject jsonComentario = new JSONObject();
+		jsonComentario.put("contenido", comentario.getContenido());
+		jsonComentario.put("visibilidad", comentario.getVisibilidad());
+
+		return jsonComentario;
+	}
+
+	public ComentarioCollection getComentarios(URL url) {
+		ComentarioCollection comentarios = new ComentarioCollection();
+
+		HttpURLConnection urlConnection = null;
+		try {
+			urlConnection = (HttpURLConnection) url.openConnection();
+
+			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_COMENTARIO_COLLECTION);
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoInput(true);
+			urlConnection.connect(); // se hace la conexion
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+
+			// sb.toString() es la respuesta JSON
+			JSONObject jsonObject = new JSONObject(sb.toString()); // org.json
+			JSONArray jsonLinks = jsonObject.getJSONArray("links"); // org.json
+			parseLinks(jsonLinks, comentarios.getLinks());
+
+			JSONArray jsonComentarios = jsonObject.getJSONArray("comentarios");
+
+			for (int i = 0; i < jsonComentarios.length(); i++) {
+				JSONObject jsonComentario = jsonComentarios.getJSONObject(i);
+				Comentario comentario = parseComentario(jsonComentario);
+				comentarios.add(comentario);
+			}
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (JSONException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (ParseException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+
+		return comentarios;
+	}
+
+	private Comentario parseComentario(JSONObject source) throws JSONException, ParseException {
+		Comentario comentario = new Comentario();
+		// if (source.has("contenido"))
+		comentario.setContenido(source.getString("contenido"));
+		comentario.setIdentificador(source.getInt("identificador"));
+		comentario.setId_post(source.getInt("id_post"));
+		String tsLastModified = source.getString("publicacion_date").replace("T", " ");
+		comentario.setPublicacion_date(sdf.parse(tsLastModified));
+		comentario.setUsername(source.getString("username"));
+		return comentario;
+	}
+
+	public Boolean denunciarComentario(URL url) {
+		HttpURLConnection urlConnection = null;
+		try {
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return true;
+	}
+
+	public Comentario updateVisibilidadComentario(URL url, String visibilidad) {
+		Comentario c = new Comentario();
+		c.setVisibilidad(Integer.parseInt(visibilidad));
+		HttpURLConnection urlConnection = null;
+		try {
+			JSONObject jsonComentario = createJsonComentario(c);
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_COMENTARIO);
+			urlConnection.setRequestProperty("Content-Type", MediaType.INFORMER_API_COMENTARIO);
+			urlConnection.setRequestMethod("PUT");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			PrintWriter writer = new PrintWriter(urlConnection.getOutputStream());
+			writer.println(jsonComentario.toString());
+			writer.close();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+
+			jsonComentario = new JSONObject(sb.toString());
+			c = parseComentario(jsonComentario);
+		} catch (JSONException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (ParseException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return c;
 	}
 }

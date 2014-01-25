@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name="Informer" />
+        <activity
+            android:name="ComentariosDetail"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name="PostDetail" />
         <activity android:name="WritePost" />
     </application>
