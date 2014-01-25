@@ -391,7 +391,7 @@ public class ComentarioResource {
 			if (!rs.next())
 				throw new PostNotFoundException();
 
-			query = "SELECT 1 FROM comentarios, posts WHERE comentarios.identificador='" + comentarioid + "' and comentarios.identificador=posts.identificador;";
+			query = "SELECT 1 FROM comentarios, posts WHERE comentarios.identificador='" + comentarioid + "' and comentarios.id_post=posts.identificador;";
 			rs = stmt.executeQuery(query);
 			if (!rs.next())
 				throw new ComentarioNotFoundException();

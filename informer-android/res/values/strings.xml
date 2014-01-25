@@ -6,18 +6,19 @@
     <string name="l_content">Contenido</string>
     <string name="lb_cancel">Cancelar</string>
     <string name="lb_send">Enviar</string>
-    <string name="l_post">Post</string>
+    <string name="l_post">Escribir una genialidad</string>
     <string name="login_l_username">Usuario</string>
     <string name="login_l_password">Password</string>
     <string name="login_l_signin">Identificarme</string>
     <string name="login_l_register">Regístrame en Informer</string>
-
     <string name="megusta">Me gusta</string>
     <string name="nomegusta">Puta mierda</string>
     <string name="comentar">Comentar</string>
     <string name="publicar">Publicar</string>
-    <string name="no_hay_comentarios">No se han encontrado comentarios...</string>
+    <string name="no_hay_comentarios">No se han encontrado comentarios&#8230;</string>
     <string name="comentarios"> comentario</string>
-    
+    <string name="escribe_un_comentario">Escribe un comentario..</string>
+    <string name="imagen_perfil_description">Imagen de perfil</string>
     <string name="color_post">#FFF9E9</string>
+
 </resources>

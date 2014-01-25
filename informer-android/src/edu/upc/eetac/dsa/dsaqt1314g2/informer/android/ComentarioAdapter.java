@@ -1,22 +1,15 @@
 package edu.upc.eetac.dsa.dsaqt1314g2.informer.android;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Comentario;
-import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
 
 public class ComentarioAdapter extends BaseAdapter {
 	private final static String TAG = ComentarioAdapter.class.toString();
@@ -76,7 +69,7 @@ public class ComentarioAdapter extends BaseAdapter {
 															// vista qe toca
 		}
 		String username = data.get(position).getUsername();
-		String content = data.get(position).getContenido();
+		String content = data.get(position).getContenido();// + "("+data.get(position).getIdentificador()+")";
 		viewHolder.tvUsername.setText(username);
 		viewHolder.tvContent.setText(content);
 		if (data.get(position).getPublicacion_date() != null) {

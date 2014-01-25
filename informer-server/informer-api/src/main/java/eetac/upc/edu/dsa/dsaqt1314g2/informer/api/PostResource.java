@@ -777,6 +777,7 @@ public class PostResource {
 			if (!rs.next())
 				throw new PostNotFoundException();
 			String update = "UPDATE posts SET visibilidad=" + post.getVisibilidad() + " WHERE identificador=" + postid + " and username='" + username + "';";
+			
 			int lineas_afectadas = stmt.executeUpdate(update);
 			if (lineas_afectadas == 0)
 				throw new PostNotYoursException();

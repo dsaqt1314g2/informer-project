@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 import android.app.AlertDialog;
@@ -20,8 +21,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Comentario;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.ComentarioCollection;
@@ -42,6 +45,7 @@ public class ComentariosDetail extends ListActivity {
 	String serverPort = "";
 
 	String postid;
+	String username;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -66,7 +70,7 @@ public class ComentariosDetail extends ListActivity {
 		}
 
 		SharedPreferences prefs = getSharedPreferences("informer-profile", Context.MODE_PRIVATE);
-		final String username = prefs.getString("username", null);
+		username = prefs.getString("username", null);
 		final String password = prefs.getString("userpass", null);
 
 		Authenticator.setDefault(new Authenticator() {
@@ -85,7 +89,7 @@ public class ComentariosDetail extends ListActivity {
 		api = new InformerAPI();
 		URL url = null;
 		try {
-			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios");
+			url = new URL("http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios?o=1&l=1000");
 		} catch (MalformedURLException e) {
 			Log.d(TAG, e.getMessage(), e);
 			finish();
@@ -175,25 +179,30 @@ public class ComentariosDetail extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, final int position, final long id) {
-		final String items[] = { "Denunciar", "Ocultar", "Sólo amigos", "Público" };
+		String items[] = { "Denunciar", "Ocultar", "Sólo amigos", "Público" };
+		final boolean soyyo = username.equals(comentarioList.get(position).getUsername());
+		if (soyyo)
+			items = Arrays.copyOfRange(items, 1, items.length);
+		else
+			items = Arrays.copyOfRange(items, 0, 1);
+
 		AlertDialog.Builder ab = new AlertDialog.Builder(this);
 		ab.setTitle("Acciones");
 		ab.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface d, int choice) {
-				if (choice == 0) {
-					String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/4/comentarios/" + id + "/denunciar";
-					(new DenunciarComentarioTask()).execute(URL, Integer.toString(position));
-				} else if (choice == 1) {
-					String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/4/comentarios/" + id;
-					(new UpdateVisibilidadTask()).execute(URL, "0");
-				} else if (choice == 2) {
-					String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/4/comentarios/" + id;
-					(new UpdateVisibilidadTask()).execute(URL, "1");
-				} else if (choice == 3) {
-					String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/4/comentarios/" + id;
-					(new UpdateVisibilidadTask()).execute(URL, "2");
-				} else
-					Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();
+				if (!soyyo) {
+					if (choice == 0) {
+						String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios/" + comentarioList.get(position).getIdentificador() + "/denunciar";
+						(new DenunciarComentarioTask()).execute(URL, Integer.toString(position));
+					} else
+						Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();
+				} else {
+					if (choice <= 3) {
+						String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios/" + comentarioList.get(position).getIdentificador();
+						(new UpdateVisibilidadTask()).execute(URL, Integer.toString(choice));
+					} else
+						Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		ab.show();
@@ -256,7 +265,7 @@ public class ComentariosDetail extends ListActivity {
 			if (result != null) {
 				Toast.makeText(ComentariosDetail.this, "Hecho!", Toast.LENGTH_SHORT).show();
 			} else
-				Toast.makeText(ComentariosDetail.this, "No se ha podido publicar el comentario", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ComentariosDetail.this, "No se ha podido modificar la visibilidad del comentario", Toast.LENGTH_SHORT).show();
 		}
 	}
 }
