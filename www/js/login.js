@@ -2,13 +2,14 @@ function getLogin() {
 	var username = $('#username').val();
 	var userpass = $('#userpass').val();
 	var url = API_BASE_URL + "users/"+username;
+	console.log("url: " + url);
  
 	$.ajax({
-		url : url,
-		type : 'GET',
-		crossDomain : true,
-		dataType : 'json',
-		headers : {
+		url: url,
+		type: 'GET',
+		crossDomain: true,
+		dataType: 'json',
+		headers: {
 			"Accept" : "application/vnd.informer.api.user+json",
 			//"Access-Control-Allow-Origin" : "*"
 		},
@@ -17,19 +18,31 @@ function getLogin() {
 	        request.withCredentials = true;
 	        request.setRequestHeader("Authorization", "Basic "+ btoa(username+':'+userpass));
 	    },
-	})
-	.done(function (data, status, jqxhr) {
-		//$.cookie("username", username);
-		//$.cookie("userpass", userpass);
-		document.cookie="username="+username;
-		document.cookie="userpass="+userpass;
-		window.location = "http://localhost/informer-project/post_viewer.html";
-		console.log(data);
-	})
-    .fail(function (jqXHR, textStatus) {
-    	//window.location = "http://localhost/informer-project/login.html";
-		console.log(textStatus);
+	    success: function (data, status, jqxhr) {
+			//$.cookie("username", username);
+			//$.cookie("userpass", userpass);
+			document.cookie="username="+username;
+			document.cookie="userpass="+userpass;
+			window.location = "http://localhost/informer-project/post_viewer.html";
+			console.log(data);
+		},
+	    error: function (jqXHR, textStatus) {
+	    	//window.location = "http://localhost/informer-project/login.html";
+			console.log(textStatus);
+		}
 	});
+//	.done(function (data, status, jqxhr) {
+//		//$.cookie("username", username);
+//		//$.cookie("userpass", userpass);
+//		document.cookie="username="+username;
+//		document.cookie="userpass="+userpass;
+//		window.location = "http://localhost/informer-project/post_viewer.html";
+//		console.log(data);
+//	})
+//    .fail(function (jqXHR, textStatus) {
+//    	//window.location = "http://localhost/informer-project/login.html";
+//		console.log(textStatus);
+//	});
 }
 
 function logOut() {
@@ -44,7 +57,8 @@ $("document").ready(function() {
 	if (username!="" && userpass!= "") 
     	$('#contenedor-barra').load('barra_conectado.html');
     else
-    	$('#contenedor-barra').load('barra.html');
+    	//$('#contenedor-barra').load('barra.html');
+    	$('#contenedor-barra').load('barra_conectado.html');
     console.log(username+":"+userpass);
 });
 
