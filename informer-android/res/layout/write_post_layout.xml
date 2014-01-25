@@ -4,37 +4,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dip" >
- 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/l_subject" />
- 
+
     <EditText
         android:id="@+id/etSubject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/hint_post_asunto"
         android:inputType="text"
-        android:singleLine="true" />
- 
-    <TextView
+        android:singleLine="true"
+        android:text="asdasdsad" />
+
+    <Spinner
+        android:id="@+id/spinner_visibilidad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/l_content" />
- 
+        android:drawSelectorOnTop="true"
+        android:entries="@array/spinner_post_visibilidad" />
+
     <EditText
         android:id="@+id/etContent"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="top|left"
-        android:inputType="text" />
- 
+        android:hint="@string/hint_post_contenido"
+        android:inputType="text"
+        android:text="contenido del post" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
- 
+
         <Button
             android:id="@+id/bCancel"
             android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
             android:layout_weight="0.5"
             android:onClick="cancel"
             android:text="@string/lb_cancel" />
- 
+
         <Button
             android:id="@+id/bSend"
             android:layout_width="wrap_content"
@@ -51,5 +52,5 @@
             android:onClick="postSting"
             android:text="@string/lb_send" />
     </LinearLayout>
- 
+
 </LinearLayout>

@@ -18,7 +18,16 @@
     <string name="no_hay_comentarios">No se han encontrado comentarios&#8230;</string>
     <string name="comentarios"> comentario</string>
     <string name="escribe_un_comentario">Escribe un comentario..</string>
+    <string name="hint_post_asunto">(Sin asunto)</string>
+    <string name="hint_post_contenido">Qué genialidad voy a escribir hoy&#8230;</string>
     <string name="imagen_perfil_description">Imagen de perfil</string>
+
+    <string-array name="spinner_post_visibilidad">
+        <item>Anónimo</item>
+        <item>Sólo amigos</item>
+        <item>Público</item>
+    </string-array>
+
     <string name="color_post">#FFF9E9</string>
 
 </resources>

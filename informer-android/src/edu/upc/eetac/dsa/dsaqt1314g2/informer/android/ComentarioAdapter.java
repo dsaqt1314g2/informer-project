@@ -69,7 +69,7 @@ public class ComentarioAdapter extends BaseAdapter {
 															// vista qe toca
 		}
 		String username = data.get(position).getUsername();
-		String content = data.get(position).getContenido();// + "("+data.get(position).getIdentificador()+")";
+		String content = data.get(position).getContenido();// +"("+data.get(position).getIdentificador()+")";
 		viewHolder.tvUsername.setText(username);
 		viewHolder.tvContent.setText(content);
 		if (data.get(position).getPublicacion_date() != null) {

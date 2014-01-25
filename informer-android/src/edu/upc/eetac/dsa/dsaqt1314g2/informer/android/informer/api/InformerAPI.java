@@ -209,10 +209,11 @@ public class InformerAPI {
 		return user;
 	}
 
-	public Post createPost(URL url, String asunto, String contenido) {
+	public Post createPost(URL url, String asunto, String contenido, String visibilidad) {
 		Post post = new Post();
 		post.setAsunto(asunto);
 		post.setContenido(contenido);
+		post.setVisibilidad(Integer.parseInt(visibilidad));
 
 		HttpURLConnection urlConnection = null;
 		try {
@@ -259,6 +260,7 @@ public class InformerAPI {
 		JSONObject jsonPost = new JSONObject();
 		jsonPost.put("asunto", post.getAsunto());
 		jsonPost.put("contenido", post.getContenido());
+		jsonPost.put("visibilidad", post.getVisibilidad());
 
 		return jsonPost;
 	}

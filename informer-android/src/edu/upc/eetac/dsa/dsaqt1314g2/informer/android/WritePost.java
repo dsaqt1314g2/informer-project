@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.InformerAPI;
 import edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api.Post;
 
@@ -16,11 +17,11 @@ public class WritePost extends Activity {
 
 	private final static String TAG = WritePost.class.toString();
 	 
-	private class PostStingTask extends AsyncTask<String, Void, Post> {
+	private class PostTask extends AsyncTask<String, Void, Post> {
 		private URL url;
 		private ProgressDialog pd;
  
-		public PostStingTask(URL url) {
+		public PostTask(URL url) {
 			super();
 			this.url = url;
 		}
@@ -28,13 +29,13 @@ public class WritePost extends Activity {
 		@Override
 		protected Post doInBackground(String... params) {
 			InformerAPI api = new InformerAPI();
-			Post post = api.createPost(url, params[0], params[1]);
+			Post post = api.createPost(url, params[0], params[1], params[2]);
 			return post;
 		}
  
 		@Override
 		protected void onPostExecute(Post result) {
-			showStings();
+			showPosts();
 			if (pd != null) {
 				pd.dismiss();
 			}
@@ -67,14 +68,16 @@ public class WritePost extends Activity {
 	public void postSting(View v) {
 		EditText etSubject = (EditText) findViewById(R.id.etSubject);
 		EditText etContent = (EditText) findViewById(R.id.etContent);
+		Spinner etvisibilidad = (Spinner) findViewById(R.id.spinner_visibilidad);
  
 		String subject = etSubject.getText().toString();
 		String content = etContent.getText().toString();
+		int visibilidad = etvisibilidad.getSelectedItemPosition();
  
-		(new PostStingTask(url)).execute(subject, content);
+		(new PostTask(url)).execute(subject, content, Integer.toString(visibilidad));
 	}
 	
-	private void showStings(){
+	private void showPosts(){
 		Intent intent = new Intent(this, Informer.class);
 		startActivity(intent);
 		finish();
