@@ -12,9 +12,9 @@ public class InformerRootAPIResource {
 	@Context
 	private UriInfo uriInfo;
 
-	@GET
-	@Produces(MediaType.INFORMER_API_LINK_COLLECTION)
-	public InformerRootAPIResource getLinkResources() {
+//	@GET
+//	@Produces(MediaType.INFORMER_API_LINK_COLLECTION)
+//	public InformerRootAPIResource getLinkResources() {
 		//TODO
 //		InformerRootAPI bra = new InformerRootAPI();
 //		bra.addLink(LibrosAPILinkBuilder.buildURIRootAPI(uriInfo));
@@ -22,5 +22,5 @@ public class InformerRootAPIResource {
 //		bra.addLink(LibrosAPILinkBuilder.buildTemplatedURIStings(uriInfo,"libros",false)); //rel = que es este enlace
 //		//bra.addLink(LibrosAPILinkBuilder.buildURIStings(uriInfo, "0", "5", "manolo", "sting"));
 //		return bra;		
-	}
+//	}
 }
