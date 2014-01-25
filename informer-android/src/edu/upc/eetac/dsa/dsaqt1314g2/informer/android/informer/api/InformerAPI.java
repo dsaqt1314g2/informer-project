@@ -265,10 +265,10 @@ public class InformerAPI {
 		return jsonPost;
 	}
 	
-	public Comentario createComentario(URL url, String contenido) {
+	public Comentario createComentario(URL url, String contenido, String visibilidad) {
 		Comentario c = new Comentario();
 		c.setContenido(contenido);
-		c.setVisibilidad(0);
+		c.setVisibilidad(Integer.parseInt(visibilidad));
 		HttpURLConnection urlConnection = null;
 		try {
 			JSONObject jsonComentario = createJsonComentario(c);

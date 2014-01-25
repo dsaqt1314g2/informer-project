@@ -47,6 +47,10 @@ public class ComentariosDetail extends ListActivity {
 	String postid;
 	String username;
 
+	String URL;
+	String contenido;
+	int visibilidad = -1;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -139,10 +143,22 @@ public class ComentariosDetail extends ListActivity {
 	}
 
 	public void publicar(View v) {
-		String URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios";
-		String contenido = ((EditText) findViewById(R.id.contenido)).getText().toString();
-		(new PublicarTask()).execute(URL, contenido);
-		((EditText) findViewById(R.id.contenido)).setText("");
+		URL = "http://" + serverAddress + ":" + serverPort + "/informer-api/posts/" + postid + "/comentarios";
+		contenido = ((EditText) findViewById(R.id.contenido)).getText().toString();
+		if (contenido == "")
+			return;
+		final String items[] = { "Anónimo", "Sólo amigos", "Público" };
+		AlertDialog.Builder ab = new AlertDialog.Builder(this);
+		ab.setTitle("Privacidad");
+		ab.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface d, int choice) {
+				visibilidad = choice;
+				(new PublicarTask()).execute(URL, contenido, Integer.toString(visibilidad));
+				((EditText) findViewById(R.id.contenido)).setText("");
+				Log.d(TAG, "jasidjansiodnsadn" + Integer.toString(visibilidad));
+			}
+		});
+		ab.show();
 	}
 
 	private class PublicarTask extends AsyncTask<String, Void, Comentario> {
@@ -162,7 +178,7 @@ public class ComentariosDetail extends ListActivity {
 				e.printStackTrace();
 				return null;
 			}
-			return api.createComentario(url, params[1]);
+			return api.createComentario(url, params[1], params[2]);
 		}
 
 		@Override
