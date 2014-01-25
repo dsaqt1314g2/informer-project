@@ -121,6 +121,7 @@ public class PostAdapter extends BaseAdapter {
 				String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/like";
 				(new LikeTask()).execute(URL);
 				((TextView) v).setTextColor(Color.GREEN);
+				((TextView)((ViewGroup)v.getParent()).getChildAt(3)).setTextColor(Color.BLACK);
 			}
 		});
 		viewHolder.tvNoMeGusta.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +131,7 @@ public class PostAdapter extends BaseAdapter {
 				String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/dislike";
 				(new LikeTask()).execute(URL);
 				((TextView) v).setTextColor(Color.RED);
+				((TextView)((ViewGroup)v.getParent()).getChildAt(1)).setTextColor(Color.BLACK);
 			}
 		});
 		viewHolder.tvComentar.setOnClickListener(new View.OnClickListener() {
