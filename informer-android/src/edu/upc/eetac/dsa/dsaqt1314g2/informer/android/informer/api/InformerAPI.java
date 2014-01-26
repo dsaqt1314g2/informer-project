@@ -198,7 +198,8 @@ public class InformerAPI {
 		post.setUsername(source.getString("username"));
 		post.setLiked(source.getInt("liked"));
 		post.setNumcomentarios(source.getInt("numcomentarios"));
-
+		post.setCalificaciones_positivas(source.getInt("calificaciones_positivas"));
+		post.setCalificaciones_negativas(source.getInt("calificaciones_negativas"));
 		JSONArray jsonPostLinks = source.getJSONArray("links");
 		parseLinks(jsonPostLinks, post.getLinks());
 		return post;
