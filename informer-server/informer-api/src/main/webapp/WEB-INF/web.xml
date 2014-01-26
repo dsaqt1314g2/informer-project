@@ -112,6 +112,19 @@
 
 	<security-constraint>
 		<web-resource-collection>
+			<web-resource-name>Notificaciones</web-resource-name>
+			<url-pattern>/user/*</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>registered</role-name>
+			<role-name>moderador</role-name>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
 			<web-resource-name>Posts</web-resource-name>
 			<url-pattern>/posts/*</url-pattern>
 			<http-method>DELETE</http-method>
