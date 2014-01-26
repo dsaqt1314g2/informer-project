@@ -1017,6 +1017,7 @@ public class PostResource {
 			return autor;
 		}
 		// if (visibilidad == 2)
+		
 		return autor;
 	}
 }
