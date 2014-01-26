@@ -1,3 +1,4 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var loaded = 0;
 var offset = 1;
 var length = 5;
@@ -16,7 +17,7 @@ function getListPosts() {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
 	.done(function (data, status, jqxhr) {
@@ -88,7 +89,7 @@ function getRankingPosts(ranking) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
 	.done(function (data, status, jqxhr) {
@@ -148,7 +149,7 @@ function postComentario(postid) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -181,7 +182,7 @@ function processComentarios(identificador, caso) {
 			beforeSend: function (request)
 		    {
 		        request.withCredentials = true;
-		        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+		        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 		    },
 		})
 	    .done(function (data, status, jqxhr) {
@@ -213,7 +214,7 @@ function processDenunciaComentario(post,comentario) {
 		showAlerts: true,
 		title: 'Informer'
 	});
-	var url = API_BASE_URL+"posts/"+post+"/comentarios/"+comentario+"/denunciar"
+	var url = API_BASE_URL+"posts/"+post+"/comentarios/"+comentario+"/denunciar";
 	$.ajax({
 		url : url,
 		type : 'POST',
@@ -222,7 +223,7 @@ function processDenunciaComentario(post,comentario) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -251,7 +252,7 @@ function processDenuncia(identificador) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -275,7 +276,7 @@ function processLike(identificador, id) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -302,7 +303,7 @@ function processNeutro(identificador, id) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -331,7 +332,7 @@ function processDislike(identificador, id) {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {

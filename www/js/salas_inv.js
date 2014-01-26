@@ -1,3 +1,4 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var pagpublica = 0;
 
 $(document).ready(function() {
@@ -25,7 +26,7 @@ function GetInvitaciones(url, offset, length) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 						headers : {
 							"Accept" : "application/vnd.informer.api.sala.collection+json",
@@ -125,7 +126,7 @@ function Aceptar(id) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 					})
 			.done(
@@ -156,7 +157,7 @@ function Rechazar(id) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 					})
 			.done(

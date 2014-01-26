@@ -1,3 +1,4 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var pagpublica = 0;
 var pagprivada = 0;
 
@@ -34,7 +35,7 @@ function Gen_getSalasPublicas(url, offset, length) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 						headers : {
 							"Accept" : "application/vnd.informer.api.sala.collection+json",
@@ -132,7 +133,7 @@ function Gen_getSalasPrivadas(url, offset, length) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 						headers : {
 							"Accept" : "application/vnd.informer.api.sala.collection+json",
@@ -185,7 +186,7 @@ function Unirse(id) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 					})
 			.done(
@@ -195,20 +196,18 @@ function Unirse(id) {
 						var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: "
 								+ id + ".<p>" + data + "</div>";						
 						$("#tabla_publica").html(Stringhtml);
-						//setTimeout(Pintar(),10000);							 
 						setTimeout(function () {
 							Pintar();
-						},3000);
+						},redirecttimeout);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
 						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";							
 						$("#tabla_publica").html(Stringhtml);
-						//setTimeout(Pintar(),10000);					
 						setTimeout(function () {
 							Pintar();
-						},3000);
+						},redirecttimeout);
 					});
 }
 function PonerPass(id) {
@@ -259,7 +258,7 @@ function UnirsePrivado(id) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 					})
 			.done(
@@ -273,12 +272,10 @@ function UnirsePrivado(id) {
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
-						console.log("Aqui llega 1");
 						var div = "#ponerpass" + id;
 						var Stringhtml = "<div class='form-group has-error'><label class='control-label' for='inputError'>Password Error</label><input type='password' class='form-control' id='userpass"
 							+ id
 							+ "' placeholder='Password' required=''></div><button class='btn btn-default'  OnClick='UnirsePrivado("+ id + ")'>Identificarme</button>";
-						//alert(Stringhtml);
 						$(div).html(Stringhtml);	
 					});
 }

@@ -1,10 +1,12 @@
 function getLogin() {
+	
+	//definimos las vriables del login
 	var username = $('#username').val();
 	var userpass = $('#userpass').val();
 	var url = API_BASE_URL + "users/"+username;
-	var urlredirect = "http://localhost:8000/informer-auth/web";
-	console.log("url: " + url);
- 
+	var urlredirect = WWW_URL;
+	
+	//realizamos un intento de GET de mis propios datos si me he logeado bien los consigo sino me devolvera error no autorizado.
 	$.ajax({
 		url: url,
 		type: 'GET',
@@ -47,21 +49,22 @@ function getLogin() {
 function logOut() {
 	document.cookie = 'username=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	document.cookie = 'userpass=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-	window.location = "http://localhost/informer-project/main.html";
+	window.location = urlredirect+"index.html";
 }
 
 $("document").ready(function() {
 	var username=getCookie("username");
 	var userpass=getCookie("userpass");
-	//$('#contenedor-barra').load('barra.html');
 	
-	//$('#contenedor-barra').load('barra_conectado.html');
-	if (username!= "" && userpass!= "") 
-    	$('#contenedor-barra').load('barra_conectado.html');
+	if (username!= "" && userpass!= "") {
+    	$('#contenedor-barra').load('barra_conectado.html');    	
+	}
     else
     	$('#contenedor-barra').load('barra.html');
-    	
-    console.log(username+":"+userpass);
+	
+	Nombre = username;
+	Contrasena = userpass;    	
+    console.log(Nombre+":"+Contrasena);
 });
 
 function getCookie(cname)
@@ -79,7 +82,7 @@ return "";
 
 function isLogged() {
 	var username=getCookie("username");
-	var userpass=getCookie("userpass");
+    var userpass=getCookie("userpass");
 	if (username!="" && userpass!= "")	{
 		var htmlString = '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">';
 		htmlString += "<h5 style='color: #999999;'>"+username+"</h5>";
@@ -87,6 +90,6 @@ function isLogged() {
 		htmlString += '<li><a href="#" onClick="logOut()">Salir</a></li>';
 		htmlString += '</ul></li>';
 		document.getElementById("my-user-informer").innerHTML=htmlString;
-		console.log(username+":"+userpass);
+		console.log(Nombre+":"+Contrasena);
 	}
 }

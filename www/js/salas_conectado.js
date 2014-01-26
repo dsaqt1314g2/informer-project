@@ -1,7 +1,9 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var pagpublica = 0;
 
 $(document).ready(function() {
 
+	console.log(autorizacion);
 	var offset = 0;
 	var length = 5;
 	var url = API_BASE_URL + "salas/visible/";	
@@ -25,7 +27,7 @@ function GetSalasMias(url, offset, length) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 						headers : {
 							"Accept" : "application/vnd.informer.api.sala.collection+json",
@@ -123,7 +125,7 @@ function Abandonar(id) {
 						beforeSend : function(request) {
 							request.withCredentials = true;
 							request.setRequestHeader("Authorization", "Basic "
-									+ btoa('alicia:alicia'));
+									+ btoa(autorizacion));
 						},
 					})
 			.done(
