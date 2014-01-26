@@ -92,7 +92,8 @@ public class UserResource {
 						user.getUsername(), "self"));
 				user.addLinks(UsersAPILinkBuilder.buildURIDeleteUser(uriInfo,
 						user.getUsername(), "delete"));
-				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo,
+						user.getUsername(), "solicitud"));
 
 			} else {
 				throw new UserNotFoundException();
@@ -237,8 +238,8 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
-				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
-
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo,
+						user.getUsername(), "solicitud"));
 
 				users.add(user);
 			}
@@ -286,12 +287,13 @@ public class UserResource {
 
 		return rb.build();
 	}
-	
+
 	@GET
-	@Path("{username}/amigos")	
+	@Path("{username}/amigos")
 	@Produces(MediaType.INFORMER_API_USER_COLLECTION)
 	public Response getAmigos(@QueryParam("o") String offset,
-			@QueryParam("l") String length, @Context Request req, @PathParam("username") String username) {
+			@QueryParam("l") String length, @Context Request req,
+			@PathParam("username") String username) {
 		// TODO: Search: GET ? {nombre},{escula},{sexo},{edad},{estadocivil}
 		// (Registered)(admin)
 
@@ -325,9 +327,10 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		
-		//Todo Sub query
-		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"+username+"' and estado = 1) ";
+
+		// Todo Sub query
+		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"
+				+ username + "' and estado = 1) ";
 		query += " ORDER BY username asc LIMIT " + offset + ", " + length + ";";
 		try {
 			ResultSet rs = stmt.executeQuery(query);
@@ -349,7 +352,8 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
-				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(uriInfo, user.getUsername(), "del_friend"));
+				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(
+						uriInfo, user.getUsername(), "del_friend"));
 
 				users.add(user);
 			}
@@ -397,9 +401,9 @@ public class UserResource {
 
 		return rb.build();
 	}
-	
+
 	@GET
-	@Path("/solicitudes")	
+	@Path("/solicitudes")
 	@Produces(MediaType.INFORMER_API_USER_COLLECTION)
 	public Response getSolicitudes(@QueryParam("o") String offset,
 			@QueryParam("l") String length, @Context Request req) {
@@ -436,9 +440,10 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-		
-		//Todo Sub query
-		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"+security.getUserPrincipal().getName()+"' and estado = 0) ";
+
+		// Todo Sub query
+		String query = "Select * from perfiles where username IN (Select friend from amigos where username ='"
+				+ security.getUserPrincipal().getName() + "' and estado = 0) ";
 		query += " ORDER BY username asc LIMIT " + offset + ", " + length + ";";
 		try {
 			ResultSet rs = stmt.executeQuery(query);
@@ -460,9 +465,10 @@ public class UserResource {
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
-				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(uriInfo, user.getUsername(), "del_solicitud"));
-				user.addLinks(UsersAPILinkBuilder.buildURIAceptarSolicitud(uriInfo, user.getUsername(),"acept_solicitud"));
-
+				user.addLinks(UsersAPILinkBuilder.buildURIEliminarAmigo(
+						uriInfo, user.getUsername(), "del_solicitud"));
+				user.addLinks(UsersAPILinkBuilder.buildURIAceptarSolicitud(
+						uriInfo, user.getUsername(), "acept_solicitud"));
 
 				users.add(user);
 			}
@@ -594,7 +600,8 @@ public class UserResource {
 		// TODO: GET: /users/{nombre} (Registered)(admin)
 		// Create CacheControl cache por si me lohan pedido hace poco
 
-		String mensaje = "Solicitud de amistad aceptada, "+username+" ahora es tu amigo.";
+		String mensaje = "Solicitud de amistad aceptada, " + username
+				+ " ahora es tu amigo.";
 		Statement stmt = null;
 
 		// arrancamos la conexion
@@ -620,9 +627,8 @@ public class UserResource {
 			if (rs.next()) {
 
 				sql = "update  amigos SET amigos.estado=1 where username='"
-						+ security.getUserPrincipal().getName() + "' and friend='"
-						+ username
-						+ "' and estado =0 ;";
+						+ security.getUserPrincipal().getName()
+						+ "' and friend='" + username + "' and estado =0 ;";
 				// realizamos la consulta
 
 				int rows = stmt.executeUpdate(sql);
@@ -653,7 +659,7 @@ public class UserResource {
 
 		return mensaje;
 	}
-	
+
 	@DELETE
 	@Path("/{username}/deletefriend")
 	public String Deletefriend(@PathParam("username") String username,
@@ -661,7 +667,7 @@ public class UserResource {
 		// TODO: GET: /users/{nombre} (Registered)(admin)
 		// Create CacheControl cache por si me lohan pedido hace poco
 
-		String mensaje = "Solicitud/amistad de "+username+" eliminada.";
+		String mensaje = "Solicitud/amistad de " + username + " eliminada.";
 		Statement stmt = null;
 
 		// arrancamos la conexion
@@ -677,15 +683,17 @@ public class UserResource {
 		// hacemso la consulta del libro
 		try {
 			// creamos el statement y la consulta
-						stmt = conn.createStatement();
-						String sql = "Delete from  amigos where (username='" + security.getUserPrincipal().getName()
-								+ "' and friend = '"+username+"') or (username='" + username
-								+ "' and friend = '"+security.getUserPrincipal().getName()+"')";
-						// realizamos la consulta
+			stmt = conn.createStatement();
+			String sql = "Delete from  amigos where (username='"
+					+ security.getUserPrincipal().getName()
+					+ "' and friend = '" + username + "') or (username='"
+					+ username + "' and friend = '"
+					+ security.getUserPrincipal().getName() + "')";
+			// realizamos la consulta
 
-						int rows = stmt.executeUpdate(sql);
-						if (rows == 0)
-							throw new UserNotFoundException();
+			int rows = stmt.executeUpdate(sql);
+			if (rows == 0)
+				throw new UserNotFoundException();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -702,7 +710,6 @@ public class UserResource {
 
 		return mensaje;
 	}
-
 
 	@POST
 	@Consumes(MediaType.INFORMER_API_USER)
@@ -767,7 +774,8 @@ public class UserResource {
 				// añadimos los links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo,
 						user.getUsername(), "self"));
-				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
+				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo,
+						user.getUsername(), "solicitud"));
 
 			}
 
@@ -928,7 +936,8 @@ public class UserResource {
 				e.printStackTrace();
 			}
 		}
-		return("Eliminado satisfactoriamente a " + username);
+		return ("Eliminado satisfactoriamente a " + username);
 	}
+
 
 }

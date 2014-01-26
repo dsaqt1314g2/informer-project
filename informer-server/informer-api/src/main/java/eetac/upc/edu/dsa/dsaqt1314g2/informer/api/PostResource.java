@@ -899,6 +899,111 @@ public class PostResource {
 		}
 		return "DELETED " + postid;
 	}
+	
+	@GET
+	@Path("/novedades/{username}")
+	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
+	public PostCollection getNoticioas(@PathParam("username") String username,@QueryParam("o") String offset, @QueryParam("l") String length) {
+		// GETs: /posts?{offset}{length} (Registered)(admin)
+		// TODO: Borramos los BadRequest y ponemos un valor por defecto
+		int ioffset = 0, ilength = 10;
+		if (offset == null)
+			offset = "0";
+		else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Offset debe ser un entero mayor o igual a 0.");
+			}
+		}
+		if (length == null)
+			length = "10";
+		else {
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
+			}
+		}
+
+		Connection con = null;
+		Statement stmt = null;
+
+		int posts_encontrados = 0; // variable para saber si hay link_next		
+
+		try {
+			con = ds.getConnection();
+			stmt = con.createStatement();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			// usuario normal. No selecciona los de visiblidad > 2
+			String query = "SELECT posts.*, calificacion.estado  FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='"+username+"' LEFT JOIN amigos ON amigos.friend='"+username+"' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN comentarios ON comentarios.id_post=posts.identificador and comentarios.username='"+username+"'"
+					+ "WHERE posts.username='"+username+"' or posts.username IN(select amigos.friend from amigos where amigos.username='"+username+"') or (posts.identificador=calificacion.id_post and calificacion.username='"+username+"') or (posts.identificador=comentarios.id_post and comentarios.username='"+username+"') ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
+//TODO: Cambiar el identificador por publicacion_date
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				if (posts_encontrados++ == ilength)
+					break;
+				Post post = new Post();
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
+				post.setVisibilidad(0);
+				post.setContenido(rs.getString("contenido"));
+				post.setUsername("anonymous");
+				
+				if (post.getIdentificador() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
+				if (post.getLiked() != 2)
+					post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
+				if (post.getLiked() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
+				if (post.getLiked() != 0)
+					post.addLink(PostsAPILinkBuilder.buildURINeutroPostId(uriInfo, post.getIdentificador(), "eliminar voto"));
+				post.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, Integer.toString(post.getIdentificador()), "comentarios"));
+				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
+				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
+				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
+				posts.add(post);
+			}
+			rs.close();
+			if (posts_encontrados == 0)
+				throw new PostCollectionNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		if (prev >= 0)
+			posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(prev), length, null, "prev"));
+		posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, offset, length, null, "self"));
+		if (posts_encontrados > ilength)
+			posts.addLink(PostsAPILinkBuilder.buildURIPosts(uriInfo, Integer.toString(next), length, null, "next"));
+		posts.addLink(PostsAPILinkBuilder.buildURIRankingPosts(uriInfo, "likes", 0, 10, "ranking likes"));
+		posts.addLink(PostsAPILinkBuilder.buildURIRankingPosts(uriInfo, "dislikes", 0, 10, "ranking dislikes"));
+		posts.addLink(PostsAPILinkBuilder.buildURIRankingPosts(uriInfo, "coments", 0, 10, "ranking coments"));
+		return posts;
+	}
 
 	private String postAnonimo(String yo, String autor, String amigo, int visibilidad) {
 		if (yo.equals(autor))
