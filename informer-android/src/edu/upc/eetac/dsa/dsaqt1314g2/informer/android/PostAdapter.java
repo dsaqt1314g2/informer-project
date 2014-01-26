@@ -93,8 +93,7 @@ public class PostAdapter extends BaseAdapter {
 		if (data.get(position).getLiked() == 2) {
 			viewHolder.tvMeGusta.setTextColor(Color.GREEN);
 			viewHolder.tvNoMeGusta.setTextColor(Color.BLACK);
-		}
-		else if (data.get(position).getLiked() == 1) {
+		} else if (data.get(position).getLiked() == 1) {
 			viewHolder.tvMeGusta.setTextColor(Color.BLACK);
 			viewHolder.tvNoMeGusta.setTextColor(Color.RED);
 		}
@@ -102,38 +101,36 @@ public class PostAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "ME GUSTA Me ha pulsado " + data.get(position).getIdentificador());
-				// int i = 0;
-				// boolean encontrado = false;
-				// int limit = data.get(position).getLinks().size();
-				// while (i < limit && encontrado == false) {
-				// if
-				// (data.get(position).getLinks().get(i).getRel().equals("like"))
-				// encontrado = true;
-				// i++;
-				// }
-				// String URL;
-				// Log.d(TAG,limit+"   "+data.get(position).getLinks().get(i).getUri());
-				// if (encontrado == true) {
-				// Log.d(TAG,"bieeen");
-				// URL = data.get(position).getLinks().get(i).getUri();
-				// (new LikeTask()).execute(URL);
-				// }
-				String URL = data.get(position).getLinkByRel("like");
-				//String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/like";
-				(new LikeTask()).execute(URL);
-				((TextView) v).setTextColor(Color.GREEN);
-				((TextView)((ViewGroup)v.getParent()).getChildAt(3)).setTextColor(Color.BLACK);
+				if (data.get(position).getLiked() != 2) {
+					String URL = data.get(position).getLinkByRel("like");
+					(new LikeTask()).execute(URL);
+					((TextView) v).setTextColor(Color.GREEN);
+					data.get(position).setLiked(2);
+				} else {
+					String URL = data.get(position).getLinkByRel("neutro");
+					(new LikeTask()).execute(URL);
+					((TextView) v).setTextColor(Color.BLACK);
+					data.get(position).setLiked(0);
+				}
+				((TextView) ((ViewGroup) v.getParent()).getChildAt(3)).setTextColor(Color.BLACK);
 			}
 		});
 		viewHolder.tvNoMeGusta.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "NO ME GUSTA Me ha pulsado " + data.get(position).getIdentificador());
-				String URL = data.get(position).getLinkByRel("dislike");
-				//String URL = "http://192.168.1.128:8080/informer-api/posts/" + data.get(position).getIdentificador() + "/dislike";
-				(new LikeTask()).execute(URL);
-				((TextView) v).setTextColor(Color.RED);
-				((TextView)((ViewGroup)v.getParent()).getChildAt(1)).setTextColor(Color.BLACK);
+				Log.d(TAG, "NO ME GUSTA Me ha pulsado " + data.get(position).getIdentificador());				
+				if (data.get(position).getLiked() != 1) {
+					String URL = data.get(position).getLinkByRel("dislike");
+					(new LikeTask()).execute(URL);
+					((TextView) v).setTextColor(Color.RED);
+					data.get(position).setLiked(1);
+				} else {
+					String URL = data.get(position).getLinkByRel("neutro");
+					(new LikeTask()).execute(URL);
+					((TextView) v).setTextColor(Color.BLACK);
+					data.get(position).setLiked(0);
+				}
+				((TextView) ((ViewGroup) v.getParent()).getChildAt(1)).setTextColor(Color.BLACK);
 			}
 		});
 		viewHolder.tvComentar.setOnClickListener(new View.OnClickListener() {
