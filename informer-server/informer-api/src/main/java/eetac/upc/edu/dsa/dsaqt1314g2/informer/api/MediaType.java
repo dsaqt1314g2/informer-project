@@ -18,6 +18,8 @@ public interface MediaType {
 	
 	public final static String INFORMER_API_ERROR = "application/vnd.dsa.informer.error+json";
 	
+	public final static String INFORMER_API_NOTIFICATION = "application/vnd.dsa.informer.notification+json";
+	
 	public final static String INFORMER_API_LINK = "application/vnd.dsa.informer.link+json";
 	public final static String INFORMER_API_LINK_COLLECTION = "application/vnd.dsa.informer.link.collection+json";
 }

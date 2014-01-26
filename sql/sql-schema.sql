@@ -10,10 +10,10 @@ CREATE TABLE perfiles (
 	genero boolean NOT NULL,
 	fecha_nacimiento Date NOT NULL,
 	uni_escuela int NOT NULL,
-	foto varchar(255),
+	foto varchar(255) DEFAULT "http://www.e-codes.net/SmartRankSEO/plugins/mono_line/Themes/Images/default-user.png",
 	estado_civil int DEFAULT 0,
 	lugar_de_residencia varchar(255) DEFAULT 'Mi casa',
-	participar_GPS boolean,
+	participar_GPS boolean DEFAULT false,
 	last_Update timestamp NOT NULL,
 	PRIMARY KEY (username),
   	KEY `testInc` (identificador)
