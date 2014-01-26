@@ -24,6 +24,11 @@
     <string name="notify_posts_nomore">Has alcanzado el final de la lista de cotilleos</string>
     <string name="notify_comentarios_nomore">Has alcanzado el final de la lista de comentarios</string>
     <string name="menu_salir">Cerrar sesión</string>
+    <string name="calificacion_msg_a">A&#160;</string>
+    <string name="calificacion_msg_gusta">&#160;persona le gusta y&#160;</string>
+    <string name="calificacion_msg_gustas">&#160;personas les gusta y&#160;</string>
+    <string name="calificacion_msg_nogusta">&#160;piensa que es una puta mierda!</string>
+    <string name="calificacion_msg_nogustas">&#160;piensan que es una puta mierda!</string>
 
     <string-array name="spinner_post_visibilidad">
         <item>Anónimo</item>

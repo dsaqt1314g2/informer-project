@@ -40,6 +40,7 @@ public class PostAdapter extends BaseAdapter {
 		TextView tvNoMeGusta;
 		TextView tvComentar;
 		TextView tvComentarios;
+		TextView tvCalificaciones;
 	}
 
 	// Metodos explicados en el PDF
@@ -73,6 +74,7 @@ public class PostAdapter extends BaseAdapter {
 			viewHolder.tvNoMeGusta = (TextView) convertView.findViewById(R.id.tvNoMeGusta);
 			viewHolder.tvComentar = (TextView) convertView.findViewById(R.id.tvComentar);
 			viewHolder.tvComentarios = (TextView) convertView.findViewById(R.id.tvComentarios);
+			viewHolder.tvCalificaciones = (TextView) convertView.findViewById(R.id.tvCalificaciones);
 			convertView.setTag(viewHolder); // le pone el tag a nivel de vista
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag(); // recupera de la
@@ -97,6 +99,16 @@ public class PostAdapter extends BaseAdapter {
 			viewHolder.tvMeGusta.setTextColor(Color.BLACK);
 			viewHolder.tvNoMeGusta.setTextColor(Color.RED);
 		}
+		if (data.get(position).getCalificaciones_positivas() == 1 && data.get(position).getCalificaciones_negativas() == 1)
+			viewHolder.tvCalificaciones.setText(context.getString(R.string.calificacion_msg_a)+data.get(position).getCalificaciones_positivas()+context.getString(R.string.calificacion_msg_gusta)+data.get(position).getCalificaciones_negativas()+context.getString(R.string.calificacion_msg_nogusta));
+		else if (data.get(position).getCalificaciones_positivas() != 1 && data.get(position).getCalificaciones_negativas() == 1)
+			viewHolder.tvCalificaciones.setText(context.getString(R.string.calificacion_msg_a)+data.get(position).getCalificaciones_positivas()+context.getString(R.string.calificacion_msg_gustas)+data.get(position).getCalificaciones_negativas()+context.getString(R.string.calificacion_msg_nogusta));
+		else if (data.get(position).getCalificaciones_positivas() == 1 && data.get(position).getCalificaciones_negativas() != 1)
+			viewHolder.tvCalificaciones.setText(context.getString(R.string.calificacion_msg_a)+data.get(position).getCalificaciones_positivas()+context.getString(R.string.calificacion_msg_gusta)+data.get(position).getCalificaciones_negativas()+context.getString(R.string.calificacion_msg_nogustas));
+		else if (data.get(position).getCalificaciones_positivas() != 1 && data.get(position).getCalificaciones_negativas() != 1)
+			viewHolder.tvCalificaciones.setText(context.getString(R.string.calificacion_msg_a)+data.get(position).getCalificaciones_positivas()+context.getString(R.string.calificacion_msg_gustas)+data.get(position).getCalificaciones_negativas()+context.getString(R.string.calificacion_msg_nogustas));
+		//viewHolder.tvMeGusta.setText(context.getString(R.string.megusta)+" \n("+data.get(position).getCalificaciones_positivas()+")");
+		//viewHolder.tvNoMeGusta.setText(context.getString(R.string.nomegusta)+" \n("+data.get(position).getCalificaciones_negativas()+")");
 		viewHolder.tvMeGusta.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
