@@ -46,7 +46,6 @@
                 android:layout_marginBottom="20dip"
                 android:layout_marginTop="5dip"
                 android:inputType="text"
-                android:text="alicia"
                 android:singleLine="true" />
 
             <TextView
@@ -62,7 +61,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:inputType="textPassword"
-                android:text="alicia"
                 android:singleLine="true" />
 
             <Button

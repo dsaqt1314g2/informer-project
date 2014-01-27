@@ -728,9 +728,9 @@ public class PostResource {
 	public void denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
-		if (!security.isUserInRole("moderador") || !security.isUserInRole("admin")) {
-			throw new ForbiddenException("You are not allowed...");
-		}
+//		if (!security.isUserInRole("moderador") || !security.isUserInRole("admin")) {
+//			throw new ForbiddenException("You are not allowed...");
+//		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -903,9 +903,9 @@ public class PostResource {
 	@Path("/{postid}/eliminar")
 	public String deletePostVisibilidad(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
-		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
-			throw new ForbiddenException("You are not allowed...");
-		}
+//		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
+//			throw new ForbiddenException("You are not allowed...");
+//		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -951,7 +951,7 @@ public class PostResource {
 
 	@DELETE
 	@Path("/{postid}")
-	public String deletePost(@PathParam("postid") String postid) {
+	public void deletePost(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
 		if (!security.isUserInRole("admin")) {
 			throw new ForbiddenException("You are not allowed...");
@@ -985,7 +985,7 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		return "DELETED " + postid;
+		return;
 	}
 
 	@GET
@@ -993,7 +993,6 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
 	public PostCollection getNoticioas(@PathParam("username") String username, @QueryParam("o") String offset, @QueryParam("l") String length) {
 		// GETs: /posts?{offset}{length} (Registered)(admin)
-		// TODO: Borramos los BadRequest y ponemos un valor por defecto
 		int ioffset = 0, ilength = 10;
 		if (offset == null)
 			offset = "0";

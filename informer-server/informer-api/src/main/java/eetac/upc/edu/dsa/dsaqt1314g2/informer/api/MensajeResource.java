@@ -52,7 +52,7 @@ public class MensajeResource {
 			if (p < 0)
 				throw new NumberFormatException();
 		} catch (NumberFormatException e) {
-			throw new PostNotFoundException();
+			throw new SalaNotFoundException();
 		}
 		// System.out.println(new Date().getTime());
 		int ioffset = 0, ilength = 10;
@@ -184,7 +184,7 @@ public class MensajeResource {
 			if (a < 0)
 				throw new NumberFormatException();
 		} catch (NumberFormatException e) {
-			throw new PostNotFoundException();
+			throw new SalaNotFoundException();
 		}
 		CacheControl cc = new CacheControl();
 		Connection con = null;
@@ -302,7 +302,7 @@ public class MensajeResource {
 
 	@DELETE
 	@Path("/{mensajeid}")
-	public String deleteMensaje(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid) {
+	public void deleteMensaje(@PathParam("salaid") String salaid, @PathParam("mensajeid") String mensajeid) {
 		// GET: /posts/{postid}/comentarios/{comentarioid} (Registered)(admin)
 		if (!security.isUserInRole("admin")) {
 			throw new ForbiddenException("You are not allowed...");
@@ -315,7 +315,7 @@ public class MensajeResource {
 			if (a < 0)
 				throw new NumberFormatException();
 		} catch (NumberFormatException e) {
-			throw new PostNotFoundException();
+			throw new SalaNotFoundException();
 		}
 		Connection con = null;
 		Statement stmt = null;
@@ -351,7 +351,7 @@ public class MensajeResource {
 			} catch (Exception e) {
 			}
 		}
-		return "DELETED";
+		return;
 	}
 
 }

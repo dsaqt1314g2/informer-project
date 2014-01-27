@@ -437,7 +437,7 @@ public class ComentarioResource {
 	@Path("/{comentarioid}/moderar")
 	@Consumes(MediaType.INFORMER_API_COMENTARIO)
 	@Produces(MediaType.INFORMER_API_COMENTARIO)
-	public String moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
+	public void moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
 		// PUT: /posts/{postid}/comentarios/{comentarioid}/moderar (admin) =>
 		// revisado y who_revisado
 		if (!security.isUserInRole("moderador")) {
@@ -472,12 +472,12 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		return "MODERADO";
+		return;
 	}
 
 	@PUT
-	@Path("/{comentarioid}")
-	public String deleteComentarioVisibilidad(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
+	@Path("/{comentarioid}/eliminar")
+	public void deleteComentarioVisibilidad(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
 		// PUT: /posts/{postid}/comentarios/{comentarioid}
 		// (Registered-Propietario) => visibilidad.
 		try {
@@ -523,14 +523,17 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		return "DELETED " + comentarioid;
+		return;
 	}
 
 	@DELETE
 	@Path("/{comentarioid}")
-	public String deleteComentario(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
+	public void deleteComentario(@PathParam("comentarioid") String comentarioid, @PathParam("postid") String postid) {
 		// DELETE: /posts/{postid}/commentarios/{comentarioid}
 		// (Registered-Propietario)
+		if (!security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -568,7 +571,7 @@ public class ComentarioResource {
 			} catch (Exception e) {
 			}
 		}
-		return "ELIMINADO";
+		return;
 	}
 
 	private String comentarioAnonimo(String yo, String autor, String amigo, int visibilidad) {

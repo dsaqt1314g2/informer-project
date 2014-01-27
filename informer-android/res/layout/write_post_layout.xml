@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_post_asunto"
         android:inputType="text"
-        android:singleLine="true"
-        android:text="asdasdsad" />
+        android:singleLine="true" />
 
     <Spinner
         android:id="@+id/spinner_visibilidad"
@@ -28,8 +27,7 @@
         android:layout_weight="1"
         android:gravity="top|left"
         android:hint="@string/hint_post_contenido"
-        android:inputType="text"
-        android:text="contenido del post" />
+        android:inputType="textMultiLine" />
 
     <LinearLayout
         android:layout_width="match_parent"
