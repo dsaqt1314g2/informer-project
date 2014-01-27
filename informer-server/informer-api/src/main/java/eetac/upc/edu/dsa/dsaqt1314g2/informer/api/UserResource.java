@@ -83,6 +83,7 @@ public class UserResource {
 				user.setLugar_de_residencia(rs.getString("lugar_de_residencia"));
 				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
 				user.setLast_Update(rs.getTimestamp("last_Update"));
+				user.setIsModerador(security.isUserInRole("moderador"));
 
 				// TODO: Generar lso Links
 				// añadimos los links

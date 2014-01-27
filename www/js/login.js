@@ -24,6 +24,7 @@ function getLogin() {
 	    success: function (data, status, jqxhr) {
 			document.cookie="username="+username;
 			document.cookie="userpass="+userpass;
+			document.cookie="role="+data.isModerador.toString();
 			window.location = urlredirect +"/post_viewer.html";
 			console.log(data);
 		},
@@ -49,15 +50,19 @@ function getLogin() {
 function logOut() {
 	document.cookie = 'username=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	document.cookie = 'userpass=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	document.cookie = 'role=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	window.location = urlredirect+"index.html";
 }
 
 $("document").ready(function() {
 	var username=getCookie("username");
 	var userpass=getCookie("userpass");
-	
+	var role=getCookie("role");
 	if (username!= "" && userpass!= "") {
-    	$('#contenedor-barra').load('barra_conectado.html');    	
+		if (role == "true")
+			$('#contenedor-barra').load('barra_moderador.html');
+		else
+			$('#contenedor-barra').load('barra_conectado.html');  
 	}
     else
     	$('#contenedor-barra').load('barra.html');
