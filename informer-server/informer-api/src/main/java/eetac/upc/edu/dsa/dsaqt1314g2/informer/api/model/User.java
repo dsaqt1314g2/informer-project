@@ -25,7 +25,16 @@ public class User {
 	// si tiene GPS activado o no
 	private Boolean participar_GPS;
 	private Date last_Update;
+	private Boolean isModerador;
 	
+	public Boolean getIsModerador() {
+		return isModerador;
+	}
+
+	public void setIsModerador(Boolean isModerador) {
+		this.isModerador = isModerador;
+	}
+
 	private ArrayList <Link> links = new ArrayList<Link>();
 
 	public Date getLast_Update() {

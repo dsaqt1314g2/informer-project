@@ -51,6 +51,30 @@ public class PostsAPILinkBuilder {
 
 		return self;
 	}
+	
+	public static final Link buildURIPostsDenunciados(UriInfo uriInfo, int offset, int length, String rel) {
+		URI uriStings;
+//		if (offset == null && length == null)
+//			uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).build(); // devuelve
+//																						// http:blabla/stings
+//		else {
+			// if (username == null)
+			uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("o", offset).queryParam("l", length).build();
+			// else
+			// uriStings =
+			// uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("offset",
+			// offset).queryParam("length", length)
+			// .queryParam("username", username).build();
+//		}
+
+		Link self = new Link();
+		self.setUri(uriStings.toString());
+		self.setRel(rel);
+		self.setTitle("Post collection");
+		self.setType(MediaType.INFORMER_API_POST_COLLECTION);
+
+		return self;
+	}
 
 	public static final Link buildTemplatedURIPosts(UriInfo uriInfo, String rel) {
 		return buildTemplatedURIPosts(uriInfo, rel, false);
@@ -167,5 +191,7 @@ public class PostsAPILinkBuilder {
 //		link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
+	
+
 
 }

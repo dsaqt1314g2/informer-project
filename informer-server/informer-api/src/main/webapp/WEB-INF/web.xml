@@ -161,6 +161,7 @@
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>registered</role-name>
+			<role-name>moderador</role-name>
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>	

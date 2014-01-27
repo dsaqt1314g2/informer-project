@@ -1,6 +1,6 @@
 var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var loaded = 0;
-var offset = 1;
+var offset = 0;
 var length = 5;
 
 function getListPosts() {
@@ -130,6 +130,64 @@ function getRankingPosts(ranking) {
 		console.log(textStatus);
 	});
 }
+
+
+function getListPostsDenunciados() {
+	var url = API_BASE_URL+"posts/denuncias?o="+offset+"&l="+length;
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		headers : {
+			"Accept" : "application/vnd.informer.api.post.collection+json",
+		},
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+	.done(function (data, status, jqxhr) {
+		//var posts = $.parseJSON(jqxhr.responseText);
+		var htmlString = "<div class='post-container' id='post-container'>";
+		if (loaded > 0) htmlString += document.getElementById('post-container').innerHTML;
+	    $.each(data.posts, function(i,p){	
+	    	htmlString += '<span id="post'+p.identificador+'">';  
+        	htmlString += '<div class="panel panel-primary">';  
+        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+' ('+p.identificador+')</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
+        	htmlString += '<div class="panel-body">'; 
+        	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
+			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
+			if (p.liked == 2)
+				htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
+			else
+				htmlString += '<div class="post-calificaciones_positivas" id="like'+p.identificador+'"><a href="javascript:void(0);" onClick="processLike('+p.identificador+',2)">Me gusta ('+p.calificaciones_positivas+')</a></div>';
+			if (p.liked == 1)
+				htmlString += '<div class="post-calificaciones_negativas" id="neutro_dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',3)">Ya no es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+			else
+				htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+			htmlString += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
+			if (p.numcomentarios == 1)
+				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
+			else
+				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentarios</a></div>';
+			htmlString += '<div class="post-moderar"><a href="javascript:void(0);" onClick="processModerar('+p.identificador+')">Validar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onClick="processEliminar('+p.identificador+')">Eliminar</a></div>';
+			htmlString += '<div class="post-comentarios-container" id="comentarios-container'+p.identificador+'"></div><br>';
+			htmlString += '<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">';
+			htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
+			htmlString += '<select id="mi-comentario-visibilidad'+p.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
+			htmlString += '			   </div></div></div></span>';
+	    });
+	    htmlString += "</div>";
+		$('#res_get_list_posts').html(htmlString);
+		//console.log(posts);
+	})
+    .fail(function (jqXHR, textStatus) {
+		console.log(textStatus);
+	});
+}
+
 
 function postComentario(postid) {
 	var url = API_BASE_URL+"posts/"+postid+"/comentarios";
@@ -345,6 +403,65 @@ function processDislike(identificador, id) {
 		console.log(status);
 	})
     .fail(function (jqXHR, textStatus) {
+		console.log(textStatus+" "+url);
+	});	
+}
+
+
+function processModerar(identificador) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	var url = API_BASE_URL+"posts/"+identificador+"/moderar"
+	$.ajax({
+		url : url,
+		type : 'PUT',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+    .done(function (data, status, jqxhr) {
+   		objInstanceName.show('ok','Post aceptado');
+   		$('#post'+identificador).remove();
+		console.log(status);
+	})
+    .fail(function (jqXHR, textStatus) {
+    	objInstanceName.show('error','Moderacion no realizada');
+		console.log(textStatus+" "+url);
+	});	
+}
+
+function processEliminar(identificador) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	var url = API_BASE_URL+"posts/"+identificador+"/eliminar"
+	$.ajax({
+		url : url,
+		type : 'PUT',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+    .done(function (data, status, jqxhr) {
+   		objInstanceName.show('warning','Post eliminado');
+   		$('#post'+identificador).remove();
+		console.log(status);
+	})
+    .fail(function (jqXHR, textStatus) {
+    	objInstanceName.show('error','Moderacion no realizada');
 		console.log(textStatus+" "+url);
 	});	
 }

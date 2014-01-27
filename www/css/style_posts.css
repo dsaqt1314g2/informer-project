@@ -6,6 +6,15 @@
 	position: absolute;
 }
 
+.post-moderar {
+	position: relative;
+	text-align: right;
+}
+
+.post-numcomentarios {
+	position: absolute;
+}
+
 .post-asunto {
 	position: relative;
 	text-align: right;

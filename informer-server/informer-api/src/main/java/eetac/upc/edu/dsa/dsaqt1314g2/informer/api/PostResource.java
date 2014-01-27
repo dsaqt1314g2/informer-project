@@ -281,6 +281,7 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -332,7 +333,102 @@ public class PostResource {
 		if (!categoria.equals("coments"))
 			posts.addLink(PostsAPILinkBuilder.buildURIRankingPosts(uriInfo, "coments", 0, ilength, "ranking coments"));
 		return posts;
+	}
+	
+	@GET
+	@Path("/denuncias")
+	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
+	public PostCollection getDenuncias(@QueryParam("o") String offset, @QueryParam("l") String length, @Context Request req) {
+		// GETs: /posts/ranking/{categoria} (Registered)(admin)
+		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
+		int ioffset = 0, ilength = 10;
+		if (offset == null)
+			offset = "0";
+		else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Offset debe ser un entero mayor o igual a 0.");
+			}
+		}
+		if (length == null)
+			length = "10";
+		else {
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
+			}
+		}
+		String username = security.getUserPrincipal().getName();
+		Connection con = null;
+		Statement stmt = null;
+		int posts_encontrados = 0;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = con.createStatement();
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE posts.visibilidad>3 ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				if (posts_encontrados++ == ilength)
+					break;
+				Post post = new Post();
+				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
+				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				post.setNumcomentarios(rs.getInt("numcomentarios"));
+				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
+				post.setCalificaciones_negativas(rs.getInt("calificaciones_negativas"));
+				post.setRevisado(rs.getInt("revisado"));
+				post.setWho_revised(rs.getString("who_revisado"));
+				post.setLiked(rs.getInt("estado"));
+				post.setVisibilidad(rs.getInt("visibilidad"));
+				post.setContenido(rs.getString("contenido"));
+				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
+				if (post.getIdentificador() != 1)
+					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));
+				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() + 1, "next"));
+				post.addLink(PostsAPILinkBuilder.buildURILikePostId(uriInfo, post.getIdentificador(), "like"));
+				post.addLink(PostsAPILinkBuilder.buildURIDislikePostId(uriInfo, post.getIdentificador(), "dislike"));
+				post.addLink(PostsAPILinkBuilder.buildURINeutroPostId(uriInfo, post.getIdentificador(), "neutro"));
+				post.addLink(PostsAPILinkBuilder.buildURIDenunciarPostId(uriInfo, post.getIdentificador(), "denunciar"));
+				post.addLink(PostsAPILinkBuilder.buildURIModificarPostId(uriInfo, post.getIdentificador(), "modificar"));
+				post.addLink(PostsAPILinkBuilder.buildURIDeletePostId(uriInfo, post.getIdentificador(), "eliminar"));
+				posts.add(post);
+			}
+			rs.close();
+			if (posts_encontrados == 0)
+				throw new PostCollectionNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		if (prev >= 0)
+			posts.addLink(PostsAPILinkBuilder.buildURIPostsDenunciados(uriInfo, prev, ilength, "prev"));
+		posts.addLink(PostsAPILinkBuilder.buildURIPostsDenunciados(uriInfo, ioffset, ilength, "self"));
+		if (posts_encontrados > ilength)
+			posts.addLink(PostsAPILinkBuilder.buildURIPostsDenunciados(uriInfo, next, ilength, "next"));
 
+		return posts;
 	}
 
 	@POST
@@ -340,13 +436,6 @@ public class PostResource {
 	@Produces(MediaType.INFORMER_API_POST)
 	public Post createPost(Post post) {
 		// POST: /posts (Registered)(admin)
-		// TODO: Comprobar que existen los campos
-		// if (post.getAsunto().length() > 50)
-		// throw new
-		// BadRequestException("Longitud del asunto excede el limite de 50 caracteres.");
-		// if (post.getAsunto().length() < 5)
-		// throw new
-		// BadRequestException("Longitud del asunto demasiado corto.");
 		if (post.getContenido().length() > 2048)
 			throw new BadRequestException("Longitud del contenido excede el limite de 2048 caracteres.");
 		if (post.getContenido().length() < 1)
@@ -354,8 +443,7 @@ public class PostResource {
 		if (post.getVisibilidad() < 0 || post.getVisibilidad() > 2)
 			throw new BadRequestException("Visibilidad incorrecta.");
 		if (post.getAsunto().length() == 0)
-			post.setAsunto("Sin asunto");
-
+			post.setAsunto(post.getContenido().substring(0, 10)+"...");
 		post.setUsername(security.getUserPrincipal().getName());
 
 		Connection con = null;
@@ -640,6 +728,9 @@ public class PostResource {
 	public void denunciaPost(@PathParam("postid") String postid) {
 		// POST: /posts/{postid}/denunciar (1=denunciar, 0 desdenunciar)
 		// (Registered)(admin)
+		if (!security.isUserInRole("moderador") || !security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -698,7 +789,7 @@ public class PostResource {
 	public String moderarPost(@PathParam("postid") String postid) {
 		// PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
 
-		if (!security.isUserInRole("moderador")) {
+		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
 			throw new ForbiddenException("You are not allowed...");
 		}
 		try {
@@ -809,9 +900,12 @@ public class PostResource {
 	}
 
 	@PUT
-	@Path("/{postid}")
+	@Path("/{postid}/eliminar")
 	public String deletePostVisibilidad(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
+		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
@@ -859,6 +953,9 @@ public class PostResource {
 	@Path("/{postid}")
 	public String deletePost(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
+		if (!security.isUserInRole("admin")) {
+			throw new ForbiddenException("You are not allowed...");
+		}
 		try {
 			int p = Integer.parseInt(postid);
 			if (p < 0)
