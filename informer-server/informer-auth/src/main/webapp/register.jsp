@@ -25,19 +25,30 @@
 				        <div class="col-xs-12 col-sm-12 col-md-4 well well-sm">
 				        <img class="profile-img" src="http://www.anaderwei.com/wp-content/uploads/2013/07/social-networking.jpg" alt="">
 				            <legend><a href="http://www.jquery2dotnet.com"><i class="glyphicon glyphicon-globe"></i></a> Regístrate!</legend>
-				            <form name="formularioREG" action="/informer-auth/RegisterServlet" method="POST" class="form" role="form">
+				            <form name="formularioREG" action="RegisterServlet" method="POST" class="form" role="form">
+				            <input type="hidden" name="action" value="formularioREG"/>
 				            <div class="row">
 				                <div class="col-xs-6 col-md-6">
-				                    <input class="form-control" name="firstname" placeholder="First Name" type="text"
+				                    <input class="form-control" name="username" placeholder="Usuario" type="text"
 				                        required autofocus />
 				                </div>
 				                <div class="col-xs-6 col-md-6">
-				                    <input class="form-control" name="lastname" placeholder="Last Name" type="text" required />
+				                    <label class="radio-inline">
+						                <input type="radio" name="sex" id="inlineCheckbox1" value="male" checked="true" />
+						                Hombre
+						            </label>
+						            <label class="radio-inline">
+						                <input type="radio" name="sex" id="inlineCheckbox2" value="female" />
+						                Mujer
+						            </label>
 				                </div>
 				            </div>
 				            <br><input class="form-control" name="correo" placeholder="Correo universitario" type="email" />
 				            <br><input class="form-control" name="reenteremail" placeholder="Introduce otra vez el correo" type="email" />
 				            <br><input class="form-control" name="password" placeholder="Contraseña" type="password" />
+				            <br><select name="universidad" class="form-control">
+				                        <option value="1">Escola d'Enginyeria de Telecomunicació i Aeroespacial de Castelldefels (UPC)</option>
+				                    </select>
 				            <br><br><label for="">
 				                Fecha de nacimiento</label>
 				            <div class="row">
@@ -58,31 +69,24 @@
 				                    </select>
 				                </div>
 				            </div>
-				            <label class="radio-inline">
-				                <input type="radio" name="sex" id="inlineCheckbox1" value="male" checked="true" />
-				                Hombre
-				            </label>
-				            <label class="radio-inline">
-				                <input type="radio" name="sex" id="inlineCheckbox2" value="female" />
-				                Mujer
-				            </label>
+				            
 				            <br><br>
 				            <label for="">Estado actual</label><br>
 				            <label class="radio-inline">
-				                <input type="radio" name="civil" id="inlineCheckbox1" value="soltero" checked="true" />
+				                <input type="radio" name="civil" id="inlineCheckbox1" value="0" checked="true" />
 				                Soltero
 				            </label>
 				            <label class="radio-inline">
-				                <input type="radio" name="civil" id="inlineCheckbox2" value="relacion" />
+				                <input type="radio" name="civil" id="inlineCheckbox2" value="6" />
 				                En relación
 				            </label>
 				            <br>
 				            <label class="radio-inline">
-				                <input type="radio" name="civil" id="inlineCheckbox2" value="dejado" />
+				                <input type="radio" name="civil" id="inlineCheckbox2" value="2" />
 				                Me acaban de dejar
 				            </label>
 				            <label class="radio-inline">
-				                <input type="radio" name="civil" id="inlineCheckbox2" value="surja" />
+				                <input type="radio" name="civil" id="inlineCheckbox2" value="3" />
 				                Lo que surja
 				            </label>
 				            <br />
