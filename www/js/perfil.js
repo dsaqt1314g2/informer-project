@@ -48,6 +48,10 @@ function GetNotificaciones(username) {
 						$("#data10").html(data.numdislikes);
 						$("#data11").html(data.participacion);
 						
+						$("#data40").html(data.n_i_sala);
+						$("#data41").html(data.n_s_amistad);
+						
+						
 					}).fail(function(jqXHR, textStatus) {
 						console.log("aki llega bien pero ta mal");
 						return(false);
@@ -121,39 +125,39 @@ function GetPost(username,offset,length){
 			
 			var html ='';
 			$.each(data.posts, function(i, s) {				
-				html +='<li class="list-child"><a href="#Mostrarpost('+i+')"';
+				html +='<li class="list-child"><a href="javascript:void(0);" onClick="Mostrarpost('+i+')"';
 			
 				
-				html +='class=""><div>  |  '+s.asunto+'   @Anonimo :   '+s.contenido+'  |</div> </a><div style="text-align:right;" class="glyphicon glyphicon-thumbs-up" > .'+s.calificaciones_positivas+'  |  </div>';
-				html +='<div style="text-align:right;" class="glyphicon glyphicon-thumbs-down">  .'+s.calificaciones_negativas+'</div>';
+				html +='class=""><div>  |  '+s.asunto+'   @Anonimo :   '+s.contenido+'  |</div> </a><div style="text-align:right;" class="glyphicon glyphicon-thumbs-up" >&nbsp; '+s.calificaciones_positivas+'  |  </div>';
+				html +='<div style="text-align:right;" class="glyphicon glyphicon-thumbs-down">&nbsp;'+s.calificaciones_negativas+'</div>';
 				
 				//Esto raul nose por que peta....
-//				html +="<div class='post-container' style='display:none;' id='post-oculto"+i+"'>";				
-//				
-//				html += '<span id="post'+s.identificador+'">';  
-//				html += '<div class="panel panel-primary">';  
-//				html += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor"> anonymous ('+s.identificador+')</div><div class="post-asunto">'+s.asunto+'</div></h3></div>';  
-//				html += '<div class="panel-body">'; 
-//				html += '<div class="post-contenido">'+s.contenido+'</div>';
-//				html += '<div class="post-date">Publicado el '+ (new Date(s.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
-//				if (s.liked == 2)
-//					html += '<div class="post-calificaciones_positivas" id="neutro_like'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',1)">Ya no me gusta ('+s.calificaciones_positivas+')</a></div>';
-//				else
-//					html += '<div class="post-calificaciones_positivas" id="like'+s.identificador+'"><a href="javascript:void(0);" onClick="processLike('+s.identificador+',2)">Me gusta ('+s.calificaciones_positivas+')</a></div>';
-//				if (s.liked == 1)
-//					html += '<div class="post-calificaciones_negativas" id="neutro_dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',3)">Ya no es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
-//				else
-//					html += '<div class="post-calificaciones_negativas" id="dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+s.identificador+',4)">Esto es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
-//				html += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+s.identificador+'" onClick="processDenuncia('+s.identificador+')">Denunciar</a></div>';
-//				if (s.numcomentarios == 1)
-//					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentario</a></div>';
-//				else
-//					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentarios</a></div>';
-//				html += '<div class="post-comentarios-container" id="comentarios-container'+s.identificador+'"></div><br>';
-//				html += '<div class="post-mi-comentario-container" id="mi-comentario-container'+s.identificador+'">';
-//				html += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+s.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+s.identificador+');"></textarea>';
-//				html += '<select id="mi-comentario-visibilidad'+s.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
-//				html += '			   </div></div></div></span>';
+				html +="<div class='post-container' style='display:none;' id='post-oculto"+i+"'>";				
+				
+				html += '<span id="post'+s.identificador+'">';  
+				html += '<div class="panel panel-primary">';  
+				html += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor"> anonymous ('+s.identificador+')</div><div class="post-asunto">'+s.asunto+'</div></h3></div>';  
+				html += '<div class="panel-body">'; 
+				html += '<div class="post-contenido">'+s.contenido+'</div>';
+				html += '<div class="post-date">Publicado el '+ (new Date(s.publicacion_date)).toLocaleDateString()+' a las '+(new Date(s.publicacion_date)).toLocaleTimeString()+'</div>';
+				if (s.liked == 2)
+					html += '<div class="post-calificaciones_positivas" id="neutro_like'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',1)">Ya no me gusta ('+s.calificaciones_positivas+')</a></div>';
+				else
+					html += '<div class="post-calificaciones_positivas" id="like'+s.identificador+'"><a href="javascript:void(0);" onClick="processLike('+s.identificador+',2)">Me gusta ('+s.calificaciones_positivas+')</a></div>';
+				if (s.liked == 1)
+					html += '<div class="post-calificaciones_negativas" id="neutro_dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',3)">Ya no es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
+				else
+					html += '<div class="post-calificaciones_negativas" id="dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+s.identificador+',4)">Esto es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
+				html += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+s.identificador+'" onClick="processDenuncia('+s.identificador+')">Denunciar</a></div>';
+				if (s.numcomentarios == 1)
+					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentario</a></div>';
+				else
+					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentarios</a></div>';
+				html += '<div class="post-comentarios-container" id="comentarios-container'+s.identificador+'"></div><br>';
+				html += '<div class="post-mi-comentario-container" id="mi-comentario-container'+s.identificador+'">';
+				html += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+s.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+s.identificador+');"></textarea>';
+				html += '<select id="mi-comentario-visibilidad'+s.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
+				html += '			   </div></div></div></span>';
 				
 				html +='</div></li>';				
 					});		
@@ -181,5 +185,146 @@ function Mostrarpost(i) {
 		contenedor.style.display = "block";
 		}
 	
+}
+
+function PanelControl() {
+	
+	$('#listStuff').load('paneledit.html');
+	GetUserDates(getCookie("username"));
+}
+function Amigos() {
+	
+	$('#listStuff').load('veramigos.html');
+	Getamigos(getCookie("username"));
+}
+
+function GetUserDates(username) {
+	
+	var url = API_BASE_URL + "/users/"+username;
+
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'GET',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.user+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);
+						var html = '<div id="nombre" class="col-xs-6 col-md-6">';
+						html +='<input class="form-control" id ="username" name="username" placeholder="Usuario" type="text" value="'+data.name+'"';
+						html +='required autofocus /></div>';	                
+						$("#nombre").html(html); 
+						
+						console.log(data.genero);
+						html = '<div id="sexo" class="col-xs-6 col-md-6">';
+						if(data.genero){
+						html +='<label class="radio-inline"><input type="radio" name="sex" id="inlineCheckbox1" value="male" checked="true" />';						
+						html +='Hombre</label><label class="radio-inline"><input type="radio" name="sex" id="inlineCheckbox2" value="female" />';
+						}
+						else
+							{
+							html +='<label class="radio-inline"><input type="radio" name="sex" id="inlineCheckbox1" value="male" />';						
+							html +='Hombre</label><label class="radio-inline"><input type="radio" name="sex" id="inlineCheckbox2" value="female" checked="true"/>';
+							}
+						html +='Mujer</label></div>';
+						$("#sexo2").html(html); 
+						console.log(data.correo);
+						html = '<br><input  class="form-control" name="correo" id ="correo" placeholder="Correo universitario" type="email"  value="'+data.correo+'" />';
+						$("#correo2").html(html); 
+						
+						html = '<label class="radio-inline">';
+						html += '<input type="radio" name="civil" id="inlineCheckbox1" value="0" ';
+						if(data.estado_civil==0)
+							html += 'checked="true"';													
+						html += '/>Soltero</label><label class="radio-inline"><input type="radio" name="civil" id="inlineCheckbox2" value="6"';
+						if(data.estado_civil==6)
+							html += 'checked="true"';						
+							
+						html += '/>En relación</label><br><label class="radio-inline"><input type="radio" name="civil" id="inlineCheckbox2" value="2" ';
+						if(data.estado_civil==2)
+							html += 'checked="true"';
+							
+						html += '/>Me acaban de dejar</label><label class="radio-inline">';
+						html += '<input type="radio" name="civil" id="inlineCheckbox2" value="3"';
+						if(data.estado_civil==3)
+							html += 'checked="true"';							
+						html += '/>Lo que surja</label>';
+						$("#estado").html(html); 
+						
+						html = '<div id ="foto"><br><input  class="form-control" id="foto3" name="foto" placeholder="Link http a imagen" type="text" value="'+data.foto+'" /></div>';
+						$("#foto2").html(html);
+	                
+						
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						return(false);
+			});
+	
+}
+function ActulizarUser() {
+
+	var url = API_BASE_URL + "users/"+ getCookie("username");
+	var correo = $('#correo').val();
+	var name= $('#username').val();
+	var foto= $('#foto3').val();
+
+	var estado_civil= $('#civil').val();
+	var genero= $('.inlineCheckbox1').val();
+	var sex = true;
+	if(genero!="male")
+		sex = false;
+		
+	var fecha= $('#ano').val()+ "-" + $('#mes').val(); +"-"+$('#dia').val();
+	
+	
+	var usuario = '{"correo": "'+correo+'",';
+	usuario +='"estado_civil": '+estado_civil+',';
+	usuario +='"fecha_nacimiento": "'+fecha+'",';
+	usuario +='"genero": '+sex+',';
+	usuario +='"lugar_de_residencia": "Mi casa",';
+	usuario +='"name": "'+name+'",';
+	usuario +='"foto": "'+foto+'",';
+	usuario +='"participar_GPS": false,';
+	usuario +='"uni_escuela": 1   }';
+	
+	console.log(usuario);
+		
+		
+	$.ajax(			{
+						url : url,
+						type : 'PUT',
+						crossDomain : true,
+						dataType : 'json',
+						data: usuario,
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.user+json",
+							"Content-Type" : "application/vnd.informer.api.user+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);
+						setTimeout(function(){Pintar()},redirecttimeout);	
+					
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						return(false);
+			});
 }
 
