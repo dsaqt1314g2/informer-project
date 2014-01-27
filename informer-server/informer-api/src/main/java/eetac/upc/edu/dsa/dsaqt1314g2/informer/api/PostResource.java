@@ -281,6 +281,7 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
