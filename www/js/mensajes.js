@@ -1,12 +1,14 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
+
 var loaded = 0;
 var offset = 0;
 var length = 100;
-var minombre = 'McD0n3ld';
-var usuarioAnterior = "";
-var fecha = Number(new Date());
-var salaid = 5;
-var lastIdentificador = 0;
 
+var usuarioAnterior = "";
+var minombre;
+var fecha = Number(new Date());
+var salaid = -1;
+var lastIdentificador = 0;
 
 
 $(document).ready(function(){
@@ -14,6 +16,10 @@ $(document).ready(function(){
 });
 
 function getListMensajes() {
+	if (salaid == -1) {
+		salaid = getCookie("salaid");
+		minombre = getCookie("username");
+	}
 	var url = API_BASE_URL+"salas/"+salaid+"/mensajes?l="+length;
 	$.ajax({
 		url : url,
@@ -26,7 +32,7 @@ function getListMensajes() {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
 	.done(function (data, status, jqxhr) {
@@ -84,7 +90,7 @@ function postMensaje() {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -131,7 +137,7 @@ function checkUpdates() {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
@@ -175,29 +181,3 @@ function checkUpdates() {
 
 var t=setInterval(checkUpdates,1000);
 
-//extra
-
-function getheight() {
-    var myWidth = 0,
-        myHeight = 0;
-    if (typeof(window.innerWidth) == 'number') {
-        //Non-IE
-        myWidth = window.innerWidth;
-        myHeight = window.innerHeight;
-    } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-        //IE 6+ in 'standards compliant mode'
-        myWidth = document.documentElement.clientWidth;
-        myHeight = document.documentElement.clientHeight;
-    } else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
-        //IE 4 compatible
-        myWidth = document.body.clientWidth;
-        myHeight = document.body.clientHeight;
-    }
-    var scrolledtonum = window.pageYOffset + myHeight + 2;
-    var heightofbody = document.body.offsetHeight;
-    if (scrolledtonum >= heightofbody) {
-
-    }
-}
-
-window.onscroll = getheight;

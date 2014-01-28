@@ -13,6 +13,8 @@
 	width: 550px;
 	height: 700px;
 	overflow-y: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .mensaje {
@@ -52,11 +54,12 @@ textarea {
 	overflow:hidden; 
 	resize:none; 
 	white-space: pre;
-	border: 2px 
-	solid #D7AF00;
+	border: 2px solid #D7AF00;
 }
 
 
 textarea.mi-mensaje-txtarea{
-	width: 550px; height: 75px; 
+	width: 550px; 
+	height: 75px; 
+	margin-top: 20px;
 }
