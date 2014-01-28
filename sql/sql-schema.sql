@@ -55,7 +55,7 @@ CREATE TABLE salas_chat (
 	username varchar(20) NOT NULL,
 	nombre_sala varchar(70) NOT NULL,
 	visibilidad int NOT NULL,
-	password char(32) NOT NULL,
+	password char(255) NOT NULL,
 	last_update timestamp NOT NULL,
 FOREIGN KEY(username) REFERENCES perfiles(username) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1;

@@ -903,9 +903,9 @@ public class SalasResource {
 				|| sala.getNombre_sala().length() > 50)
 			throw new BadRequestException(
 					"Longitud del nombre excede el limite de 50 caracteres.");
-		if (sala.getPassword().length() > 25)
+		if (sala.getPassword().length() > 255)
 			throw new BadRequestException(
-					"Longitud de la contraseñaexcede el limite de 25 caracteres.");
+					"Longitud de la contraseñaexcede el limite de 255 caracteres.");
 
 		Connection con = null;
 		Statement stmt = null;
