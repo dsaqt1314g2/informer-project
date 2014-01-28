@@ -547,6 +547,7 @@ public class UserResource {
 			}
 		}
 
+		mensaje="";
 		return mensaje;
 	}
 
