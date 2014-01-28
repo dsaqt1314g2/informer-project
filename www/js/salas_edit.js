@@ -112,6 +112,7 @@ var url = API_BASE_URL + "salas/"+id;
 	
 	var nombre = $('#nombre_salamodf').val();
 	var pass = $('#pass_salamodf').val();
+	pass = CryptoJS.MD5(pass).toString();
 	var visibilidad = $('#select01modf').val();
 
 	

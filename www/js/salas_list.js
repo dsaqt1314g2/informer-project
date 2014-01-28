@@ -300,7 +300,7 @@ function UnirsePrivado(id) {
 
 	var String = "#userpass"+id;
 	var password = $(String).val();
-	var url = API_BASE_URL + "salas/" + id + "/unirse?pass="+CryptoJS.MD5(password).toString();;
+	var url = API_BASE_URL + "salas/" + id + "/unirse?pass="+CryptoJS.MD5(password).toString();
 
 	$
 			.ajax(
