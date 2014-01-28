@@ -265,9 +265,7 @@ function Unirse(id) {
 function PonerPass(id) {
 
 	var div = "#ponerpass" + id;
-	var Stringhtml = "<input type='password' class='form-control' id='userpass"
-			+ id
-			+ "' placeholder='Password' required=''><button class='btn btn-default'  OnClick='UnirsePrivado("+ id + ")'>Identificarme</button>";
+	var Stringhtml = "<input type='password' style='width:150px;' class='form-control' id='userpass"+ id+ "' placeholder='Contrase&ntilde;a' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado("+ id + ");'>";
 	$(div).html(Stringhtml);
 }
 
@@ -326,9 +324,9 @@ function UnirsePrivado(id) {
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
 						var div = "#ponerpass" + id;
-						var Stringhtml = "<div class='form-group has-error'><label class='control-label' for='inputError'>Password Error</label><input type='password' class='form-control' id='userpass"
+						var Stringhtml = "<input type='password' style='width:150px;border:1px solid red;box-shadow: 0 0 3px #CC0000;'class='form-control' id='userpass"
 							+ id
-							+ "' placeholder='Password' required=''></div><button class='btn btn-default'  OnClick='UnirsePrivado("+ id + ")'>Identificarme</button>";
+							+ "' placeholder='Contrase&ntilde;a incorrecta' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado("+ id + ");'></div>";
 						$(div).html(Stringhtml);	
 					});
 }
