@@ -1,10 +1,11 @@
 var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var pagpublica = 0;
+var offset = 0;
+var length = 5;
 
 $(document).ready(function() {
 
-	var offset = 0;
-	var length = 5;
+	
 	var url = API_BASE_URL + "salas/invitaciones";	
 
 	GetInvitaciones(url, offset, length);
@@ -138,15 +139,16 @@ function Aceptar(id) {
 						console.log(status);
 						console.log(data);
 						objInstanceName.show('ok','Has aceptado la solicitud');
-						//var Stringhtml = "<div class='alert alert-success'>Has aceptado la Solicitud: "+ id + ".<p>" + data + "</div>";
-						//$("#post-container").html(Stringhtml);
+						url = API_BASE_URL + "salas/invitaciones";	
+						GetInvitaciones(url, offset, length);
+						
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
-						objInstanceName.show('error','Error interno, usted ya esta en esta sala');
-						//var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
-						//$("#post-container").html(Stringhtml);
+						objInstanceName.show('error','Error interno, puede que usted ya esta en esta sala contacte con admin');
+						url = API_BASE_URL + "salas/invitaciones";	
+						GetInvitaciones(url, offset, length);
 					});
 }
 function Rechazar(id) {
@@ -156,12 +158,11 @@ function Rechazar(id) {
 		title: 'Informer'
 	});
 	var url = API_BASE_URL + "salas/" + id + "/denegarinvitacion";
-
 	$
 			.ajax(
 					{
 						url : url,
-						type : 'GET',
+						type : 'DELETE',
 						crossDomain : true,
 						beforeSend : function(request) {
 							request.withCredentials = true;
@@ -171,18 +172,15 @@ function Rechazar(id) {
 					})
 			.done(
 					function(data, status, jqxhr) {
-						console.log(status);
-						console.log(data);
 						objInstanceName.show('ok','Has rechazado la solicitud');
-						//var Stringhtml = "<div class='alert alert-success'>Has rechazado la Solicitud: "+ id + ".<p>" + data + "</div>";
-						//$("#post-container").html(Stringhtml);
+						url = API_BASE_URL + "salas/invitaciones";	
+						GetInvitaciones(url, offset, length);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
-						console.log(data);
 						objInstanceName.show('error','Error interno, usted ya esta en esta sala');
-						//var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
-						//$("#post-container").html(Stringhtml);
+						url = API_BASE_URL + "salas/invitaciones";	
+						GetInvitaciones(url, offset, length);
 					});
 }
 
