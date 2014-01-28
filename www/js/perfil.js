@@ -51,6 +51,10 @@ function GetNotificaciones(username) {
 						$("#data40").html(data.n_i_sala);
 						$("#data41").html(data.n_s_amistad);
 						
+						var string = '<td><span	class="glyphicon glyphicon-eye-open text-success"></span><a';
+						string +='href="#Amigos" OnClick="Amigos('+username+')" class="">Ver Amigos</a>';
+						$("#data51").html(string);
+						
 						
 					}).fail(function(jqXHR, textStatus) {
 						console.log("aki llega bien pero ta mal");
@@ -192,10 +196,10 @@ function PanelControl() {
 	$('#listStuff').load('paneledit.html');
 	GetUserDates(getCookie("username"));
 }
-function Amigos() {
+function Amigos(username) {
 	
 	$('#listStuff').load('veramigos.html');
-	Getamigos(getCookie("username"));
+	Getamigos(username);
 }
 
 function GetUserDates(username) {
