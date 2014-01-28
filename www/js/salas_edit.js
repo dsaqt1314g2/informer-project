@@ -196,13 +196,13 @@ function Salanueva() {
 		var Stringhtml = "<div class='alert alert-success'>Has Creado la Sala: "+data.nombre_sala+" con password:";
 		Stringhtml += data.password +" visibilidad tipo :"+data.visibilidad ; 
 		$("#tabla_publica").html(Stringhtml);
-		//setTimeout(function(){Pintar()},redirecttimeout);	
+		setTimeout(function(){Pintar()},redirecttimeout);	
 	})
     .fail(function (jqXHR, textStatus) {
     	console.log(textStatus);
     	console.log(jqXHR);
 		var Stringhtml = "<div class='alert alert-danger'>Error interno, no se ha podido crear la sala.</div>";
 		$("#tabla_publica").html(Stringhtml);
-		//setTimeout(function(){Pintar()},redirecttimeout);	
+		setTimeout(function(){Pintar()},redirecttimeout);	
 	});	
 }

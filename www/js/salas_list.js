@@ -300,6 +300,7 @@ function UnirsePrivado(id) {
 	var password = $(String).val();
 	var url = API_BASE_URL + "salas/" + id + "/unirse?pass="+CryptoJS.MD5(password).toString();
 
+	console.log(url);
 	$
 			.ajax(
 					{
@@ -319,6 +320,9 @@ function UnirsePrivado(id) {
 						var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: "
 								+ id + ".<p>" + data + "</div>";						
 						$("#post-container").html(Stringhtml);
+						setTimeout(function () {
+							Pintar();
+						},redirecttimeout);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
@@ -327,6 +331,9 @@ function UnirsePrivado(id) {
 						var Stringhtml = "<input type='password' style='width:150px;border:1px solid red;box-shadow: 0 0 3px #CC0000;'class='form-control' id='userpass"
 							+ id
 							+ "' placeholder='Contrase&ntilde;a incorrecta' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado("+ id + ");'></div>";
-						$(div).html(Stringhtml);	
+						$(div).html(Stringhtml);
+						setTimeout(function () {
+							Pintar();
+						},redirecttimeout);
 					});
 }

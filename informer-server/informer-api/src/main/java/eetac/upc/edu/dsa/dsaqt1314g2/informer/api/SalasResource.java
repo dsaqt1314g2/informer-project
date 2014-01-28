@@ -614,9 +614,9 @@ public class SalasResource {
 					+ sala.getNombre_sala()
 					+ "',"
 					+ sala.getVisibilidad()
-					+ ",MD5('"
+					+ ",'"
 					+ sala.getPassword()
-					+ "'));";
+					+ "');";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
@@ -899,7 +899,7 @@ public class SalasResource {
 	public Sala updateSala(@PathParam("salaid") String salaid, Sala sala) {
 		// TODO: PUT: /posts/{postid} (Registered-Propietario) => visibilidad.
 
-		if (sala.getNombre_sala().length() < 5
+		if (sala.getNombre_sala().length() < 3
 				|| sala.getNombre_sala().length() > 50)
 			throw new BadRequestException(
 					"Longitud del nombre excede el limite de 50 caracteres.");
