@@ -351,7 +351,7 @@ function EliminarAmistad(username) {
 						console.log(status);
 						console.log("si lo hahehco bien");
 						objInstanceName.show('ok','Se ha eliminado la amistad.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);							               
+						setTimeout(function(){Getamigos(getCookie("username"));},redirecttimeout);							               
 						
 					})
 					.fail(function(jqXHR, textStatus) {
@@ -359,7 +359,7 @@ function EliminarAmistad(username) {
 						console.log(jqXHR);
 						console.log("no lo hahehco bien");
 						objInstanceName.show('error','No se ha podido eliminar la amistad contacte admin.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);	
+						setTimeout(function(){Getamigos(getCookie("username"));},redirecttimeout);	
 						
 			});
 	

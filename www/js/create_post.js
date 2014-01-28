@@ -1,3 +1,5 @@
+var autorizacion = getCookie("username") +":"+getCookie("userpass");
+
 function processIdea() {
 	var url = API_BASE_URL+"posts";
 	var visibilidad = $('#mi-post-visibilidad').val();
@@ -17,7 +19,7 @@ function processIdea() {
 		beforeSend: function (request)
 	    {
 	        request.withCredentials = true;
-	        request.setRequestHeader("Authorization", "Basic "+ btoa('McD0n3ld:McD0n3ld'));
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
 	    },
 	})
     .done(function (data, status, jqxhr) {
