@@ -8,14 +8,28 @@ $(document).ready(function() {
 	
 	Pintar();
 });
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
 
 function Pintar() {
 		
-	var url = API_BASE_URL + "/users/"+getCookie("username");
+	var perfil = getUrlVars().user;
+	console.log(perfil);
+	var url = API_BASE_URL + "users/"+perfil;
 	
 	GetUsuario(url, offset, length);	
-	GetNotificaciones(getCookie("username"));	
-	GetPost(getCookie("username"),0,15);
+	GetNotificaciones(perfil);	
+	GetPost(perfil,0,15);
 	
 }
 function GetNotificaciones(username) {
@@ -95,6 +109,10 @@ function GetUsuario(url) {
 							estado="Abierto a Sugerencias";
 						if(data.estado_civil==3)
 							estado="Con relacion";
+					
+						
+						var soli = '<button type="button" class="btn btn-success" onclick="SolicitarAmistad(\''+getUrlVars().user+'\')">Solicitar amistad</button>';
+						$("#solicitudes").html(soli);
 						$("#data2").html(sexo); 
 						$("#data4").html(estado); 
 						$("#data3").html((new Date(data.fecha_nacimiento)).toLocaleDateString()); 
@@ -196,27 +214,24 @@ function Mostrarpost(i) {
 	
 }
 
-function PanelControl() {
-	
-	$('#listStuff').load('paneledit.html');
-	GetUserDates(getCookie("username"));
-}
 function Amigos(username) {
 	
 	if(username==null)
-		username=getCookie("username");
+		username=getUrlVars().user;
 	$('#listStuff').load('veramigos.html');
 	Getamigos(username);
 }
-function Solicitudes() {
 
-	$('#listStuff').load('veramigos.html');
-	GetSolicitudes(getCookie("username"));
-}
-function GetSolicitudes(username) {
+function SolicitarAmistad(username) {
 	
-	//añadir ofset y length con paginacion
-	var url = API_BASE_URL + "users/solicitudes?o=0&l=20";
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	
+
+	var url = API_BASE_URL + "users/solicitud/"+username;
 	console.log(url);
 	$
 			.ajax(
@@ -231,37 +246,23 @@ function GetSolicitudes(username) {
 									+ btoa(autorizacion));
 						},
 						headers : {
-							"Accept" : "application/vnd.informer.api.user.collection+json",
+							"Accept" : "application/vnd.informer.api.user+json",
 						},
 					})
 			.done(
 					function(data, status, jqxhr) {
 						console.log(data);	
-						console.log("Aqui llega 2");
-						var html= '<table  class="table table-striped custab"><thead><tr><th>ID</th>';
-						html +='<th>Foto</th><th>Nombre</th><th>Nick</th><th>Last Conected</th><th class="text-center">Action</th></tr></thead>';
+						objInstanceName.show('ok','Se ha enviado la solicitud.');
+						//setTimeout(function(){Pintar();},redirecttimeout);	
+								
 						
-						$.each(data.users,function(i, s) {
-							
-							html +='<tr><td>'+s.identificador+'</td>';
-							html +='<td ><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
-							html +='<img ALIGN=LEFT style="max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
-							html +='<td>'+s.name+'</td>';
-							html +='<td>'+s.username+'</td>';
-							html +='<td>'+s.last_Update+'</td>';
-							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="#aceptar" OnClick="AceptarAmistad(\''+s.username+'\')"><span class="glyphicon glyphicon-edit">';
-							html +='</span> Aceptar Solicitud </a> <a href="#eliminar" OnClick="EliminarAmistad(\''+s.username+'\')" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
-							html +='</span> Rechazar Solicitud</a></td></tr>';
-							
-						});
-						html +=' </table>';
-
-						$("#tabladeamigos").html(html);
-	                
 						
 					}).fail(function(jqXHR, textStatus) {
 						console.log(textStatus);
-						return(false);
+						objInstanceName.show('error','Se ha producido un erro al enviar la solicitud o usted ya es amigo.');
+						//setTimeout(function(){Pintar();},redirecttimeout);	
+							
+						
 			});
 	
 	
@@ -304,8 +305,8 @@ function Getamigos(username) {
 							html +='<td>'+s.username+'</td>';
 							html +='<td>'+(new Date(s.last_Update)).toLocaleDateString()+'</td>';
 							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="perfil.html?user='+s.username+'" ><span class="glyphicon glyphicon-edit">';
-							html +='</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad(\''+s.username+'\')" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
-							html +='</span> Eliminar Amistad</a></td></tr>';
+							html +='</span> Ver Perfil </a> <a OnClick="SolicitarAmistad(\''+s.username+'\')" class="btn btn-info btn-xs" ><span class="glyphicon glyphicon-comment">';
+							html +='</span> Enviar Solicitud</a></td></tr>';
 						});
 						html +=' </table>';
 
@@ -351,7 +352,7 @@ function EliminarAmistad(username) {
 						console.log(status);
 						console.log("si lo hahehco bien");
 						objInstanceName.show('ok','Se ha eliminado la amistad.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);							               
+						setTimeout(function(){Amigos(getCookie("username"));},redirecttimeout);							               
 						
 					})
 					.fail(function(jqXHR, textStatus) {
@@ -359,51 +360,7 @@ function EliminarAmistad(username) {
 						console.log(jqXHR);
 						console.log("no lo hahehco bien");
 						objInstanceName.show('error','No se ha podido eliminar la amistad contacte admin.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);	
-						
-			});
-	
-	
-}
-function AceptarAmistad(username) {
-	
-	console.log("Aqui llega 3");
-	var objInstanceName=new jsNotifications({
-		autoCloseTime : 5,
-		showAlerts: true,
-		title: 'Informer'
-	});
-	
-	var url = API_BASE_URL + "users/"+username+"/aceptfriend";
-	console.log(url);
-	$
-			.ajax(
-					{
-						url : url,
-						type : 'DELETE',
-						crossDomain : true,
-						dataType : 'json',
-						beforeSend : function(request) {
-							request.withCredentials = true;
-							request.setRequestHeader("Authorization", "Basic "
-									+ btoa(autorizacion));
-						},						
-					})					
-			.done(
-					function(data, status, jqxhr) {
-						console.log(data);
-						console.log(status);
-						console.log("si lo hahehco bien");
-						objInstanceName.show('ok','Se ha aceptado la amistad.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);							               
-						
-					})
-					.fail(function(jqXHR, textStatus) {
-						console.log(textStatus);
-						console.log(jqXHR);
-						console.log("no lo hahehco bien");
-						objInstanceName.show('error','No se ha podido aceptar la amistad contacte admin.');
-						setTimeout(function(){GetSolicitudes(getCookie("username"));},redirecttimeout);	
+						setTimeout(function(){Amigos(getCookie("username"));},redirecttimeout);	
 						
 			});
 	

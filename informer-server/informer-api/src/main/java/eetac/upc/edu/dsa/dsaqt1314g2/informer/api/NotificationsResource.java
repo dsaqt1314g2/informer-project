@@ -39,13 +39,7 @@ public class NotificationsResource {
 	public Response getmynotificacion(@PathParam("username") String username,
 			@Context Request req) {
 
-		String nombre = security.getUserPrincipal().getName();
-		
-		if(!nombre.equals(username))
-		{
-			throw new ForbiddenException("You are nor allowed");
-		}
-		
+				
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
