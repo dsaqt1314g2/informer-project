@@ -16,6 +16,15 @@ public class Comentario {
 	private Date publicacion_date;
 	private int revisado;
 	private String who_revisado;
+	private String contenido_post;
+
+	public String getContenido_post() {
+		return contenido_post;
+	}
+
+	public void setContenido_post(String contenido_post) {
+		this.contenido_post = contenido_post;
+	}
 
 	private ArrayList<Link> links = new ArrayList<Link>();
 

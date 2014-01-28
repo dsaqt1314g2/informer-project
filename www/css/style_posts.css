@@ -28,7 +28,7 @@
 }
 
 .post-numcomentarios {
-
+	
 }
 
 .post-asunto {
@@ -44,6 +44,16 @@
 	border-radius: 3px;
 }
 
+.post-denunciado-contenido {
+	padding: 5px;
+}
+
+.post-denunciado-date {
+	position: relative;
+	padding: 3px;
+	text-align: right;
+}
+
 .post-date {
 	position: relative;
 	padding: 3px;
@@ -52,7 +62,7 @@
 }
 
 .post-calificaciones_positivas {
-	width:140px;
+	width: 140px;
 }
 
 .post-calificaciones_positivas A:link {
@@ -72,8 +82,8 @@
 }
 
 .post-calificaciones_negativas {
-	width:220px;
-	text-align:center;
+	width: 220px;
+	text-align: center;
 }
 
 .post-calificaciones_negativas A:link {
@@ -94,7 +104,7 @@
 
 .post-denuncia {
 	width: 140px;
-	text-align:right;
+	text-align: right;
 }
 
 .post-denuncia A:link {
@@ -189,3 +199,6 @@ textarea.mi-post-txtarea {
 	color: #FF0404;
 }
 
+.comentario-denunciado-contenido {
+	padding: 5px;
+}

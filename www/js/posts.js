@@ -1,9 +1,11 @@
 var autorizacion = getCookie("username") +":"+getCookie("userpass");
+var pagina = "default";
 var loaded = 0;
 var offset = 0;
 var length = 5;
 
 function getListPosts() {
+	pagina = "default";
 	var url = API_BASE_URL+"posts?o="+offset+"&l="+length;
 	var url = API_BASE_URL+"posts?o="+offset+"&l="+length;
 	$.ajax({
@@ -39,7 +41,7 @@ function rellenarPosts(data, htmlString) {
     	htmlString += '<span id="post'+p.identificador+'">';  
     	htmlString += '<div class="panel panel-primary">';  
     	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
-    	htmlString += '<div class="panel-body">'; 
+    	htmlString += '<div class="panel-body" style="background-color:#EDF8FF;">'; 
     	htmlString += '<div class="post-contenido"><table style="width:490px;"><tr><td>'+p.contenido+'</td></tr><tr><td style="text-align: right;">';
 		htmlString += 'Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</td></tr></table></div>';
 		htmlString += '<table><tr><td>'
@@ -83,10 +85,11 @@ function rellenarPosts(data, htmlString) {
 }
 
 function getRankingPosts(ranking) {
+	pagina = ranking;
 	var url;
-	if (ranking==1) url = API_BASE_URL+"posts/ranking/likes";
-	else if (ranking==2) url = API_BASE_URL+"posts/ranking/dislikes";
-	else if (ranking==3) url = API_BASE_URL+"posts/ranking/coments";
+	if (ranking==1) url = API_BASE_URL+"posts/ranking/likes?o="+offset+"&l="+length;
+	else if (ranking==2) url = API_BASE_URL+"posts/ranking/dislikes?o="+offset+"&l="+length;
+	else if (ranking==3) url = API_BASE_URL+"posts/ranking/coments?o="+offset+"&l="+length;
 	else url = API_BASE_URL+"posts?o="+offset+"&l="+length;
 	$.ajax({
 		url : url,
@@ -118,6 +121,7 @@ function getRankingPosts(ranking) {
 
 
 function getListPostsDenunciados() {
+	pagina = "posts_denuncias";
 	var url = API_BASE_URL+"posts/denuncias?o="+offset+"&l="+length;
 	$.ajax({
 		url : url,
@@ -139,11 +143,11 @@ function getListPostsDenunciados() {
 		if (loaded > 0) htmlString += document.getElementById('post-container').innerHTML;
 	    $.each(data.posts, function(i,p){	
 	    	htmlString += '<span id="post'+p.identificador+'">';  
-        	htmlString += '<div class="panel panel-primary">';  
+        	htmlString += '<div class="panel panel-info">';  
         	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
-        	htmlString += '<div class="panel-body">'; 
-        	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
-			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
+        	htmlString += '<div class="panel-body" style="background-color:#F9FDFF">'; 
+        	htmlString += '<div class="post-denunciado-contenido">'+p.contenido+'</div>';
+			htmlString += '<div class="post-denunciado-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
 			htmlString += '<table><tr><td>'
 			if (p.liked == 2)
 				htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
@@ -155,7 +159,7 @@ function getListPostsDenunciados() {
 			else
 				htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
 			htmlString += '</td><td>'
-			htmlString += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
+			htmlString += '<div class="post-denuncia"></div>';
 			htmlString += '</td></tr></table>'
 			if (p.numcomentarios == 1)
 				htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
@@ -175,6 +179,56 @@ function getListPostsDenunciados() {
     .fail(function (jqXHR, textStatus) {
 		console.log(textStatus);
 	});
+}
+
+function getListComentariosDenunciados() {
+	pagina = "comentrios_denuncias";
+	var url = API_BASE_URL+"posts/0/comentarios/denuncias?o="+offset+"&l="+length;
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		headers : {
+			"Accept" : "application/vnd.informer.api.comentario.collection+json",
+		},
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+	.done(function (data, status, jqxhr) {
+		//var posts = $.parseJSON(jqxhr.responseText);
+		var htmlString = "<div class='post-container' id='post-container'>";
+		if (loaded > 0) htmlString += document.getElementById('post-container').innerHTML;
+	    $.each(data.comentarios, function(i,p){	
+	    	htmlString += '<span id="comentario'+p.identificador+'">';  
+        	htmlString += '<div class="panel panel-warning">';  
+        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div></h3></div>';  
+        	htmlString += '<div class="panel-body" style="background-color:#FFFFE5">'; 
+        	htmlString += '<div class="comentario-denunciado-contenido">'+p.contenido+'</div>';
+			htmlString += '<div class=""></div>';
+			htmlString += '<div class="post-moderar"><a href="javascript:void(0);" class="validar-denuncia" onClick="processModerarComentario('+p.id_post+','+p.identificador+')"><img src="img/valid.png"/>&nbsp;&nbsp;Validar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="rechazar-denuncia" onClick="processEliminarComentario('+p.id_post+','+p.identificador+')"><img src="img/error.png"/>&nbsp;&nbsp;Eliminar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onClick="processVerContenidoPostComentarioDenunciado(\''+p.contenido_post+'\')"><img src="img/warning.png"/>&nbsp;&nbsp;Ver contenido del post</a></div>';
+			htmlString += '<div class="post-comentarios-container" id="comentarios-container'+p.identificador+'"></div><br>';
+			htmlString += '</div></div></div></span>';
+	    });
+	    htmlString += "</div>";
+		$('#res_get_list_comentarios_denuncias').html(htmlString);
+		//console.log(posts);
+	})
+    .fail(function (jqXHR, textStatus) {
+		console.log(textStatus);
+	});
+}
+
+function processVerContenidoPostComentarioDenunciado(contenido) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 60,
+		showAlerts: true,
+		title: 'Contenido del post'
+	});
+	objInstanceName.show('informer',contenido);
 }
 
 
@@ -456,6 +510,64 @@ function processEliminar(identificador) {
 	});	
 }
 
+function processModerarComentario(postid, identificador) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	var url = API_BASE_URL+"posts/"+postid+"/comentarios/"+identificador+"/moderar"
+	$.ajax({
+		url : url,
+		type : 'PUT',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+    .done(function (data, status, jqxhr) {
+   		objInstanceName.show('ok','Comentario aceptado');
+   		$('#comentario'+identificador).remove();
+		console.log(status);
+	})
+    .fail(function (jqXHR, textStatus) {
+    	objInstanceName.show('error','Moderacion no realizada');
+		console.log(textStatus+" "+url);
+	});	
+}
+
+function processEliminarComentario(postid, identificador) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	var url = API_BASE_URL+"posts/"+postid+"/comentarios/"+identificador+"/eliminar"
+	$.ajax({
+		url : url,
+		type : 'PUT',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend: function (request)
+	    {
+	        request.withCredentials = true;
+	        request.setRequestHeader("Authorization", "Basic "+ btoa(autorizacion));
+	    },
+	})
+    .done(function (data, status, jqxhr) {
+   		objInstanceName.show('warning','Comentario eliminado');
+   		$('#comentario'+identificador).remove();
+		console.log(status);
+	})
+    .fail(function (jqXHR, textStatus) {
+    	objInstanceName.show('error','Moderacion no realizada');
+		console.log(textStatus+" "+url);
+	});	
+}
+
 
 //extra
 
@@ -480,7 +592,10 @@ function getheight() {
     if (scrolledtonum >= heightofbody) {
     	loaded++;
     	offset += length;
-        getListPosts();
+        if (pagina == "default") getListPosts();
+        else if (pagina == "1" || pagina == "2" ||pagina == "3") getRankingPosts(pagina);
+        else if (pagina == "posts_denuncias") getListPostsDenunciados();
+        else if (pagina == "comentarios_denuncias") getListComentariosDenunciados();
     }
 }
 
