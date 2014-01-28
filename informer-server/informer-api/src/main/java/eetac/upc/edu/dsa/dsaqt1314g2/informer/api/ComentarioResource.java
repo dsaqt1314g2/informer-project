@@ -139,6 +139,104 @@ public class ComentarioResource {
 			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, next, length, postid, "next"));
 		return comentarios;
 	}
+	
+	@GET
+	@Path("/denuncias")
+	@Produces(MediaType.INFORMER_API_COMENTARIO_COLLECTION)
+	public ComentarioCollection getDenuncias(@PathParam("postid") String postid, @QueryParam("o") String offset, @QueryParam("l") String length) {
+		// GETs: /posts?{offset}{length} (Registered)(admin)
+		try {
+			int p = Integer.parseInt(postid);
+			if (p < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new PostNotFoundException();
+		}
+		int ioffset = 0, ilength = 10;
+		if (offset == null)
+			offset = "0";
+		else {
+			try {
+				ioffset = Integer.parseInt(offset);
+				if (ioffset < 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Offset debe ser un entero mayor o igual a 0.");
+			}
+		}
+		if (length == null)
+			length = "10";
+		else {
+			try {
+				ilength = Integer.parseInt(length);
+				if (ilength < 1)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				throw new BadRequestException("Length debe ser un entero mayor o igual a 0.");
+			}
+		}
+
+		// Sting for each one and store them in the StingCollection.
+		Connection con = null;
+		Statement stmt = null;
+		String username = security.getUserPrincipal().getName();
+		int comentarios_encontrados = 0;
+		try {
+			con = ds.getConnection();
+			stmt = con.createStatement();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad, posts.contenido as contenido_post FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador WHERE comentarios.visibilidad>3 ORDER BY comentarios.publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				if (comentarios_encontrados++ == ilength)
+					break;
+				Comentario c = new Comentario();
+				c.setIdentificador(rs.getInt("identificador"));
+				c.setId_post(rs.getInt("id_post"));
+				c.setVisibilidad(rs.getInt("visibilidad"));
+				c.setContenido(rs.getString("contenido"));
+				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
+				c.setRevisado(rs.getInt("revisado"));
+				c.setWho_revisado(rs.getString("who_revisado"));
+				c.setContenido_post(rs.getString("contenido_post"));
+				c.setUsername(comentarioAnonimo(username, rs.getString("username"), rs.getString("friend"), c.getVisibilidad()));
+				if (c.getIdentificador() != 1)
+					c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() - 1, "prev"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador(), "self"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() + 1, "next"));
+				c.addLink(ComentariosAPILinkBuilder.buildURIDenunciarComentarioId(uriInfo, postid, c.getIdentificador(), "denunciar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIModificarComentarioId(uriInfo, postid, c.getIdentificador(), "modificar"));
+				if (username.equals(c.getUsername()) || security.isUserInRole("moderador"))
+					c.addLink(ComentariosAPILinkBuilder.buildURIDeleteComentarioId(uriInfo, postid, c.getIdentificador(), "eliminar"));
+				comentarios.add(c);
+			}
+			rs.close();
+			if (comentarios_encontrados == 0)
+				throw new ComentarioCollectionNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				con.close();
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		int prev = ioffset - ilength;
+		int next = ioffset + ilength;
+		if (prev >= 0)
+			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, prev, length, postid, "prev"));
+		comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, ioffset, length, postid, "self"));
+		if (comentarios_encontrados > ilength)
+			comentarios.addLink(ComentariosAPILinkBuilder.buildURIComentarios(uriInfo, next, length, postid, "next"));
+		return comentarios;
+	}
 
 	@GET
 	@Path("/{comentarioid}")
@@ -435,8 +533,6 @@ public class ComentarioResource {
 
 	@PUT
 	@Path("/{comentarioid}/moderar")
-	@Consumes(MediaType.INFORMER_API_COMENTARIO)
-	@Produces(MediaType.INFORMER_API_COMENTARIO)
 	public void moderarComentario(@PathParam("postid") String postid, @PathParam("comentarioid") String comentarioid) {
 		// PUT: /posts/{postid}/comentarios/{comentarioid}/moderar (admin) =>
 		// revisado y who_revisado
