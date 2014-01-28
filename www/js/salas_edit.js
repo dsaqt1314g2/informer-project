@@ -89,18 +89,18 @@ function ModSala(id, nombre){
 	contenedor2.style.display = "block";
 	
 	var String_html = '<div id="tabla_mod"><button type="button" class="btn btn-success" OnClick="CrearSala()" >Crear Sala</button></div>';
-	String_html += '<form class="form-horizontal"><fieldset><legend>Modificar Sala</legend>';
-	String_html += '<div class="control-group"><label class="control-label" for="input01">Nombre de la';
-	String_html +='Sala.</label><div class="controls"><input type="text" value="'+nombre+'" class="input-xlarge" id="nombre_salamodf">';
+	String_html += '<br><div class="panel panel-success" style="width:500px;margin-left:auto;margin-right:auto;"><div class="panel-heading">Modificar Sala</div>';
+	String_html += '<div class="panel-body" style="background-color:#F8FFF8;"><label class="control-label" for="input01">Nombre de la sala';
+	String_html +='</label><div class="controls"><input type="text" value="'+nombre+'" class="input-xlarge" id="nombre_salamodf">';
 	String_html +='<p class="help-block">Tiene que ser un Nombre Autodescriptivo y no muy largo.</p>';
 	String_html +='</div><div class="control-group"><label class="control-label" for="input01">Password</label>';
 	String_html +='<div class="controls"><input type="password" class="input-xlarge" id="pass_salamodf">';
 	String_html +='<p class="help-block">Solo es necesario en caso de sala privada</p></div></div>';
-	String_html +='<div class="control-group"><label class="control-label" for="select01">Tipo de Sala</label>';
+	String_html +='<div class="control-group"><label class="control-label" for="select01">Tipo de sala</label>';
 	String_html +='<div class="controls"><select id="select01modf"><option value="0">Publica</option><option value="1">Privada-Visible</option>';
-	String_html +='<option value="2">Privada-Oculta</option></select></div></div><div class="controls">';
+	String_html +='<option value="2">Privada-Oculta</option></select></div></div><div class="controls"><br>';
 	String_html +='<button type="button" class="btn btn-success" OnClick="ActulizarSala('+id+')" >Modificar</button></div>';
-	String_html +='</fieldset></form>';
+	String_html +='</div></div>';
 	
 	$("#tabla_mod").html(String_html);
 

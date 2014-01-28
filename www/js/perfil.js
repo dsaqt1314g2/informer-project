@@ -132,7 +132,7 @@ function GetPost(username,offset,length){
 				html +='<li class="list-child"><a href="javascript:void(0);" onClick="Mostrarpost('+i+')"';
 			
 				
-				html +='class=""><div>  |  '+s.asunto+'   @Anonimo :   '+s.contenido+'  |</div> </a><div style="text-align:right;" class="glyphicon glyphicon-thumbs-up" >&nbsp; '+s.calificaciones_positivas+'  |  </div>';
+				html +='class=""><div>  |  '+s.asunto+'   @'+s.username+': '+s.contenido+'  |</div> </a><div style="text-align:right;" class="glyphicon glyphicon-thumbs-up" >&nbsp;'+s.calificaciones_positivas+' |&nbsp;</div>';
 				html +='<div style="text-align:right;" class="glyphicon glyphicon-thumbs-down">&nbsp;'+s.calificaciones_negativas+'</div>';
 				
 				//Esto raul nose por que peta....
@@ -250,7 +250,7 @@ function GetSolicitudes(username) {
 							html +='<td>'+s.username+'</td>';
 							html +='<td>'+s.last_Update+'</td>';
 							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="#aceptar" ><span class="glyphicon glyphicon-edit">';
-							html +='</span> Aceptar Solicitud </a> <a href="#eliminar" OnClick="EliminarAmistad("Ropnom")" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
+							html +='</span> Aceptar Solicitud </a> <a href="#eliminar" OnClick="EliminarAmistad(\''+s.username+'\')" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
 							html +='</span> Rechazar Solicitud</a></td></tr>';
 							
 						});
@@ -297,7 +297,6 @@ function Getamigos(username) {
 						html +='<th>Foto</th><th>Nombre</th><th>Usuario</th><th>&Uacute;ltima conexi&oacute;n</th><th class="text-center">Acci&oacute;n</th></tr></thead>';
 						
 						$.each(data.users,function(i, s) {
-							
 							//html +='<tr><td>'+s.identificador+'</td>';
 							html +='<td><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
 							html +='<img style="text-align:center;max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
@@ -305,9 +304,8 @@ function Getamigos(username) {
 							html +='<td>'+s.username+'</td>';
 							html +='<td>'+(new Date(s.last_Update)).toLocaleDateString()+'</td>';
 							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="perfil.html?user='+s.username+'" ><span class="glyphicon glyphicon-edit">';
-							html +='</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad("Ropnom")" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
+							html +='</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad(\''+s.username+'\')" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
 							html +='</span> Eliminar Amistad</a></td></tr>';
-							
 						});
 						html +=' </table>';
 
@@ -492,41 +490,3 @@ function ActulizarUser() {
 						return(false);
 			});
 }
-
-
-
-function rellenarPosts(data, htmlString) {
-	$.each(data.posts, function(i,p){	
-    	htmlString += '<span id="post'+p.identificador+'">';  
-    	htmlString += '<div class="panel panel-primary">';  
-    	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
-    	htmlString += '<div class="panel-body" style="background-color:#EDF8FF;">'; 
-    	htmlString += '<div class="post-contenido"><table style="width:490px;"><tr><td>'+p.contenido+'</td></tr><tr><td style="text-align: right;">';
-		htmlString += 'Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</td></tr></table></div>';
-		htmlString += '<table><tr><td>'
-		if (p.liked == 2)
-			htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
-		else
-			htmlString += '<div class="post-calificaciones_positivas" id="like'+p.identificador+'"><a href="javascript:void(0);" onClick="processLike('+p.identificador+',2)">Me gusta ('+p.calificaciones_positivas+')</a></div>';
-		htmlString += '</td><td>'
-		if (p.liked == 1)
-			htmlString += '<div class="post-calificaciones_negativas" id="neutro_dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',3)">Ya no es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
-		else
-			htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
-		htmlString += '</td><td>'
-		htmlString += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
-		htmlString += '</td></tr><tr><td colspan=2>'
-		if (p.numcomentarios == 1)
-			htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
-		else
-			htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentarios</a></div>';
-		htmlString += '</td></tr></table>';
-		htmlString += '<div id="comentarios-container'+p.identificador+'"></div>';
-		htmlString += '<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">';
-		htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
-			htmlString += '<select id="mi-comentario-visibilidad'+p.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
-		htmlString += '			   </div></div></div></span>';
-    });
-	return htmlString;
-}
-

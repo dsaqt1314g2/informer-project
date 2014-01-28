@@ -86,7 +86,6 @@ public class UserResource {
 				user.setIsModerador(security.isUserInRole("moderador"));
 
 				// TODO: Generar lso Links
-				// añadimos los links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo, user.getUsername(), "self"));
 				user.addLinks(UsersAPILinkBuilder.buildURIDeleteUser(uriInfo, user.getUsername(), "delete"));
 				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
@@ -95,6 +94,10 @@ public class UserResource {
 				throw new UserNotFoundException();
 			}
 			rs.close();
+			if (username.equals(security.getUserPrincipal().getName())) {
+				sql = "UPDATE perfiles SET last_Update=CURRENT_TIMESTAMP where username='" + username + "';";
+				stmt.executeUpdate(sql);
+			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
