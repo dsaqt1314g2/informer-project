@@ -4,13 +4,17 @@ var pagpublica = 0;
 $(document).ready(function() {
 
 	console.log(autorizacion);
+	pintar();
+	
+
+});
+
+function pintar() {
 	var offset = 0;
 	var length = 5;
 	var url = API_BASE_URL + "salas/visible/";	
 	GetSalasMias(url, offset, length);
-	
-
-});
+}
 
 function GetSalasMias(url, offset, length) {
 
@@ -49,9 +53,18 @@ function GetSalasMias(url, offset, length) {
 								+ s.nombre_sala
 								+ "</td><td><input type='button' value='Invitar' OnClick='Invitar("
 								+ s.identificador
-								+ ")'></td><td><input type='button' value='Abandonar' OnClick='Abandonar("
+								+ ")'>";
+								if(s.username!=getCookie("username")){
+								Stringhtml +="</td><td><input type='button' value='Abandonar' OnClick='Abandonar("
 								+ s.identificador
-								+ ")'></td><td>"
+								+ ")'>";
+								} else{
+								Stringhtml +="</td><td><input type='button' value='Eliminar Sala' OnClick='Eliminar("
+										+ s.identificador
+										+ ")'>";
+								}
+								
+								Stringhtml +="</td><td>"
 								+ (new Date(s.last_update)).toLocaleDateString()+' a las '+(new Date(s.last_update)).toLocaleTimeString() + "</td>";
 								Stringhtml += "</tr>";
 						});
@@ -113,14 +126,18 @@ function GetSalasMias(url, offset, length) {
 }
 
 function Abandonar(id) {
-
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
 	var url = API_BASE_URL + "salas/" + id + "/abandonar";
-
+	console.log(url);
 	$
 			.ajax(
 					{
 						url : url,
-						type : 'GET',
+						type : 'DELETE',
 						crossDomain : true,
 						beforeSend : function(request) {
 							request.withCredentials = true;
@@ -135,12 +152,57 @@ function Abandonar(id) {
 						var Stringhtml = "<div class='alert alert-success'>Has abandonado la Sala: "
 								+ id + ".<p>" + data + "</div>";
 						$("#post-container").html(Stringhtml);
+						objInstanceName.show('ok','Sala abandonada');
+						setTimeout(function(){pintar()},redirecttimeout);
+						
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
 						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted no esta en esta sala.</div>";
 						$("#post-container").html(Stringhtml);
+						objInstanceName.show('error','No se ha podido abandonar la sala.');
+						setTimeout(function(){pintar()},redirecttimeout);	
+					});
+}
+
+function Eliminar(id) {
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	var url = API_BASE_URL + "salas/" + id;
+
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'DELETE',
+						crossDomain : true,
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(status);
+						console.log(data);
+						var Stringhtml = "<div class='alert alert-success'>Has borrado la Sala: "
+								+ id + ".<p>" + data + "</div>";
+						$("#post-container").html(Stringhtml);
+						objInstanceName.show('ok','Sala Eliminada');
+						pintar();
+					})
+			.fail(
+					function(data, status, jqXHR, textStatus) {
+						console.log(data);
+						var Stringhtml = "<div class='alert alert-danger'>Error interno o Usted no es dueño de la sala.</div>";
+						$("#post-container").html(Stringhtml);
+						objInstanceName.show('error','Error interno o Usted no es dueño de la sala');
+						pintar();
 					});
 }
 
