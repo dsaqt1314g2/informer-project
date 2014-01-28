@@ -162,15 +162,17 @@ function Salanueva() {
 	
 	var nombre = $('#nombre_sala').val();
 	var pass = $('#pass_sala').val();
+	pass = CryptoJS.MD5(pass).toString();
 	var visibilidad = $('#select01').val();
 
 	
 	var sala = '{"nombre_sala": "'+nombre+'",';
 	sala +=  '"password": "'+pass+'",';
-	sala +=  '"username": "alicia",';
+	sala +=  '"username": "'+getCookie("username")+'",';
 	sala +=  '"visibilidad": '+visibilidad+'}';
 	
 	console.log(sala);
+	console.log(url);
 	
 	$.ajax({
 		url : url,
@@ -194,13 +196,13 @@ function Salanueva() {
 		var Stringhtml = "<div class='alert alert-success'>Has Creado la Sala: "+data.nombre_sala+" con password:";
 		Stringhtml += data.password +" visibilidad tipo :"+data.visibilidad ; 
 		$("#tabla_publica").html(Stringhtml);
-		setTimeout(function(){Pintar()},redirecttimeout);	
+		//setTimeout(function(){Pintar()},redirecttimeout);	
 	})
     .fail(function (jqXHR, textStatus) {
     	console.log(textStatus);
     	console.log(jqXHR);
 		var Stringhtml = "<div class='alert alert-danger'>Error interno, no se ha podido crear la sala.</div>";
 		$("#tabla_publica").html(Stringhtml);
-		setTimeout(function(){Pintar()},redirecttimeout);	
+		//setTimeout(function(){Pintar()},redirecttimeout);	
 	});	
 }

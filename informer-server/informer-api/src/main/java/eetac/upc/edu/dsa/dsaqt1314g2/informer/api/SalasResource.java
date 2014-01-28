@@ -590,13 +590,13 @@ public class SalasResource {
 	@Produces(MediaType.INFORMER_API_SALA)
 	public Sala createSala(Sala sala) {
 		// TODO: POST: /posts (Registered)(admin)
-		if (sala.getNombre_sala().length() < 5
+		if (sala.getNombre_sala().length() < 3
 				|| sala.getNombre_sala().length() > 50)
 			throw new BadRequestException(
-					"Longitud del nombre excede el limite de 50 caracteres.");
-		if (sala.getPassword().length() > 25)
+					"Longitud del nombre excede el limite de 50 caracteres o es inferior a 3.");
+		if (sala.getPassword().length() > 255)
 			throw new BadRequestException(
-					"Longitud de la contraseñaexcede el limite de 25 caracteres.");
+					"Longitud de la contraseñaexcede el limite de 255 caracteres.");
 
 		Connection con = null;
 		Statement stmt = null;
