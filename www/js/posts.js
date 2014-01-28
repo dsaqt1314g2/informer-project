@@ -2,7 +2,7 @@ var autorizacion = getCookie("username") +":"+getCookie("userpass");
 var pagina = "default";
 var loaded = 0;
 var offset = 0;
-var length = 5;
+var length = 7;
 
 function getListPosts() {
 	pagina = "default";
@@ -182,7 +182,7 @@ function getListPostsDenunciados() {
 }
 
 function getListComentariosDenunciados() {
-	pagina = "comentrios_denuncias";
+	pagina = "comentarios_denuncias";
 	var url = API_BASE_URL+"posts/0/comentarios/denuncias?o="+offset+"&l="+length;
 	$.ajax({
 		url : url,
@@ -211,11 +211,11 @@ function getListComentariosDenunciados() {
 			htmlString += '<div class=""></div>';
 			htmlString += '<div class="post-moderar"><a href="javascript:void(0);" class="validar-denuncia" onClick="processModerarComentario('+p.id_post+','+p.identificador+')"><img src="img/valid.png"/>&nbsp;&nbsp;Validar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="rechazar-denuncia" onClick="processEliminarComentario('+p.id_post+','+p.identificador+')"><img src="img/error.png"/>&nbsp;&nbsp;Eliminar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onClick="processVerContenidoPostComentarioDenunciado(\''+p.contenido_post+'\')"><img src="img/warning.png"/>&nbsp;&nbsp;Ver contenido del post</a></div>';
 			htmlString += '<div class="post-comentarios-container" id="comentarios-container'+p.identificador+'"></div><br>';
-			htmlString += '</div></div></div></span>';
+			htmlString += '</div></div></span>';
 	    });
 	    htmlString += "</div>";
 		$('#res_get_list_comentarios_denuncias').html(htmlString);
-		//console.log(posts);
+		console.log(data.comentarios);
 	})
     .fail(function (jqXHR, textStatus) {
 		console.log(textStatus);
@@ -596,6 +596,7 @@ function getheight() {
         else if (pagina == "1" || pagina == "2" ||pagina == "3") getRankingPosts(pagina);
         else if (pagina == "posts_denuncias") getListPostsDenunciados();
         else if (pagina == "comentarios_denuncias") getListComentariosDenunciados();
+        else console.log(pagina);
     }
 }
 

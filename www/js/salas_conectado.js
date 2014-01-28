@@ -49,9 +49,9 @@ function GetSalasMias(url, offset, length) {
 								+ s.identificador
 								+ "</td><td>"
 								+ s.username
-								+ "</td><td>"
+								+ "</td><td><a href='javascript:void(0);' onClick='abrirChat("+s.identificador+")'>"
 								+ s.nombre_sala
-								+ "</td><td><input type='button' value='Invitar' OnClick='Invitar("
+								+ "</a></td><td><input type='button' value='Invitar' OnClick='Invitar("
 								+ s.identificador
 								+ ")'>";
 								if(s.username!=getCookie("username")){
@@ -219,4 +219,9 @@ function Paginacion(pag) {
 		GetInvitaciones(url, offset, 5);	
 	
 	
+}
+
+function abrirChat(identificador) {
+	document.cookie = "salaid=" + identificador;
+	window.location = WWW_URL + "/chat_viewer.html";
 }
