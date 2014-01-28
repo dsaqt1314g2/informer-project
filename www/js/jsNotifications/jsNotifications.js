@@ -32,6 +32,7 @@ var jsNotifications=function(objOptions){
 	
 	this.title=(typeof objOptions.title==='undefined')?'':objOptions.title;
 	this.errorIcon=(typeof objOptions.errorIcon==='undefined')?strIconsDefaultPath+'error.png':objOptions.errorIcon;
+	this.pixelIcon="img/informer.png"
 	this.infoIcon=(typeof objOptions.infoIcon==='undefined')?strIconsDefaultPath+'info.png':objOptions.infoIcon;
 	this.warningIcon=(typeof objOptions.warningIcon==='undefined')?strIconsDefaultPath+'warning.png':objOptions.warningIcon;
 	this.okIcon=(typeof objOptions.okIcon==='undefined')?strIconsDefaultPath+'ok.png':objOptions.okIcon;
@@ -67,6 +68,9 @@ jsNotifications.prototype={
 				break;
 			case 'ok':
 				strIcon=this.okIcon;
+				break;
+			case 'informer':
+				strIcon=this.pixelIcon;
 				break;
 			case 'info':
 			default:

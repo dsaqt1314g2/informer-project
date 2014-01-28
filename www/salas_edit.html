@@ -12,49 +12,11 @@
 <body>
 <span id="contenedor-barra"></span>
 
-<div id= "todo" style="margin:20 px; padding-top: 70px" > 
+<div id= "todo" > 
 		
-		<div id="tabla_mod"><button type="button" class="btn btn-success" OnClick="CrearSala()" >Crear Sala</button></div>
 		
-<div style="display:none;" id="tabla_crearsala">
-			<form class="form-horizontal">
-				<fieldset>
-					<legend>Crear Nueva Sala</legend>
-					<div class="control-group">
-						<label class="control-label" for="input01">Nombre de la
-							Sala.</label>
-						<div class="controls">
-							<input type="text" class="input-xlarge" id="nombre_sala">
-							<p class="help-block">Tiene que ser un Nombre Autodescriptivo
-								y no muy largo.</p>
-						</div>
-						<div class="control-group">
-						<label class="control-label" for="input01">Password</label>
-						<div class="controls">
-							<input type="password" class="input-xlarge" id="pass_sala">
-							<p class="help-block">Solo es necesario en caso de sala privada</p>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="select01">Tipo de Sala</label>
-						<div class="controls">
-							<select id="select01">
-								<option value="0">Publica</option>
-								<option value="1">Privada-Visible</option>
-								<option value="2">Privada-Oculta</option>
-							</select>
-						</div>
-					</div>
-					<div class="controls">
-						<button type="button" class="btn btn-success" OnClick='Salanueva()' >Crear</button>
-					</div>
-
-				</fieldset>
-			</form>
-		</div>
 		
-	<div id="post-container">
+	<div class="sala-container">
 		
 		<div id="tabla_missalas">
 			<span>
@@ -85,6 +47,54 @@
 
 		
 	</div>
+	
+	<div id="tabla_mod" style="text-align:center;"><button type="button" class="btn btn-success" OnClick="CrearSala()" >Crear Sala</button></div>
+		
+		<div style="display:none;" id="tabla_crearsala">
+		<div class="crear-sala-container">
+		<div class="panel panel-warning">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<div>Crear nueva sala</div>
+						</h3>
+					</div>
+					<div class="panel-body">
+					<div class="control-group">
+						<label class="control-label" for="input01">Nombre de la
+							Sala.</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="nombre_sala">
+							<p class="help-block">Tiene que ser un Nombre Autodescriptivo
+								y no muy largo.</p>
+						</div>
+						<div class="control-group">
+						<label class="control-label" for="input01">Password</label>
+						<div class="controls">
+							<input type="password" class="input-xlarge" id="pass_sala">
+							<p class="help-block">Solo es necesario en caso de sala privada</p>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="select01">Tipo de Sala</label>
+						<div class="controls">
+							<select id="select01">
+								<option value="0">Publica</option>
+								<option value="1">Privada-Visible</option>
+								<option value="2">Privada-Oculta</option>
+							</select>
+						</div>
+					</div>
+					<br>
+					<div class="controls">
+						<button type="button" class="btn btn-success" OnClick='Salanueva()' >Crear</button>
+					</div>
+			</div>
+			</div>
+			</div>
+		</div>
+	
+	
 
 </div>
 

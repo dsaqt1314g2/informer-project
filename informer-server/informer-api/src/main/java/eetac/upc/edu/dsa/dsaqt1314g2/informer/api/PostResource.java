@@ -89,7 +89,6 @@ public class PostResource {
 			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
 					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE posts.visibilidad<3 and identificador NOT IN(SELECT id_post FROM posts,denuncias_post WHERE denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username
 					+ "') ORDER BY identificador DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
-			// TODO: Cambiar el identificador por publicacion_date
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (posts_encontrados++ == ilength)
@@ -786,7 +785,7 @@ public class PostResource {
 
 	@PUT
 	@Path("/{postid}/moderar")
-	public String moderarPost(@PathParam("postid") String postid) {
+	public void moderarPost(@PathParam("postid") String postid) {
 		// PUT: /posts/{postid}/moderar (admin) => revisado y who_revisado
 
 		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
@@ -824,7 +823,7 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		return "REVISADO";
+		return;
 	}
 
 	@PUT
@@ -901,7 +900,7 @@ public class PostResource {
 
 	@PUT
 	@Path("/{postid}/eliminar")
-	public String deletePostVisibilidad(@PathParam("postid") String postid) {
+	public void deletePostVisibilidad(@PathParam("postid") String postid) {
 		// DELETE: /posts/{postid} (admin)
 //		if (!security.isUserInRole("moderador") && !security.isUserInRole("admin")) {
 //			throw new ForbiddenException("You are not allowed...");
@@ -946,7 +945,7 @@ public class PostResource {
 			} catch (Exception e) {
 			}
 		}
-		return "DELETED " + postid;
+		return;
 	}
 
 	@DELETE

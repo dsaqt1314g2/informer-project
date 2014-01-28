@@ -24,6 +24,9 @@ function processIdea() {
 		document.getElementById("mi-resumen").value = '';
 		document.getElementById("mi-genialidad").value = '';
 		console.log(data);
+		setTimeout(function () {
+			window.location=WWW_URL+"/post_viewer.html";
+		},redirecttimeout);
 	})
     .fail(function (jqXHR, textStatus) {
 		console.log(textStatus+" "+url);

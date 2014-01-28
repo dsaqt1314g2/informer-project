@@ -2,7 +2,8 @@
 <html lang="es">
   <head>
    <title>Informer</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">   
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+    <link href="css/style_posts.css" rel="stylesheet">  
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
     <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
@@ -10,15 +11,15 @@
   <body>
 <span id="contenedor-barra"></span>
 
-<div  style="margin:20 px; padding-top: 70px"  id= "todo"> 
+<div   id= "todo"> 
 
-<div id="post-container" style="margin:20 px; padding-top: 70px>
+<div class="sala-container">
   <div id="tabla_1">
         <span>
           <div class="panel panel-primary">
               <div class="panel-heading">
                 <h3 class="panel-title">
-                  <div id="Salas-publicas">Salas Publicas</div>                
+                  <div id="Salas-publicas">Salas p&uacute;blicas</div>                
                 </h3>
               </div>
               <div class="panel-body">
@@ -49,7 +50,7 @@
           <div class="panel panel-primary">
               <div class="panel-heading">
                 <h3 class="panel-title">
-                  <div id="Salas-Privadas">Salas Privadas</div>                
+                  <div id="Salas-Privadas">Salas privadas</div>                
                 </h3>
               </div>
               <div class="panel-body">
@@ -89,6 +90,11 @@
     <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
     <script src="js/login.js"></script>
     <script src="js/salas_list.js"></script>
+    
+    <!-- notificaciones -->
+    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
     
   </body>
 </html>

@@ -52,7 +52,7 @@ function GetSalasMias(url, offset, length) {
 								+ ")'></td><td><input type='button' value='Abandonar' OnClick='Abandonar("
 								+ s.identificador
 								+ ")'></td><td>"
-								+ s.last_update + "</td>";
+								+ (new Date(s.last_update)).toLocaleDateString()+' a las '+(new Date(s.last_update)).toLocaleTimeString() + "</td>";
 								Stringhtml += "</tr>";
 						});
 						
@@ -65,11 +65,11 @@ function GetSalasMias(url, offset, length) {
 						var Stringpaginacion= "";
 						if(pagpublica==0)
 							{
-							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0,1)'>0 <span class='sr-only'>(current)</span></a></li>";
+							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0,1)'>1 <span class='sr-only'>(current)</span></a></li>";
 							var i = 1;
 							while(i<numpag)
 								{
-									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" </a></li>";
+									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+(i+1)+" </a></li>";
 									i++;
 								}
 							console.log(numpag);
@@ -90,11 +90,11 @@ function GetSalasMias(url, offset, length) {
 								{
 									if(i==pagpublica)
 										{
-										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" <span class='sr-only'>(current)</span></a></li>";
+										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+(i+1)+" <span class='sr-only'>(current)</span></a></li>";
 										}
 									else
 										{
-										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+i+" </a></li>";
+										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+",1)'>"+(i+1)+" </a></li>";
 										}
 									
 									i++;

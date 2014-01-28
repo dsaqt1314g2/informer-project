@@ -58,7 +58,7 @@ function Gen_getSalasPublicas(url, offset, length) {
 								+ "</td><td><input type='button' value='Unirse' OnClick='Unirse("
 								+ s.identificador
 								+ ")'></td><td>"
-								+ s.last_update + "</td>";
+								+ (new Date(s.last_update)).toLocaleDateString()+' a las '+(new Date(s.last_update)).toLocaleTimeString() + "</td>";
 								Stringhtml += "</tr>";
 						});
 						
@@ -71,11 +71,11 @@ function Gen_getSalasPublicas(url, offset, length) {
 						var Stringpaginacion= "";
 						if(pagpublica==0)
 							{
-							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='PaginaPublica(0,1)'>0 <span class='sr-only'>(current)</span></a></li>";
+							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='PaginaPublica(0,1)'>1 <span class='sr-only'>(current)</span></a></li>";
 							var i = 1;
 							while(i<numpag)
 								{
-									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+i+" </a></li>";
+									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+(i+1)+" </a></li>";
 									i++;
 								}
 							console.log(numpag);
@@ -96,11 +96,11 @@ function Gen_getSalasPublicas(url, offset, length) {
 								{
 									if(i==pagpublica)
 										{
-										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+i+" <span class='sr-only'>(current)</span></a></li>";
+										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+(i+1)+" <span class='sr-only'>(current)</span></a></li>";
 										}
 									else
 										{
-										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+i+" </a></li>";
+										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='PaginaPublica("+i+",1)'>"+(i+1)+" </a></li>";
 										}
 									
 									i++;
@@ -161,7 +161,7 @@ function Gen_getSalasPrivadas(url, offset, length) {
 													+ "'><input type='button' value='Unirse' OnClick='PonerPass("
 													+ s.identificador
 													+ ")'></div></td><td>"
-													+ s.last_update + "</td>";
+													+ (new Date(s.last_update)).toLocaleDateString()+' a las '+(new Date(s.last_update)).toLocaleTimeString() + "</td>";
 											Stringhtml += "</tr>";
 										});
 						Stringhtml += "</table>";
@@ -174,7 +174,11 @@ function Gen_getSalasPrivadas(url, offset, length) {
 }
 
 function Unirse(id) {
-
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
 	var url = API_BASE_URL + "salas/" + id + "/unirse";
 
 	$
@@ -193,9 +197,9 @@ function Unirse(id) {
 					function(data, status, jqxhr) {
 						console.log(status);
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: "
-								+ id + ".<p>" + data + "</div>";						
-						$("#tabla_publica").html(Stringhtml);
+						objInstanceName.show('ok','Te has unido correctamente a la sala');
+						//var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: "+ id + ".<p>" + data + "</div>";						
+						//$("#tabla_publica").html(Stringhtml);
 						setTimeout(function () {
 							Pintar();
 						},redirecttimeout);
@@ -203,8 +207,9 @@ function Unirse(id) {
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";							
-						$("#tabla_publica").html(Stringhtml);
+						objInstanceName.show('error','Error interno, usted ya esta en esta sala.');
+						//var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";							
+						//$("#tabla_publica").html(Stringhtml);
 						setTimeout(function () {
 							Pintar();
 						},redirecttimeout);

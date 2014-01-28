@@ -9,9 +9,9 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="explicacion.html">¿Que es?</a></li>
             <li><a href="explicacion.html#why">¿Por que? </a></li>              
-            <li><a href="#about">About</a></li>
-            <li><a href="http://localhost:8000/informer-auth/register.jsp">Registrarse</a></li>
-            <li class="dropdown">
+            <li><a href="javascript:void(0);" onClick="about()">About</a></li>
+            <li><a href="http://localhost:8080/informer-auth/register.jsp">Registrarse</a></li>
+            <!-- <li class="dropdown">
               <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Action</a></li>
@@ -22,11 +22,11 @@
                 <li><a href="#">Separated link</a></li>
                 <li><a href="#">One more separated link</a></li>
               </ul>
-            </li>
+            </li> -->
           </ul>
           <div class="navbar-form pull-right" id="my-user-informer">
-            <input class="span2 form-control" id="username" type="text" placeholder="Usuario">&nbsp;&nbsp;
-            <input class="span2 form-control" id="userpass" type="password" placeholder="Contraseña">&nbsp;&nbsp;
+            <input class="span2 form-control" style="height:30px;" id="username" type="text" placeholder="Usuario">&nbsp;&nbsp;
+            <input class="span2 form-control" style="height:30px;" id="userpass" type="password" placeholder="Contraseña">&nbsp;&nbsp;
             <button id="button_login" onclick="getLogin()" class="btn btn-default">Conectarse</button>
           </div>
         </div><!--/.nav-collapse -->
@@ -47,3 +47,9 @@
       <script src="js/extra/bootstrap-collapse.js"></script>
       <script src="js/extra/bootstrap-carousel.js"></script>
       <script src="js/extra/bootstrap-typeahead.js"></script>
+      
+      <!-- notificaciones -->
+    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">

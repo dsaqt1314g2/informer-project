@@ -27,7 +27,7 @@ function getListPosts() {
 	    $.each(data.posts, function(i,p){	
 	    	htmlString += '<span id="post'+p.identificador+'">';  
         	htmlString += '<div class="panel panel-primary">';  
-        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+' ('+p.identificador+')</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
+        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
         	htmlString += '<div class="panel-body">'; 
         	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
 			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
@@ -99,7 +99,7 @@ function getRankingPosts(ranking) {
 	    $.each(data.posts, function(i,p){	
 	    	htmlString += '<span id="post'+p.identificador+'">';  
         	htmlString += '<div class="panel panel-primary">';  
-        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+' ('+p.identificador+')</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
+        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
         	htmlString += '<div class="panel-body">'; 
         	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
 			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';
@@ -155,7 +155,7 @@ function getListPostsDenunciados() {
 	    $.each(data.posts, function(i,p){	
 	    	htmlString += '<span id="post'+p.identificador+'">';  
         	htmlString += '<div class="panel panel-primary">';  
-        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+' ('+p.identificador+')</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
+        	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
         	htmlString += '<div class="panel-body">'; 
         	htmlString += '<div class="post-contenido">'+p.contenido+'</div>';
 			htmlString += '<div class="post-date">Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</div>';

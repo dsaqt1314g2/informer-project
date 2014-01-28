@@ -93,9 +93,9 @@ function GetUsuario(url) {
 							estado="Con relacion";
 						$("#data2").html(sexo); 
 						$("#data4").html(estado); 
-						$("#data3").html(data.fecha_nacimiento); 
+						$("#data3").html((new Date(data.fecha_nacimiento)).toLocaleDateString()); 
 						$("#data5").html(data.lugar_de_residencia); 	
-						$("#data23").html(data.last_Update); 
+						$("#data23").html((new Date(data.last_Update)).toLocaleDateString()+' a las '+(new Date(data.last_Update)).toLocaleTimeString()); 
 						
 					}).fail(function(jqXHR, textStatus) {
 				console.log(textStatus + " " + url);

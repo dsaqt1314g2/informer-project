@@ -51,7 +51,7 @@ function GetInvitaciones(url, offset, length) {
 								+ ")'></td><td><input type='button' value='Rechazar' OnClick='Rechazar("
 								+ s.identificador
 								+ ")'></td><td>"
-								+ s.last_update + "</td>";
+								+ (new Date(s.last_update)).toLocaleDateString()+' a las '+(new Date(s.last_update)).toLocaleTimeString() + "</td>";
 								Stringhtml += "</tr>";
 						});
 						
@@ -64,11 +64,11 @@ function GetInvitaciones(url, offset, length) {
 						var Stringpaginacion= "";
 						if(pagpublica==0)
 							{
-							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0)'>0 <span class='sr-only'>(current)</span></a></li>";
+							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#publica0' OnClick='Paginacion(0)'>1 <span class='sr-only'>(current)</span></a></li>";
 							var i = 1;
 							while(i<numpag)
 								{
-									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" </a></li>";
+									Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+(i+1)+" </a></li>";
 									i++;
 								}
 							console.log(numpag);
@@ -89,11 +89,11 @@ function GetInvitaciones(url, offset, length) {
 								{
 									if(i==pagpublica)
 										{
-										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" <span class='sr-only'>(current)</span></a></li>";
+										Stringpaginacion += "<li class='active'><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+(i+1)+" <span class='sr-only'>(current)</span></a></li>";
 										}
 									else
 										{
-										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+i+" </a></li>";
+										Stringpaginacion += "<li><a href='#publica"+i+"' OnClick='Paginacion("+i+")'>"+(i+1)+" </a></li>";
 										}
 									
 									i++;
@@ -114,7 +114,11 @@ function GetInvitaciones(url, offset, length) {
 
 
 function Aceptar(id) {
-
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
 	var url = API_BASE_URL + "salas/" + id + "/aceptar";
 
 	$
@@ -133,19 +137,24 @@ function Aceptar(id) {
 					function(data, status, jqxhr) {
 						console.log(status);
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-success'>Has aceptado la Solicitud: "
-								+ id + ".<p>" + data + "</div>";
-						$("#post-container").html(Stringhtml);
+						objInstanceName.show('ok','Has aceptado la solicitud');
+						//var Stringhtml = "<div class='alert alert-success'>Has aceptado la Solicitud: "+ id + ".<p>" + data + "</div>";
+						//$("#post-container").html(Stringhtml);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
-						$("#post-container").html(Stringhtml);
+						objInstanceName.show('error','Error interno, usted ya esta en esta sala');
+						//var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
+						//$("#post-container").html(Stringhtml);
 					});
 }
 function Rechazar(id) {
-
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
 	var url = API_BASE_URL + "salas/" + id + "/denegarinvitacion";
 
 	$
@@ -164,15 +173,16 @@ function Rechazar(id) {
 					function(data, status, jqxhr) {
 						console.log(status);
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-success'>Has rechazado la Solicitud: "
-								+ id + ".<p>" + data + "</div>";
-						$("#post-container").html(Stringhtml);
+						objInstanceName.show('ok','Has rechazado la solicitud');
+						//var Stringhtml = "<div class='alert alert-success'>Has rechazado la Solicitud: "+ id + ".<p>" + data + "</div>";
+						//$("#post-container").html(Stringhtml);
 					})
 			.fail(
 					function(data, status, jqXHR, textStatus) {
 						console.log(data);
-						var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
-						$("#post-container").html(Stringhtml);
+						objInstanceName.show('error','Error interno, usted ya esta en esta sala');
+						//var Stringhtml = "<div class='alert alert-danger'>Error interno, Usted ya esta en esta sala.</div>";
+						//$("#post-container").html(Stringhtml);
 					});
 }
 
