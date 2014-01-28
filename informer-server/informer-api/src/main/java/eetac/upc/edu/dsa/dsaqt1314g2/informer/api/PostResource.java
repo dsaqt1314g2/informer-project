@@ -990,8 +990,9 @@ public class PostResource {
 	@GET
 	@Path("/novedades/{username}")
 	@Produces(MediaType.INFORMER_API_POST_COLLECTION)
-	public PostCollection getNoticioas(@PathParam("username") String username, @QueryParam("o") String offset, @QueryParam("l") String length) {
+	public PostCollection getNoticias(@PathParam("username") String username, @QueryParam("o") String offset, @QueryParam("l") String length) {
 		// GETs: /posts?{offset}{length} (Registered)(admin)
+		String receptor = security.getUserPrincipal().getName();
 		int ioffset = 0, ilength = 10;
 		if (offset == null)
 			offset = "0";
@@ -1029,11 +1030,10 @@ public class PostResource {
 		}
 		try {
 			// usuario normal. No selecciona los de visiblidad > 2
-			String query = "SELECT posts.*, calificacion.estado  FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN comentarios ON comentarios.id_post=posts.identificador and comentarios.username='" + username + "'" + "WHERE posts.username='" + username
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado  FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN comentarios ON comentarios.id_post=posts.identificador and comentarios.username='" + username + "'" + "WHERE posts.visibilidad<3 and (posts.username='" + username
 					+ "' or posts.username IN(select amigos.friend from amigos where amigos.username='" + username + "') or (posts.identificador=calificacion.id_post and calificacion.username='" + username + "') or (posts.identificador=comentarios.id_post and comentarios.username='" + username
-					+ "') ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
-			// TODO: Cambiar el identificador por publicacion_date
+					+ "')) ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				if (posts_encontrados++ == ilength)
@@ -1050,8 +1050,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(0);
 				post.setContenido(rs.getString("contenido"));
-				post.setUsername("anonymous");
-
+				post.setUsername(postAnonimo(receptor, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));

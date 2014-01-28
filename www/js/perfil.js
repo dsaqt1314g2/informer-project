@@ -52,12 +52,12 @@ function GetNotificaciones(username) {
 						$("#data41").html(data.n_s_amistad);
 						
 						var string = '<td><span	class="glyphicon glyphicon-eye-open text-success"></span><a';
-						string +='href="#Amigos" OnClick="Amigos('+username+')" class="">Ver Amigos</a>';
+						string +=' href="#Amigos" OnClick="Amigos(\''+username+'\')" class="">&nbsp;Ver Amigos</a>';
 						$("#data51").html(string);
 						
 						
 					}).fail(function(jqXHR, textStatus) {
-						console.log("aki llega bien pero ta mal");
+						//console.log("aki llega bien pero ta mal");
 						return(false);
 			});
 	
@@ -139,28 +139,33 @@ function GetPost(username,offset,length){
 				html +="<div class='post-container' style='display:none;' id='post-oculto"+i+"'>";				
 				
 				html += '<span id="post'+s.identificador+'">';  
-				html += '<div class="panel panel-primary">';  
-				html += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor"> anonymous ('+s.identificador+')</div><div class="post-asunto">'+s.asunto+'</div></h3></div>';  
-				html += '<div class="panel-body">'; 
-				html += '<div class="post-contenido">'+s.contenido+'</div>';
-				html += '<div class="post-date">Publicado el '+ (new Date(s.publicacion_date)).toLocaleDateString()+' a las '+(new Date(s.publicacion_date)).toLocaleTimeString()+'</div>';
+		    	html += '<div class="panel panel-primary">';  
+		    	html += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+s.username+'</div><div class="post-asunto">'+s.asunto+'</div></h3></div>';  
+		    	html += '<div class="panel-body" style="background-color:#EDF8FF;">'; 
+		    	html += '<div class="post-contenido"><table style="width:490px;"><tr><td>'+s.contenido+'</td></tr><tr><td style="text-align: right;">';
+				html += 'Publicado el '+ (new Date(s.publicacion_date)).toLocaleDateString()+' a las '+(new Date(s.publicacion_date)).toLocaleTimeString()+'</td></tr></table></div>';
+				html += '<table><tr><td>'
 				if (s.liked == 2)
 					html += '<div class="post-calificaciones_positivas" id="neutro_like'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',1)">Ya no me gusta ('+s.calificaciones_positivas+')</a></div>';
 				else
 					html += '<div class="post-calificaciones_positivas" id="like'+s.identificador+'"><a href="javascript:void(0);" onClick="processLike('+s.identificador+',2)">Me gusta ('+s.calificaciones_positivas+')</a></div>';
+				html += '</td><td>'
 				if (s.liked == 1)
 					html += '<div class="post-calificaciones_negativas" id="neutro_dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+s.identificador+',3)">Ya no es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
 				else
 					html += '<div class="post-calificaciones_negativas" id="dislike'+s.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+s.identificador+',4)">Esto es una puta mierda ('+s.calificaciones_negativas+')</a></div>';
+				html += '</td><td>'
 				html += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+s.identificador+'" onClick="processDenuncia('+s.identificador+')">Denunciar</a></div>';
+				html += '</td></tr><tr><td colspan=2>'
 				if (s.numcomentarios == 1)
 					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentario</a></div>';
 				else
 					html += '<div class="post-numcomentarios" id="div-num-comentarios'+s.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+s.identificador+'" onClick="processComentarios('+s.identificador+',0)">'+s.numcomentarios+' comentarios</a></div>';
-				html += '<div class="post-comentarios-container" id="comentarios-container'+s.identificador+'"></div><br>';
+				html += '</td></tr></table>';
+				html += '<div id="comentarios-container'+s.identificador+'"></div>';
 				html += '<div class="post-mi-comentario-container" id="mi-comentario-container'+s.identificador+'">';
 				html += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+s.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+s.identificador+');"></textarea>';
-				html += '<select id="mi-comentario-visibilidad'+s.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
+					html += '<select id="mi-comentario-visibilidad'+s.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
 				html += '			   </div></div></div></span>';
 				
 				html +='</div></li>';				
@@ -287,17 +292,18 @@ function Getamigos(username) {
 					function(data, status, jqxhr) {
 						console.log(data);	
 						console.log("Aqui llega 2");
-						var html= '<table  class="table table-striped custab"><thead><tr><th>ID</th>';
-						html +='<th>Foto</th><th>Nombre</th><th>Nick</th><th>Last Conected</th><th class="text-center">Action</th></tr></thead>';
+						var html= '<table class="table table-striped custab" style="text-align:center;"><thead><tr style="text-align:center;">';
+						//html +='<th>ID</th>';
+						html +='<th>Foto</th><th>Nombre</th><th>Usuario</th><th>&Uacute;ltima conexi&oacute;n</th><th class="text-center">Acci&oacute;n</th></tr></thead>';
 						
 						$.each(data.users,function(i, s) {
 							
-							html +='<tr><td>'+s.identificador+'</td>';
-							html +='<td ><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
-							html +='<img ALIGN=LEFT style="max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
+							//html +='<tr><td>'+s.identificador+'</td>';
+							html +='<td><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
+							html +='<img style="text-align:center;max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
 							html +='<td>'+s.name+'</td>';
 							html +='<td>'+s.username+'</td>';
-							html +='<td>'+s.last_Update+'</td>';
+							html +='<td>'+(new Date(s.last_Update)).toLocaleDateString()+'</td>';
 							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="perfil.html?user='+s.username+'" ><span class="glyphicon glyphicon-edit">';
 							html +='</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad("Ropnom")" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
 							html +='</span> Eliminar Amistad</a></td></tr>';
@@ -485,5 +491,42 @@ function ActulizarUser() {
 						console.log(textStatus);
 						return(false);
 			});
+}
+
+
+
+function rellenarPosts(data, htmlString) {
+	$.each(data.posts, function(i,p){	
+    	htmlString += '<span id="post'+p.identificador+'">';  
+    	htmlString += '<div class="panel panel-primary">';  
+    	htmlString += '<div class="panel-heading"><h3 class="panel-title"><div class="post-autor">'+p.username+'</div><div class="post-asunto">'+p.asunto+'</div></h3></div>';  
+    	htmlString += '<div class="panel-body" style="background-color:#EDF8FF;">'; 
+    	htmlString += '<div class="post-contenido"><table style="width:490px;"><tr><td>'+p.contenido+'</td></tr><tr><td style="text-align: right;">';
+		htmlString += 'Publicado el '+ (new Date(p.publicacion_date)).toLocaleDateString()+' a las '+(new Date(p.publicacion_date)).toLocaleTimeString()+'</td></tr></table></div>';
+		htmlString += '<table><tr><td>'
+		if (p.liked == 2)
+			htmlString += '<div class="post-calificaciones_positivas" id="neutro_like'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',1)">Ya no me gusta ('+p.calificaciones_positivas+')</a></div>';
+		else
+			htmlString += '<div class="post-calificaciones_positivas" id="like'+p.identificador+'"><a href="javascript:void(0);" onClick="processLike('+p.identificador+',2)">Me gusta ('+p.calificaciones_positivas+')</a></div>';
+		htmlString += '</td><td>'
+		if (p.liked == 1)
+			htmlString += '<div class="post-calificaciones_negativas" id="neutro_dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processNeutro('+p.identificador+',3)">Ya no es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+		else
+			htmlString += '<div class="post-calificaciones_negativas" id="dislike'+p.identificador+'"><a href="javascript:void(0);" onClick="processDislike('+p.identificador+',4)">Esto es una puta mierda ('+p.calificaciones_negativas+')</a></div>';
+		htmlString += '</td><td>'
+		htmlString += '<div class="post-denuncia"><a href="javascript:void(0);" id="denuncia'+p.identificador+'" onClick="processDenuncia('+p.identificador+')">Denunciar</a></div>';
+		htmlString += '</td></tr><tr><td colspan=2>'
+		if (p.numcomentarios == 1)
+			htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentario</a></div>';
+		else
+			htmlString += '<div class="post-numcomentarios" id="div-num-comentarios'+p.identificador+'"><a href="javascript:void(0);" id="num-comentarios'+p.identificador+'" onClick="processComentarios('+p.identificador+',0)">'+p.numcomentarios+' comentarios</a></div>';
+		htmlString += '</td></tr></table>';
+		htmlString += '<div id="comentarios-container'+p.identificador+'"></div>';
+		htmlString += '<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">';
+		htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
+			htmlString += '<select id="mi-comentario-visibilidad'+p.identificador+'" style="height: 25px; width: 120px;"><option value="0">Anónimo</option><option value="1">Sólo amigos</option><option value="2">Público</option></select>';
+		htmlString += '			   </div></div></div></span>';
+    });
+	return htmlString;
 }
 
