@@ -45,6 +45,14 @@
                 android:layout_weight="0.6"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <ImageView
+                android:id="@+id/post_herramientas"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:paddingLeft="3dp"
+                android:paddingTop="6dp"
+                android:src="@drawable/herramientas" />
         </LinearLayout>
 
         <TextView

@@ -3,6 +3,8 @@ package edu.upc.eetac.dsa.dsaqt1314g2.informer.android.informer.api;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.util.Log;
+
 public class Comentario {
 
 	private int identificador;
@@ -96,7 +98,9 @@ public class Comentario {
 	
 	public String getLinkByRel(String rel) {
 		int i = 0;
-		while(!links.get(i).getRel().equals(rel)) i++;
+		while(!links.get(i).getRel().equals(rel)) {
+			i++;
+		}
 		return links.get(i).getUri();
 	}
 
