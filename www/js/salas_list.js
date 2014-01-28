@@ -166,6 +166,53 @@ function Gen_getSalasPrivadas(url, offset, length) {
 										});
 						Stringhtml += "</table>";
 						$("#tabla_privada").html(Stringhtml);
+						
+						console.log(data.count);
+						var numpag = Math.ceil(data.count/length);
+						console.log(numpag);
+						var Stringpaginacion= "";
+						if(pagprivada==0)
+							{
+							Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#privada0' OnClick='PaginaPublica(0,0)'>1 <span class='sr-only'>(current)</span></a></li>";
+							var i = 1;
+							while(i<numpag)
+								{
+									Stringpaginacion += "<li><a href='#privada"+i+"' OnClick='PaginaPublica("+i+",0)'>"+(i+1)+" </a></li>";
+									i++;
+								}
+							console.log(numpag);
+							if(numpag>1){
+								Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica(1,0)'>&raquo;</a></li>";	
+							}
+							Stringpaginacion +="</ul>";
+							}
+						
+						else
+							{
+							
+							Stringpaginacion = "<ul class='pagination'>";							
+							Stringpaginacion += "<li><a href='#Prev' OnClick='PaginaPublica("+(pagprivada-1)+",0)'>&laquo;</a></li>";
+							console.log(Stringpaginacion);
+							var i = 0;
+							while(i<numpag)
+								{
+									if(i==pagprivada)
+										{
+										Stringpaginacion += "<li class='active'><a href='#privada"+i+"' OnClick='PaginaPublica("+i+",0)'>"+(i+1)+" <span class='sr-only'>(current)</span></a></li>";
+										}
+									else
+										{
+										Stringpaginacion += "<li><a href='#privada"+i+"' OnClick='PaginaPublica("+i+",0)'>"+(i+1)+" </a></li>";
+										}
+									
+									i++;
+								}
+							if(numpag>pagprivada+1)
+								Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica("+pagprivada+1+",0)'>&raquo;</a></li></ul>";
+							
+							}
+						$("#paginacion2").html(Stringpaginacion);
+						
 					}).fail(function(jqXHR, textStatus) {
 				console.log(textStatus + " " + url);
 				var Stringhtml = "Error";
@@ -227,6 +274,7 @@ function PonerPass(id) {
 function PaginaPublica(pag,tabla) {
 	var offset = 0;
 	var url = API_BASE_URL + "salas/visible/";
+	
 	if(tabla==1)
 		{
 		pagpublica = pag;		
