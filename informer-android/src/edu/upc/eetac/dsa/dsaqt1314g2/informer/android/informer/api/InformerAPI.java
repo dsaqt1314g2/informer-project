@@ -377,6 +377,8 @@ public class InformerAPI {
 		String tsLastModified = source.getString("publicacion_date").replace("T", " ");
 		comentario.setPublicacion_date(sdf.parse(tsLastModified));
 		comentario.setUsername(source.getString("username"));
+		JSONArray jsonComentarioLinks = source.getJSONArray("links");
+		parseLinks(jsonComentarioLinks, comentario.getLinks());
 		return comentario;
 	}
 
@@ -397,7 +399,32 @@ public class InformerAPI {
 			}
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage(), e);
-			return null;
+			return false;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return true;
+	}
+	
+	public Boolean denunciarPost(URL url) {
+		HttpURLConnection urlConnection = null;
+		try {
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return false;
 		} finally {
 			if (urlConnection != null)
 				urlConnection.disconnect();
@@ -410,7 +437,8 @@ public class InformerAPI {
 		c.setVisibilidad(Integer.parseInt(visibilidad));
 		HttpURLConnection urlConnection = null;
 		try {
-			JSONObject jsonComentario = createJsonComentario(c);
+			JSONObject jsonComentario = new JSONObject();
+			jsonComentario.put("visibilidad", c.getVisibilidad());
 			urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_COMENTARIO);
 			urlConnection.setRequestProperty("Content-Type", MediaType.INFORMER_API_COMENTARIO);
@@ -446,5 +474,49 @@ public class InformerAPI {
 				urlConnection.disconnect();
 		}
 		return c;
+	}
+	
+	public Post updateVisibilidadPost(URL url, String visibilidad) {
+		Post p = new Post();
+		p.setVisibilidad(Integer.parseInt(visibilidad));
+		HttpURLConnection urlConnection = null;
+		try {
+			JSONObject jsonPost = new JSONObject();
+			jsonPost.put("visibilidad", p.getVisibilidad());
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestProperty("Accept", MediaType.INFORMER_API_POST);
+			urlConnection.setRequestProperty("Content-Type", MediaType.INFORMER_API_POST);
+			urlConnection.setRequestMethod("PUT");
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+
+			PrintWriter writer = new PrintWriter(urlConnection.getOutputStream());
+			writer.println(jsonPost.toString());
+			writer.close();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+
+			jsonPost = new JSONObject(sb.toString());
+			p = parsePost(jsonPost);
+		} catch (JSONException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} catch (ParseException e) {
+			Log.e(TAG, e.getMessage(), e);
+			return null;
+		} finally {
+			if (urlConnection != null)
+				urlConnection.disconnect();
+		}
+		return p;
 	}
 }

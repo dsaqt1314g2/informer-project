@@ -875,6 +875,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
+				post.setAsunto(rs.getString("asunto"));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
 				post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador(), "self"));

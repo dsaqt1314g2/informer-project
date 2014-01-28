@@ -217,6 +217,8 @@ public class ComentariosDetail extends ListActivity {
 						Toast.makeText(ComentariosDetail.this, "No existe esta acción", Toast.LENGTH_SHORT).show();
 				} else {
 					if (choice <= 3) {
+						Log.d(TAG, position+"");
+						Log.d(TAG, comentarioList.get(position).getContenido()+"");
 						String URL = comentarioList.get(position).getLinkByRel("modificar");
 						(new UpdateVisibilidadTask()).execute(URL, Integer.toString(choice));
 					} else
