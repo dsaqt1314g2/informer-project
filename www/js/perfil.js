@@ -198,8 +198,163 @@ function PanelControl() {
 }
 function Amigos(username) {
 	
+	if(username==null)
+		username=getCookie("username");
 	$('#listStuff').load('veramigos.html');
 	Getamigos(username);
+}
+function Solicitudes() {
+
+	$('#listStuff').load('veramigos.html');
+	GetSolicitudes(getCookie("username"));
+}
+function GetSolicitudes(username) {
+	
+	//añadir ofset y length con paginacion
+	var url = API_BASE_URL + "users/solicitudes?o=0&l=20";
+	console.log(url);
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'GET',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.user.collection+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);	
+						console.log("Aqui llega 2");
+						var html= '<table  class="table table-striped custab"><thead><tr><th>ID</th>';
+						html +='<th>Foto</th><th>Nombre</th><th>Nick</th><th>Last Conected</th><th class="text-center">Action</th></tr></thead>';
+						
+						$.each(data.users,function(i, s) {
+							
+							html +='<tr><td>'+s.identificador+'</td>';
+							html +='<td ><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
+							html +='<img ALIGN=LEFT style="max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
+							html +='<td>'+s.name+'</td>';
+							html +='<td>'+s.username+'</td>';
+							html +='<td>'+s.last_Update+'</td>';
+							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="#aceptar" ><span class="glyphicon glyphicon-edit">';
+							html +='</span> Aceptar Solicitud </a> <a href="#eliminar" OnClick="EliminarAmistad("Ropnom")" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
+							html +='</span> Rechazar Solicitud</a></td></tr>';
+							
+						});
+						html +=' </table>';
+
+						$("#tabladeamigos").html(html);
+	                
+						
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						return(false);
+			});
+	
+	
+}
+
+function Getamigos(username) {
+	
+	//añadir ofset y length con paginacion
+	var url = API_BASE_URL + "users/"+username+"/amigos?o=0&l=20";
+	console.log(url);
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'GET',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.user.collection+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);	
+						console.log("Aqui llega 2");
+						var html= '<table  class="table table-striped custab"><thead><tr><th>ID</th>';
+						html +='<th>Foto</th><th>Nombre</th><th>Nick</th><th>Last Conected</th><th class="text-center">Action</th></tr></thead>';
+						
+						$.each(data.users,function(i, s) {
+							
+							html +='<tr><td>'+s.identificador+'</td>';
+							html +='<td ><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
+							html +='<img ALIGN=LEFT style="max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
+							html +='<td>'+s.name+'</td>';
+							html +='<td>'+s.username+'</td>';
+							html +='<td>'+s.last_Update+'</td>';
+							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="perfil.html?user='+s.username+'" ><span class="glyphicon glyphicon-edit">';
+							html +='</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad("Ropnom")" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
+							html +='</span> Eliminar Amistad</a></td></tr>';
+							
+						});
+						html +=' </table>';
+
+						$("#tabladeamigos").html(html);
+	                
+						
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						return(false);
+			});
+	
+	
+	
+}
+
+function EliminarAmistad(username) {
+	
+	console.log("Aqui llega 3");
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+	
+	var url = API_BASE_URL + "/users/"+username+"/deletefriend";
+	console.log(url);
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'DELETE',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},						
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);
+						objInstanceName.show('ok','Se ha eliminado la amistad.');
+						setTimeout(function(){Getamigos(username);},redirecttimeout);							               
+						
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						objInstanceName.show('error','No se ha podido eliminar la amistad contacte admin.');
+						setTimeout(function(){Getamigos(username);},redirecttimeout);	
+						
+			});
+	
+	
 }
 
 function GetUserDates(username) {
