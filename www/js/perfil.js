@@ -330,7 +330,7 @@ function EliminarAmistad(username) {
 		title: 'Informer'
 	});
 	
-	var url = API_BASE_URL + "/users/"+username+"/deletefriend";
+	var url = API_BASE_URL + "users/"+username+"/deletefriend";
 	console.log(url);
 	$
 			.ajax(
@@ -344,17 +344,22 @@ function EliminarAmistad(username) {
 							request.setRequestHeader("Authorization", "Basic "
 									+ btoa(autorizacion));
 						},						
-					})
+					})					
 			.done(
 					function(data, status, jqxhr) {
 						console.log(data);
+						console.log(status);
+						console.log("si lo hahehco bien");
 						objInstanceName.show('ok','Se ha eliminado la amistad.');
-						setTimeout(function(){Getamigos(username);},redirecttimeout);							               
+						setTimeout(function(){Amigos(getCookie("username"));},redirecttimeout);							               
 						
-					}).fail(function(jqXHR, textStatus) {
+					})
+					.fail(function(jqXHR, textStatus) {
 						console.log(textStatus);
+						console.log(jqXHR);
+						console.log("no lo hahehco bien");
 						objInstanceName.show('error','No se ha podido eliminar la amistad contacte admin.');
-						setTimeout(function(){Getamigos(username);},redirecttimeout);	
+						setTimeout(function(){Amigos(getCookie("username"));},redirecttimeout);	
 						
 			});
 	

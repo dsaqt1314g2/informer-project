@@ -16,6 +16,106 @@ function pintar() {
 	GetSalasMias(url, offset, length);
 }
 
+function Invitar(sala) {
+	username=getCookie("username");
+	$('#tabla_salas').load('solicitudinvitacion.html');
+	Getamigos(username, sala);
+}
+
+function Getamigos(username, sala) {
+	
+	//añadir ofset y length con paginacion
+	var url = API_BASE_URL + "users/"+username+"/amigos?o=0&l=20";
+	console.log(url);
+	console.log("Sala: "+sala);
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'GET',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.user.collection+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {
+						console.log(data);	
+						console.log("Aqui llega 2");
+						var html= '<table class="table table-striped custab" style="text-align:center;"><thead><tr style="text-align:center;">';
+						//html +='<th>ID</th>';
+						html +='<th>Foto</th><th>Nombre</th><th>Usuario</th><th>&Uacute;ltima conexi&oacute;n</th><th class="text-center">Acci&oacute;n</th></tr></thead>';
+						
+						$.each(data.users,function(i, s) {
+							//html +='<tr><td>'+s.identificador+'</td>';
+							html +='<td><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
+							html +='<img style="text-align:center;max-width: 75px; max-height: 50px" src="'+s.foto+'" class=""></div></a></td>';
+							html +='<td>'+s.name+'</td>';
+							html +='<td>'+s.username+'</td>';
+							html +='<td>'+(new Date(s.last_Update)).toLocaleDateString()+'</td>';
+							html +='<td class="text-center"><a class="btn btn-info btn-xs" href="#invitado" OnClick="InvitarSend(\''+s.username+'\','+sala+')"><span class="glyphicon glyphicon-edit">';
+							html +='</span> Invitar</a></td></tr>';
+						});
+						html +=' </table>';
+
+						$("#tabladeamigos").html(html);
+	                
+						
+					}).fail(function(jqXHR, textStatus) {
+						console.log(textStatus);
+						return(false);
+			});
+	
+	
+	
+}
+
+function InvitarSend(friend, sala) {
+	
+	var url = API_BASE_URL + "salas/"+sala+"/invitar?username="+friend;
+	var objInstanceName=new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts: true,
+		title: 'Informer'
+	});
+
+
+	$
+			.ajax(
+					{
+						url : url,
+						type : 'GET',
+						crossDomain : true,
+						dataType : 'json',
+						beforeSend : function(request) {
+							request.withCredentials = true;
+							request.setRequestHeader("Authorization", "Basic "
+									+ btoa(autorizacion));
+						},
+						headers : {
+							"Accept" : "application/vnd.informer.api.sala+json",
+						},
+					})
+			.done(
+					function(data, status, jqxhr) {	
+						
+						objInstanceName.show('ok','Se ha enviado la solicitud.');
+						setTimeout(function(){Invitar(sala);},redirecttimeout);	
+								
+						
+					}).fail(function(jqXHR, textStatus) {
+						objInstanceName.show('error','Se ha producido un erro al enviar la solicitud.');
+						setTimeout(function(){Invitar(sala);},redirecttimeout);	
+						
+			});	
+}
+
 function GetSalasMias(url, offset, length) {
 
 	var type = 3; // Salas publicas
@@ -51,9 +151,7 @@ function GetSalasMias(url, offset, length) {
 								+ s.username
 								+ "</td><td><a href='javascript:void(0);' onClick='abrirChat("+s.identificador+")'>"
 								+ s.nombre_sala
-								+ "</a></td><td><input type='button' value='Invitar' OnClick='Invitar("
-								+ s.identificador
-								+ ")'>";
+								+ "</a></td><td><input type='button' value='Invitar' OnClick='Invitar("+ s.identificador+ ")'>";
 								if(s.username!=getCookie("username")){
 								Stringhtml +="</td><td><input type='button' value='Abandonar' OnClick='Abandonar("
 								+ s.identificador

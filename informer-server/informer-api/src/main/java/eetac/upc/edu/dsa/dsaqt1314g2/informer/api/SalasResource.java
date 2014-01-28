@@ -855,6 +855,7 @@ public class SalasResource {
 			}
 		}
 
+		mensaje="";
 		return (mensaje);
 	}
 
