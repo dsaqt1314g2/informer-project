@@ -224,11 +224,13 @@ public class UserResource {
 				user.setCorreo(rs.getString("correo"));
 				user.setGenero(rs.getBoolean("genero"));
 				user.setFecha_nacimiento(rs.getDate("fecha_nacimiento"));
+				user.setLast_Update(rs.getDate("last_Update"));
 				user.setUni_escuela(rs.getInt("uni_escuela"));
 				user.setFoto(rs.getString("foto"));
 				user.setEstado_civil(rs.getInt("estado_civil"));
 				user.setLugar_de_residencia(rs.getString("lugar_de_residencia"));
 				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
+				
 				// TODO: Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo, user.getUsername(), "self"));
 				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));

@@ -24,6 +24,7 @@ function getUrlVars()
 function Pintar() {
 		
 	var perfil = getUrlVars().user;
+	if (perfil == null) perfil = getCookie("busqueda");
 	console.log(perfil);
 	
 	var url = API_BASE_URL + "users/search?o=0&l=30";
