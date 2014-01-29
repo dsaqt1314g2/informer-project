@@ -30,7 +30,7 @@ function getLogin() {
 			console.log(data);
 		},
 		error : function(jqXHR, textStatus) {
-			window.location = urlredirect + "/login.html";
+			//window.location = urlredirect + "/login.html";
 			console.log(textStatus);
 		}
 	});

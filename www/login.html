@@ -21,17 +21,17 @@
 
   </head>
   <body>
-  <span id="contenedor-barra"></span>
+  
   
   <div class="col-sm-6 col-md-4 col-md-offset-4" style="padding-top:70px;">
             <h1 class="text-center login-title">Identificate para entrar en informer </h1>
             <div class="account-wall">
 			<img class="profile-img" src="http://www.silviavinuales.com/wp-content/uploads/2013/02/informer1.jpg" alt="">
 			<div class="form-signin">
-                <input type="text" class="form-control" id="username" placeholder="Email" value="alicia" required="" autofocus="">
-                <input type="password" class="form-control" id="userpass" placeholder="Password" value="alicia" required="">
+                <input type="text" class="form-control" id="username" placeholder="Usuario" value="" required="" autofocus="">
+                <input type="password" class="form-control" id="userpass" placeholder="Password" value="" required="">
                 <input type="hidden" value="LOGIN">
-                <button class="btn btn-lg btn-primary btn-block"  id="button_login" >
+                <button class="btn btn-lg btn-primary btn-block"  id="button_login" onclick="getLogin()">
                     Identificarme</button>
                 <label class="checkbox pull-left">
                     <input type="checkbox" value="remember-me">Recordarme
