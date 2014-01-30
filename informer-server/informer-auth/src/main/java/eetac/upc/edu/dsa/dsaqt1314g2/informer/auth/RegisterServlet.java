@@ -90,7 +90,7 @@ public class RegisterServlet extends HttpServlet {
 				fecha = sdf.format(date).replace(" ", "T");
 				// System.out.println(fecha);
 			} catch (Exception e) {
-				error = "Cumpleaños incorrecto!";
+				error = "Aniversario incorrecto!";
 				return;
 			}
 			try {

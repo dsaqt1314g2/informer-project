@@ -19,6 +19,6 @@ create table user_roles (
 
 create table escuelas (
 	identificador int not null primary key,
-	escuela 	varchar(255) not null primary key,
+	escuela 	varchar(255) not null,
 	correo		varchar(255) not null
 );
