@@ -34,7 +34,6 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -43,9 +42,12 @@ import org.json.simple.parser.ParseException;
  * Servlet implementation class RegisterServlet
  */
 public class RegisterServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	private DataSource ds = null;
+	private static final String IP_SERVER = "147.83.7.156";
+	private static final int PUERTO_SERVER = 8080;
 
 	@Override
 	public void init() throws ServletException {
@@ -67,8 +69,7 @@ public class RegisterServlet extends HttpServlet {
 		if (action.equals("formularioREG")) {
 			if (!req.getParameter("correo").equals(req.getParameter("reenteremail")))
 				return;
-			String username, pass, sexo, email, civil, name, universidad, fecha_nac;
-			String fecha;
+			String username, pass, sexo, email, civil, name, universidad, fecha;
 			username = req.getParameter("username");
 			pass = req.getParameter("password");
 			sexo = req.getParameter("sex");
@@ -149,7 +150,7 @@ public class RegisterServlet extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	private int postUserInformerDB(String username, String name, String email, String sexo, String civil, String fecha, String universidad) {
-		HttpHost targetHost = new HttpHost("localhost", 8080, "http");
+		HttpHost targetHost = new HttpHost(IP_SERVER, PUERTO_SERVER, "http");
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()), new UsernamePasswordCredentials("Administrador", "Administrador"));
 
@@ -163,7 +164,7 @@ public class RegisterServlet extends HttpServlet {
 		HttpClientContext context = HttpClientContext.create();
 		context.setCredentialsProvider(credsProvider);
 
-		HttpPost httpPost = new HttpPost("http://localhost:8080/informer-api/users");
+		HttpPost httpPost = new HttpPost("http://" + IP_SERVER + ":" + PUERTO_SERVER + "/informer-api/users");
 		httpPost.addHeader("Content-Type", "application/vnd.informer.api.user+json");
 		httpPost.addHeader("Accept", "application/vnd.informer.api.user+json");
 
