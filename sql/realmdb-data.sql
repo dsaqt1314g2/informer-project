@@ -1,23 +1,21 @@
-insert into users values('alicia', MD5('alicia'), 'Alicia', 'alicia@acme.com');
-insert into user_roles values ('alicia', 'registered');
+source realmdb-schema.sql
 
-insert into users values('blas', MD5('blas'), 'Blas', 'blas@acme.com');
+insert into users values('registrado', MD5('informer91'), 'registrado', 'registrado@informer.es');
 insert into user_roles values ('blas', 'registered');
 
-insert into users values('Administrador', MD5('Administrador'), 'Administrador', 'admin@admin.com');
+insert into users values('administrador	', MD5('informer91'), 'administrador', 'admin@informer.es');
 insert into user_roles values ('Administrador', 'admin');
 
-insert into users values('moderador', MD5('moderador'), 'moderador', 'moderador@moderador.com');
+insert into users values('moderador', MD5('informer91'), 'moderador', 'moderador@informer.es');
 insert into user_roles values ('moderador', 'moderador');
 
+insert into users(username, userpass, name, email) values ('ropnom',md5('informer91'),'Rodrigo','rodrigo.sampedro@estudiant.upc.es');
+insert into users(username, userpass, name, email) values ('McD0n3ld',md5('informer91'),'Raul','raul.suarez.marin@estudiant.upc.es');
+insert into users(username, userpass, name, email) values ('xavi',md5('xavi91'),'Xavi','xavier.gomez@estudiant.upc.es');
 
-insert into users(username, userpass, name, email) values ('ropnom',md5('ropnom'),'Rodrigo','rodri@go.com');
-insert into users(username, userpass, name, email) values ('McD0n3ld',md5('McD0n3ld'),'Raul','raul@go.com');
-insert into users(username, userpass, name, email) values ('Creador',md5('Creador'),'Sergi','ser@go.com');
-insert into users(username, userpass, name, email) values ('roc',md5('roc'),'Roc Messeger','roc@go.com');
+insert into user_roles(username, rolename) values ('xavi','registered');
+insert into user_roles(username, rolename) values ('McD0n3ld','moderador');
+insert into user_roles(username, rolename) values ('ropnom','moderador');
 
-insert into user_roles(username, rolename) values ('Creador','registered');
-insert into user_roles(username, rolename) values ('McD0n3ld','registered');
-insert into user_roles(username, rolename) values ('roc','registered');
-insert into user_roles(username, rolename) values ('ropnom','admin');
+insert into escuelas(escuela, correo) values ("Escola d'Enginyeria de Telecomunicació i Aeroespacial de Castelldefels (UPC)", '@estudiant.upc.es');
 

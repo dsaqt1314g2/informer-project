@@ -15,7 +15,7 @@ function getLogin() {
 		dataType : 'json',
 		headers : {
 			"Accept" : "application/vnd.informer.api.user+json",
-		// "Access-Control-Allow-Origin" : "*"
+			// "Access-Control-Allow-Origin" : "*"
 		},
 		beforeSend : function(request) {
 			request.withCredentials = true;
@@ -30,7 +30,7 @@ function getLogin() {
 			console.log(data);
 		},
 		error : function(jqXHR, textStatus) {
-			//window.location = urlredirect + "/login.html";
+			window.location = urlredirect + "/login.html";
 			console.log(textStatus);
 		}
 	});

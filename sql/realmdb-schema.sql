@@ -16,3 +16,9 @@ create table user_roles (
 	foreign key(username) references users(username) on delete cascade,
 	primary key (username, rolename)
 );
+
+create table escuelas (
+	identificador int not null primary key,
+	escuela 	varchar(255) not null primary key,
+	correo		varchar(255) not null
+);

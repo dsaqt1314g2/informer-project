@@ -77,3 +77,22 @@
 	margin-top: 20px;
 	padding: 20px;
 }
+
+.tabla-registro {
+	width: 250px;
+	text-align: center;
+	padding: 3px 20px 6px 0px;
+}
+
+.tabla-registro-especial {
+	padding: 3px 20px 6px 0px;
+}
+
+.fondo {
+	margin-right: auto;
+	width: 480px;
+	background-position: top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	overflow: auto;
+}

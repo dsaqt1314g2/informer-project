@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.apache.http.HttpEntity;
@@ -47,6 +49,7 @@ public class RegisterServlet extends HttpServlet {
 
 	private DataSource ds = null;
 	private static final String IP_SERVER = "147.83.7.156";
+	// private static final String IP_SERVER = "localhost";
 	private static final int PUERTO_SERVER = 8080;
 
 	@Override
@@ -66,6 +69,8 @@ public class RegisterServlet extends HttpServlet {
 	@SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		String action = req.getParameter("action");
+		HttpSession session = req.getSession(false);
+		String error = "Sin error";
 		if (action.equals("formularioREG")) {
 			if (!req.getParameter("correo").equals(req.getParameter("reenteremail")))
 				return;
@@ -73,7 +78,7 @@ public class RegisterServlet extends HttpServlet {
 			username = req.getParameter("username");
 			pass = req.getParameter("password");
 			sexo = req.getParameter("sex");
-			email = req.getParameter("correo");
+			email = req.getParameter("correo") + "@estudiant.upc.es";
 			civil = req.getParameter("civil");
 			universidad = req.getParameter("universidad");
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -83,23 +88,15 @@ public class RegisterServlet extends HttpServlet {
 				date.setMonth(Integer.parseInt(req.getParameter("mes")));
 				date.setYear(Integer.parseInt(req.getParameter("ano")));
 				fecha = sdf.format(date).replace(" ", "T");
-				System.out.println(fecha);
+				// System.out.println(fecha);
 			} catch (Exception e) {
+				error = "Cumpleaños incorrecto!";
 				return;
 			}
 			try {
 				name = email.split(".")[0];
 			} catch (Exception e) {
 				name = email;
-			}
-			switch (Integer.parseInt(universidad)) {
-			case 1:
-				if (!email.contains("@estudiant.upc.es"))
-					return;
-				break;
-
-			default:
-				return;
 			}
 			Connection con;
 			Statement stmt;
@@ -108,8 +105,12 @@ public class RegisterServlet extends HttpServlet {
 				con = ds.getConnection();
 				stmt = con.createStatement();
 				try {
+					String update = "SELECT username FROM users WHERE username='" + username + "';";
+					ResultSet rs = stmt.executeQuery(update);
+					if (rs.next())
+						throw new Exception("El usuario ya existe");
 					con.setAutoCommit(false);
-					String update = "INSERT INTO users VALUES('" + username + "',MD5('" + pass + "'),'" + name + "','" + email + "');";
+					update = "INSERT INTO users VALUES('" + username + "',MD5('" + pass + "'),'" + name + "','" + email + "');";
 					stmt.executeUpdate(update);
 					update = "INSERT INTO user_roles VALUES('" + username + "','registered');";
 					stmt.executeUpdate(update);
@@ -124,12 +125,12 @@ public class RegisterServlet extends HttpServlet {
 					try {
 						con.rollback();
 					} catch (SQLException e1) {
-						e1.printStackTrace();
+						error = e1.toString();
 					}
-					e.printStackTrace();
+					error = e.toString();
 				}
 			} catch (SQLException e2) {
-				e2.printStackTrace();
+				error = e2.toString();
 			}
 			String url;
 			if (resu == 0)
@@ -138,6 +139,8 @@ public class RegisterServlet extends HttpServlet {
 				url = "/error.jsp";
 			ServletContext sc = getServletContext();
 			RequestDispatcher rd = sc.getRequestDispatcher(url);
+			// if (!error.equals("Sin error"))
+			session.setAttribute("error", error);
 			rd.forward(req, res);
 		} else {
 			System.out.println("problema");
@@ -180,14 +183,14 @@ public class RegisterServlet extends HttpServlet {
 		obj.put("estado_civil", civil);
 		obj.put("uni_escuela", universidad);
 		String user = obj.toJSONString();
-		System.out.println(username);
-		System.out.println(name);
-		System.out.println(email);
-		System.out.println(sexo);
-		System.out.println(fecha);
-		System.out.println(civil);
-		System.out.println(universidad);
-		System.out.println(user);
+		// System.out.println(username);
+		// System.out.println(name);
+		// System.out.println(email);
+		// System.out.println(sexo);
+		// System.out.println(fecha);
+		// System.out.println(civil);
+		// System.out.println(universidad);
+		// System.out.println(user);
 		try {
 			httpPost.setEntity(new StringEntity(user));
 			CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
