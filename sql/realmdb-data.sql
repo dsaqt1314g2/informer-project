@@ -3,7 +3,7 @@ source realmdb-schema.sql
 insert into users values('registrado', MD5('informer91'), 'registrado', 'registrado@informer.es');
 insert into user_roles values ('blas', 'registered');
 
-insert into users values('administrador	', MD5('informer91'), 'administrador', 'admin@informer.es');
+insert into users values('administrador', MD5('informer91'), 'administrador', 'admin@informer.es');
 insert into user_roles values ('Administrador', 'admin');
 
 insert into users values('moderador', MD5('informer91'), 'moderador', 'moderador@informer.es');

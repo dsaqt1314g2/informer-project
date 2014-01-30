@@ -18,7 +18,7 @@
 			<legend>
 				<a href="#"><i class="glyphicon glyphicon-globe"></i></a> Reg&iacute;strate!
 			</legend>
-			<form action="RegisterServlet" method="POST" class="form">
+			<form id="registro" action="RegisterServlet" method="POST" class="form">
 				<input type="hidden" name="action" value="formularioREG" />
 				<table>
 					<tr>
@@ -26,7 +26,7 @@
 							<input class="form-control" name="username" placeholder="Usuario" type="text" required autofocus />
 						</td>
 						<td class="tabla-registro">
-							<input class="form-control" style="padding-bottom: 4px;" name="password" placeholder="Contrase&ntilde;a" type="password" />
+							<input class="form-control" style="padding-bottom: 4px;" name="password" placeholder="Contrase&ntilde;a" type="password" required />
 
 						</td>
 					</tr>
@@ -226,6 +226,5 @@
 			</form>
 		</div>
 	</div>
-
 </body>
 </html>

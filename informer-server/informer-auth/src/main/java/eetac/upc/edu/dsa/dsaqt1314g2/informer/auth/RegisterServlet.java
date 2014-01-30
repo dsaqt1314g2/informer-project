@@ -49,7 +49,7 @@ public class RegisterServlet extends HttpServlet {
 
 	private DataSource ds = null;
 	private static final String IP_SERVER = "147.83.7.156";
-	// private static final String IP_SERVER = "localhost";
+	//private static final String IP_SERVER = "localhost";
 	private static final int PUERTO_SERVER = 8080;
 
 	@Override
@@ -72,8 +72,16 @@ public class RegisterServlet extends HttpServlet {
 		HttpSession session = req.getSession(false);
 		String error = "Sin error";
 		if (action.equals("formularioREG")) {
-			if (!req.getParameter("correo").equals(req.getParameter("reenteremail")))
+			if (!req.getParameter("correo").equals(req.getParameter("reenteremail"))) {
+				error = "Los correos no coinciden";
+				String dir = "/error.jsp";
+				ServletContext serc = getServletContext();
+				RequestDispatcher rd = serc.getRequestDispatcher(dir);
+				// if (!error.equals("Sin error"))
+				session.setAttribute("error", error);
+				rd.forward(req, res);
 				return;
+			}
 			String username, pass, sexo, email, civil, name, universidad, fecha;
 			username = req.getParameter("username");
 			pass = req.getParameter("password");
@@ -84,13 +92,21 @@ public class RegisterServlet extends HttpServlet {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try {
 				Date date = new Date();
-				date.setDate(Integer.parseInt(req.getParameter("dia")));
-				date.setMonth(Integer.parseInt(req.getParameter("mes")));
-				date.setYear(Integer.parseInt(req.getParameter("ano")));
+				if (Integer.parseInt(req.getParameter("dia")) != 0 && Integer.parseInt(req.getParameter("mes")) != 0 && Integer.parseInt(req.getParameter("ano")) != 0) {
+					date.setDate(Integer.parseInt(req.getParameter("dia")));
+					date.setMonth(Integer.parseInt(req.getParameter("mes")));
+					date.setYear(Integer.parseInt(req.getParameter("ano")));
+				}
 				fecha = sdf.format(date).replace(" ", "T");
 				// System.out.println(fecha);
 			} catch (Exception e) {
 				error = "Aniversario incorrecto!";
+				String dir = "/error.jsp";
+				ServletContext serc = getServletContext();
+				RequestDispatcher rd = serc.getRequestDispatcher(dir);
+				// if (!error.equals("Sin error"))
+				session.setAttribute("error", error);
+				rd.forward(req, res);
 				return;
 			}
 			try {
@@ -115,9 +131,10 @@ public class RegisterServlet extends HttpServlet {
 					update = "INSERT INTO user_roles VALUES('" + username + "','registered');";
 					stmt.executeUpdate(update);
 					resu = postUserInformerDB(username, name, email, sexo, civil, fecha, universidad);
-					if (resu == 0)
+					if (resu == 0) {
+						error = "No se ha hecho post en informerdb";
 						con.commit();
-					else
+					} else
 						con.rollback();
 					stmt.close();
 					con.close();
@@ -143,7 +160,7 @@ public class RegisterServlet extends HttpServlet {
 			session.setAttribute("error", error);
 			rd.forward(req, res);
 		} else {
-			System.out.println("problema");
+			// System.out.println("problema");
 			String url = "/register.jsp";
 			ServletContext sc = getServletContext();
 			RequestDispatcher rd = sc.getRequestDispatcher(url);
@@ -155,7 +172,7 @@ public class RegisterServlet extends HttpServlet {
 	private int postUserInformerDB(String username, String name, String email, String sexo, String civil, String fecha, String universidad) {
 		HttpHost targetHost = new HttpHost(IP_SERVER, PUERTO_SERVER, "http");
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()), new UsernamePasswordCredentials("Administrador", "Administrador"));
+		credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()), new UsernamePasswordCredentials("administrador", "informer91"));
 
 		// Create AuthCache instance
 		AuthCache authCache = new BasicAuthCache();
@@ -202,6 +219,7 @@ public class RegisterServlet extends HttpServlet {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				sb.append(line);
+				System.out.println(line);
 			}
 			httpResponse.close();
 			JSONParser parser = new JSONParser();
