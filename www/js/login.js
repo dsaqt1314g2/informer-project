@@ -1,3 +1,19 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+	var username = getCookie("username");
+	var userpass = getCookie("userpass");
+	var role = getCookie("role");
+	if (username != "" && userpass != "") {
+		if (role == "true")
+			$('#contenedor-barra').load('barra_moderador.html');
+		else
+			$('#contenedor-barra').load('barra_conectado.html');
+	} else
+		$('#contenedor-barra').load('barra.html');
+	Nombre = username;
+	Contrasena = userpass;
+	console.log(Nombre + ":" + Contrasena);
+});
+
 function getLogin() {
 
 	// definimos las vriables del login
@@ -15,7 +31,7 @@ function getLogin() {
 		dataType : 'json',
 		headers : {
 			"Accept" : "application/vnd.informer.api.user+json",
-			// "Access-Control-Allow-Origin" : "*"
+		// "Access-Control-Allow-Origin" : "*"
 		},
 		beforeSend : function(request) {
 			request.withCredentials = true;
@@ -55,23 +71,6 @@ function logOut() {
 	window.location = urlredirect + "index.html";
 }
 
-$("document").ready(function() {
-	var username = getCookie("username");
-	var userpass = getCookie("userpass");
-	var role = getCookie("role");
-	if (username != "" && userpass != "") {
-		if (role == "true")
-			$('#contenedor-barra').load('barra_moderador.html');
-		else
-			$('#contenedor-barra').load('barra_conectado.html');
-	} else
-		$('#contenedor-barra').load('barra.html');
-
-	Nombre = username;
-	Contrasena = userpass;
-	console.log(Nombre + ":" + Contrasena);
-});
-
 function getCookie(cname) {
 	var name = cname + "=";
 	var ca = document.cookie.split(';');
@@ -98,16 +97,13 @@ function isLogged() {
 }
 
 function about() {
-	var objInstanceName=new jsNotifications({
+	var objInstanceName = new jsNotifications({
 		autoCloseTime : 5,
-		showAlerts: true,
-		title: 'Informer'
+		showAlerts : true,
+		title : 'Informer'
 	});
-	objInstanceName.show('informer','<img src="img/keep-calm.png"></img>');
+	objInstanceName.show('informer', '<img src="img/keep-calm.png"></img>');
 }
-
-
-
 
 (function(a) {
 	(jQuery.browser = jQuery.browser || {}).mobile = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i
@@ -116,4 +112,5 @@ function about() {
 					.test(a.substr(0, 4))
 })(navigator.userAgent || navigator.vendor || window.opera);
 
-if (jQuery.browser.mobile) window.location=WWW_URL+"/downloads/informer.apk";
+if (jQuery.browser.mobile)
+	window.location = WWW_URL + "/downloads/informer.apk";
