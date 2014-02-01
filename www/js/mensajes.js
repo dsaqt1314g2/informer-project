@@ -65,6 +65,13 @@ function getListMensajes() {
 		//console.log(posts);
 	})
     .fail(function (jqXHR, textStatus) {
+    	var htmlString = "<div class='chat_container' id='chat_container'>";
+	    htmlString += '<span id="last-message"></span></div>'
+	    htmlString += '<br>'
+	    htmlString += "</div>";
+		$('#res_get_list_mensajes').html(htmlString);
+		var el = document.getElementById('chat_container');
+		el.scrollTop = 99999999999999999;
 		console.log(textStatus);
 	});
 }

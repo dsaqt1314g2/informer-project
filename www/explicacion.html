@@ -1,85 +1,64 @@
-  <!DOCTYPE html>
-  <html lang="es">
-    <head>
-     <meta charset="utf-8">
-        <title>Informer UPC</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
-        <meta name="author" content="DSA_projet EETAC UPC">
-	<link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
-    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informer UPC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
+<meta name="author" content="EETAC UPC Informer">
+<script src="js/variable.js"></script>
+<script src="js/extra/jquery.js"></script>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
 
-        <!-- Los estilos utilizados bootstrap -->
-       
-        <!-- Esto indica como es el padin de lo que ba debajo del menu borde superior e inferior -->
-        <style type="text/css">
-          body {
-             margin: 0;
-             overflow: auto; ;
-          }
-         
-        </style>
-        <!-- creo que es el estilo escogido .. revisar esto-->
-        <link href="css/bootstrap-responsive.css" rel="stylesheet">
+</head>
+<body>
+	<span id="contenedor-barra"></span>
+	<script src="js/login.js"></script>
+	<div class="container">
+		<!-- Main hero unit for a primary marketing message or call to action -->
+		<div class="jumbotron" style="text-align: justify;">
+			<h2>¿Qu&eacute; es Informer?</h2>
+			<p>Informer es una nueva forma de comunicarte y expresarte dentro de tu universidad. Todos los integrantes de la UPC estamos bajo un tipo de presi&oacute;n, un conjunto de circunstancias y entorno social que nos diferencial del resto de
+				j&oacute;venes de nuestra edad.</p>
+			<p>Esta red social va destinada, al humor, situaciones y al cotilleo que se pueden producir dentro de la UPC y que solo los universitarios que han pasado o est&aacute;n en la UPC pueden entender.</p>
+			<p>La red social se basa en 3 Modos de expresi&oacute;n, donde el individuo habla al colectivo, expresando su opini&oacute;n ya sea en forma de comentario, "parrafada", humor, iron&iacute;a, o cualquier tipo de expresi&oacute;n ingeniosa.</p>
+			<p>Modos de expresi&oacute;n:</p>
+			<ul>
+				<li>"An&oacute;nimo": el Post se publica sin indicar el origen, permitiendo el anonimato.</li>
+				<li>"An&oacute;nimo cachondo" el Post es an&oacute;nimo salvo para tus amistades.</li>
+				<li>"El valiente", publica con tu Nick como creador del Post.</li>
+			</ul>
+			<p></p>
+			<p>Puedes publicar opiniones, rumores, bromas y trollings. El contexto de los mensajes debe de quedar clara en ning&uacute;n momento se intenta dañar o menos preciar a nadie, ya que la publicaci&oacute;n de los mismos se hace de forma
+				an&oacute;nima.</p>
+			<p>Tipos de mensajes m&aacute;s comunes:</p>
+			<ul>
+				<li>"Alguien lo ten&iacute;a que decir": pensamiento com&uacute;n, no compartido o expresado en sociedad.</li>
+				<li>"Opini&oacute;n": expresar tus ideas o conclusiones sobre un tema.</li>
+				<li>"Rumor": inquietudes o creencias con las que rellenas tu tiempo por falta de vida social.</li>
+				<li>"Troll": cachondeo o iron&iacute;a hacia un compañero o colectivos.</li>
+				<li>"Reflexiones": Frases o cuestiones de todo tipo.</li>
+				<li>"Ligoteo": That is the war... love and sex, men and women.</li>
+			</ul>
+		</div>
 
-    </head>
-    <body>
-    <span id="contenedor-barra"></span>
-    <div class="container">
-     <!-- Main hero unit for a primary marketing message or call to action -->
-        <div class="jumbotron" style="text-align:justify;">
-          <h2>¿Qu&eacute; es Informer?</h2>
-          <p>Informer es una nueva forma de comunicarte y expresarte dentro de tu universidad.
-          Todos los integrantes de la UPC estamos bajo un tipo de presi&oacute;n, un conjunto de circunstancias y entorno social que nos diferencial del resto de j&oacute;venes de nuestra edad. </p>
-          <p>Esta red social va destinada, al humor, situaciones y al cotilleo que se pueden producir dentro de la UPC y que solo los universitarios que han pasado o est&aacute;n en la UPC pueden entender.</p>
-          <p>La red social se basa en 3 Modos de expresi&oacute;n, donde el individuo habla al colectivo, expresando su opini&oacute;n ya sea en forma de comentario, "parrafada", humor, iron&iacute;a, o cualquier tipo de expresi&oacute;n ingeniosa.</p>
-          <p>Modos de expresi&oacute;n:
-          </p><ul>
-          <li>"An&oacute;nimo": el Post se publica sin indicar el origen, permitiendo el anonimato.</li>
-          <li>"An&oacute;nimo cachondo" el Post es an&oacute;nimo salvo para tus amistades.</li>
-          <li>"El valiente", publica con tu Nick como creador del Post.</li>
-          </ul><p></p>
-          <p>Puedes publicar opiniones, rumores, bromas y trollings. El contexto de los mensajes debe de quedar clara en ning&uacute;n momento se intenta dañar o menos preciar a nadie, ya que la publicaci&oacute;n de los mismos se hace de forma an&oacute;nima.</p>
-          <p>Tipos de mensajes m&aacute;s comunes:
-          </p><ul>
-          <li>"Alguien lo ten&iacute;a que decir": pensamiento com&uacute;n, no compartido o expresado en sociedad.</li>
-          <li>"Opini&oacute;n": expresar tus ideas o conclusiones sobre un tema.</li>
-          <li>"Rumor": inquietudes o creencias con las que rellenas tu tiempo por falta de vida social.</li>
-          <li>"Troll": cachondeo o iron&iacute;a hacia un compañero o colectivos.</li>
-          <li>"Reflexiones": Frases o cuestiones de todo tipo.</li>
-          <li>"Ligoteo": That is the war... love and sex, men and women.</li>
-          
-          </ul><p></p>
-          
-        </div>
-
-        <div class="jumbotron" style="text-align:justify;">
-        <a name="why"></a>
-          <h2>¿Por qu&eacute; Informer?</h2>
-          <p>Somos un animal social y por m&aacute;s que neguemos nuestros instintos b&aacute;sicos, el cotilleo es uno de ellos.</p>
-          <p>Varios estudios cient&iacute;ficos han demostrado que 2/3 de nuestras comunicaciones diarias son o se basan en cotilleos, o lo que es lo mismo hablar de terceras personas no presentes, sobre su vida, acciones, bienes amor&iacute;os y todo tipo de conclusiones sobre las mismas. A su vez tambi&eacute;n han demostrado que la mayor parte de este tipo de comunicaciones es positiva, ya que cohesiona el grupo, y aumenta la competitividad entre individuos y mejora su estado emocional.</p>
-          <p></p>
-          <p>Realidad... en la UPC hay dos problemas claros, la falta de vida social y una gran cantidad de solteros, con esta red social intentamos hacer m&aacute;s soportable estos problemas, sin mencionar la ingente cantidad de entusiasmo que generamos entre los cotillas.</p>
-
-          
-          <p></p>
-          
-        </div>
-
-        
-        
-
-        <hr>
-
-        <footer>
-          <p>© Company 2014</p>
-        </footer>   
-        </div> <!-- /container -->
-      <!-- SCRIPTS -->
-      <script src="js/extra/jquery.js"></script>   
-  	  <script src="js/login.js"></script>	
-    </body>
-  </html>
+		<div class="jumbotron" style="text-align: justify;">
+			<a name="why"></a>
+			<h2>¿Por qu&eacute; Informer?</h2>
+			<p>Somos un animal social y por m&aacute;s que neguemos nuestros instintos b&aacute;sicos, el cotilleo es uno de ellos.</p>
+			<p>Varios estudios cient&iacute;ficos han demostrado que 2/3 de nuestras comunicaciones diarias son o se basan en cotilleos, o lo que es lo mismo hablar de terceras personas no presentes, sobre su vida, acciones, bienes amor&iacute;os y todo
+				tipo de conclusiones sobre las mismas. A su vez tambi&eacute;n han demostrado que la mayor parte de este tipo de comunicaciones es positiva, ya que cohesiona el grupo, y aumenta la competitividad entre individuos y mejora su estado emocional.</p>
+			<p></p>
+			<p>Realidad... en la UPC hay dos problemas claros, la falta de vida social y una gran cantidad de solteros, con esta red social intentamos hacer m&aacute;s soportable estos problemas, sin mencionar la ingente cantidad de entusiasmo que
+				generamos entre los cotillas.</p>
+		</div>
+		<footer id="end-of-the-document"> </footer>
+		<script>
+			$('#end-of-the-document').load('barra-footer.html');
+		</script>
+	</div>
+</body>
+</html>

@@ -1,30 +1,20 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>Informer</title>
-
-<!--[if lt IE 9]>
-          <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-  <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
+<!--[if lt IE 9]> <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link href="css/style.css" rel="stylesheet">
+<link href="css/style_posts.css" rel="stylesheet">
 <link rel="shortcut icon" href="/bootstrap/img/favicon.ico">
 <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="72x72"
-	href="/bootstrap/img/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114"
-	href="/bootstrap/img/apple-touch-icon-114x114.png">
-<link rel="stylesheet"
-	href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
-<link rel="stylesheet" type="text/css"
-	href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-
+<link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 <!-- CSS code from Bootply.com editor -->
-
 <style type="text/css">
 body {
 	margin: 0;
@@ -32,25 +22,31 @@ body {
 }
 </style>
 </head>
-
 <!-- HTML code from Bootply.com editor -->
-
 <body>
 	<span id="contenedor-barra"></span>
 
 	<div id="todo" style="margin: 20 px; padding-top: 70px">
 
 		<div id="cosas" style="margin: 20 px; padding-left: 20px; padding-right: 25px" class="droppedHover">
-			
+
 			<div class="container-fluid">
-				<center><h1 class="letterpress"><div id="data1">Rodrigo Sampedro</div></h1></center>
+				<center>
+					<h1 class="letterpress">
+						<div id="data1">Rodrigo Sampedro</div>
+					</h1>
+				</center>
 				<p>
-				<center><div id="solicitudes"><button type="button" class="btn btn-success" onclick="SolicitarAmistad()">Solicitar amistad</button></div></center>
+				<center>
+					<div id="solicitudes">
+						<button type="button" class="btn btn-success" onclick="SolicitarAmistad()">Solicitar amistad</button>
+					</div>
+				</center>
 				<div class="row">
 					<div class="col-sm-10 col-md-10">
 						<div class="row">
-							<div class="col-sm-2 col-md-2" style="margin-left: auto; margin-right: auto; width:250px;">								
-								<div class="container"  id="imageperfil">
+							<div class="col-sm-2 col-md-2" style="margin-left: auto; margin-right: auto; width: 250px;">
+								<div class="container" id="imageperfil">
 									<img src="http://placehold.it/150x100" class="">
 								</div>
 								<hr class="">
@@ -58,116 +54,112 @@ body {
 									<strong style="" class="">Informaci&oacute;n</strong>
 								</center>
 								<hr class="">
-								<br class=""> <strong class="">Sexo: </strong> <div id="data2">Hombre</div><br
-									class=""> <strong class="">Fecha de nacimiento:</strong> <br
-									class="">
+								<br class=""> <strong class="">Sexo: </strong>
+								<div id="data2">Hombre</div>
+								<br class=""> <strong class="">Fecha de nacimiento:</strong> <br class="">
 								<div id="data3"></div>
-								<br class=""> <strong class="">Estado: </strong> <div id="data4">Soltero</div>
-								<br class=""> <strong class="">Escuela: </strong> <div id="data22">EETAC</div>
-								<br class=""> <strong class="">Ultima conexion: </strong> <br
-									class=""> <div id="data23">126548876</div><br
-									class=""> <strong class="">Residencia:</strong> <br
-									class="">
+								<br class=""> <strong class="">Estado: </strong>
+								<div id="data4">Soltero</div>
+								<br class=""> <strong class="">Escuela: </strong>
+								<div id="data22">EETAC</div>
+								<br class=""> <strong class="">Ultima conexion: </strong> <br class="">
+								<div id="data23">126548876</div>
+								<br class=""> <strong class="">Residencia:</strong> <br class="">
 								<div id="data5">Cunit</div>
 								<hr class="">
 								<center>
-								<table class="table table-hover">
-									<tbody><tr>
-											<td><small class="">Amigos</small></td>
-											<td><span class="badge"><div id="data6">0</div></span></td>
-										</tr><tr>
-											<td><small class="">Post</small></td>
-											<td><span class="badge badge-success"><div id="data7">0</div></span></td>
-										</tr><tr>
-											<td><small class="">Comentarios</small></td>
-											<td><span class="badge"><div id="data8">0</div></span></td>
-										</tr><tr>
-											<td class=""></td>
-											<td class=""></td>
-										</tr><tr>
-											<td><small class="">Me gusta</small></td>
-											<td><span class="badge badge-info"><div id="data9">0</div></span></td>
-										</tr>
-										</tr><tr>
-											<td><small class="">Putas mierdas</small></td>
-											<td><span class="badge badge-info label-danger" ><div id="data10">0</div></span></td>
-										</tr>
-										</tr><tr>
-											<td><small class="">Participaci&oacute;n</small></td>
-											<td><span class="badge badge-info"><div id="data11">0</div></span></td>
-										</tr>
-									</tbody>
-								</table>	
-								</center>							
+									<table class="table table-hover">
+										<tbody>
+											<tr>
+												<td><small class="">Amigos</small></td>
+												<td><span class="badge"><div id="data6">0</div></span></td>
+											</tr>
+											<tr>
+												<td><small class="">Post</small></td>
+												<td><span class="badge badge-success"><div id="data7">0</div></span></td>
+											</tr>
+											<tr>
+												<td><small class="">Comentarios</small></td>
+												<td><span class="badge"><div id="data8">0</div></span></td>
+											</tr>
+											<tr>
+												<td class=""></td>
+												<td class=""></td>
+											</tr>
+											<tr>
+												<td><small class="">Me gusta</small></td>
+												<td><span class="badge badge-info"><div id="data9">0</div></span></td>
+											</tr>
+											</tr>
+											<tr>
+												<td><small class="">Putas mierdas</small></td>
+												<td><span class="badge badge-info label-danger"><div id="data10">0</div></span></td>
+											</tr>
+											</tr>
+											<tr>
+												<td><small class="">Participaci&oacute;n</small></td>
+												<td><span class="badge badge-info"><div id="data11">0</div></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</center>
 							</div>
-							
-							
-							<div class="col-sm-10 col-md-10" style="width:850px;">
-								<ul id="listStuff" class="nav nav-tabs nav-stacked">								
-								<div class="nav nav-tabs nav-stacked" id="data12">
-									<li class="list-child"><a href="/bootstraptor/64957"
-										class="">Titulo Post 1</a></li>									
-								</div>
+
+
+							<div class="col-sm-10 col-md-10" style="width: 850px;">
+								<ul id="listStuff" class="nav nav-tabs nav-stacked">
+									<div class="nav nav-tabs nav-stacked" id="data12">
+										<li class="list-child"><a href="/bootstraptor/64957" class="">Titulo Post 1</a></li>
+									</div>
 								</ul>
 								<!-- <ul class="pagination pager list-pager pagination-xs"></ul>-->
 							</div>
-							
+
 						</div>
-		
+
 					</div>
 					<div class="row">
 						<div class="col-sm-2 col-md-2" style="">
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapseOne" class=""><span
-											class="glyphicon glyphicon-folder-close"> </span>Content</a>
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class=""><span class="glyphicon glyphicon-folder-close"> </span>Content</a>
 									</h4>
 
 								</div>
 								<div id="collapseOne" class="panel-collapse collapse in">
 									<div class="panel-body">
 										<table class="table">
-											<tbody>																																			
-												<tr><div class="data51">
-													<td><span class="glyphicon glyphicon-eye-open text-success"></span><a href="javascript:void(0);" OnClick="Amigos()" class="">&nbsp;Ver Amigos</a>
-														</div>
+											<tbody>
+												<tr>
+													<div class="data51">
+														<td><span class="glyphicon glyphicon-eye-open text-success"></span><a href="javascript:void(0);" OnClick="Amigos()" class="">&nbsp;Ver Amigos</a>
+													</div>
 												</tr>
-												<tr><div class="data51">
-													<td><span class="glyphicon glyphicon-list text-success"></span><a href="javascript:void(0);" OnClick="window.location.reload()" class="">&nbsp;Ver Post</a>
-														</div>
+												<tr>
+													<div class="data51">
+														<td><span class="glyphicon glyphicon-list text-success"></span><a href="javascript:void(0);" OnClick="window.location.reload()" class="">&nbsp;Ver Post</a>
+													</div>
 												</tr>
 											</tbody>
 										</table>
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
-					
-					
 				</div>
-				
-				
 			</div>
 		</div>
-		
-
-		<script type='text/javascript'
-			src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+		<script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<!-- JavaScript jQuery code from Bootply.com editor -->
-
 		<script src="js/variable.js"></script>
 		<script src="js/login.js"></script>
 		<script src="js/posts.js"></script>
 		<script src="js/perfil2.js"></script>
-		
 		<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-   		<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-    	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-		
+		<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
+		<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 </body>
 </html>

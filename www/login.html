@@ -1,59 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-   <meta charset="utf-8">
-      <title>Informer UPC</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
-      <meta name="author" content="DSA_projet EETAC UPC">
-
-      <!-- Los estilos utilizados bootstrap -->
-    <link href="css/login.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
-    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-
-     
-      <!-- creo que es el estilo escogido .. revisar esto-->
-      <link href="css/bootstrap-responsive.css" rel="stylesheet">
-
-  </head>
-  <body>
-  
-  
-  <div class="col-sm-6 col-md-4 col-md-offset-4" style="padding-top:70px;">
-            <h1 class="text-center login-title">Identificate para entrar en informer </h1>
-            <div class="account-wall">
-			<img class="profile-img" src="http://www.silviavinuales.com/wp-content/uploads/2013/02/informer1.jpg" alt="">
+<head>
+<meta charset="utf-8">
+<title>Informer UPC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
+<meta name="author" content="EETAC UPC Informer">
+<link href="css/login.css" rel="stylesheet">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<script src="js/variable.js"></script>
+</head>
+<body>
+	<div class="col-sm-6 col-md-4 col-md-offset-4" style="padding-top: 70px;">
+		<h1 class="text-center login-title">Identificate para entrar en Informer</h1>
+		<div class="account-wall">
+			<img class="profile-img" src="img/informer.png" alt="">
 			<div class="form-signin">
-                <input type="text" class="form-control" id="username" placeholder="Usuario" value="" required="" autofocus="">
-                <input type="password" class="form-control" id="userpass" placeholder="Password" value="" required="">
-                <input type="hidden" value="LOGIN">
-                <button class="btn btn-lg btn-primary btn-block"  id="button_login" onclick="getLogin()">
-                    Identificarme</button>
-                <label class="checkbox pull-left">
-                    <input type="checkbox" value="remember-me">Recordarme
-                </label>
-                <a href="#" class="pull-right need-help">Necesitas ayuda? </a>
-                <span class="clearfix"></span>
-                </div>
-            </div>
-            <a href="http://147.83.7.156:8080/informer-auth/register.jsp" class="text-center new-account">Crear una cuenta</a>
-        </div>
-    <!-- SCRIPTS -->
-    
-    <script src="js/extra/jquery.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/posts.js"></script>
-    <script src="js/variable.js"></script>
-    <!-- notificaciones -->
-    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-    
-    
-    
-  </body>
+				<input type="text" class="form-control" id="username" placeholder="Usuario" value="" required="" autofocus="">
+				<input type="password" class="form-control" id="userpass" placeholder="Contrase&ntilde;a" value="" required="">
+				<input type="hidden" value="LOGIN">
+				<button class="btn btn-lg btn-primary btn-block" id="button_login" onclick="getLogin()">Identificarme</button>
+				<label class="checkbox pull-left">
+					<input type="checkbox" value="remember-me">
+					Recordarme
+				</label>
+				<a href="index.html" class="pull-right need-help">&iquest;Necesitas ayuda? </a> <br>
+			</div>
+		</div>
+		<a href="http://147.83.7.156:8080/informer-auth/register.jsp" class="text-center new-account">Crear una cuenta</a>
+	</div>
+	<!-- SCRIPTS -->
+	<script src="js/extra/jquery.js"></script>
+	<script src="js/login.js"></script>
+</body>
 </html>

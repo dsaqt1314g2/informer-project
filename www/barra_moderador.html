@@ -1,42 +1,37 @@
 <script src="js/variable.js"></script>
 <nav>
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">        
-      <div class="container"><div class="navbar-header"><a class="navbar-brand" href="create_post.html">Infórmanos!</a></div> 
-                   
-                              
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class=""><a href="post_viewer.html">Post</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rank<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="post_ranking_likes.html">Mejores Post</a></li>
-                <li><a href="post_ranking_dislikes.html">Peores Post</a></li>
-                <li><a href="post_ranking_comments.html">Mas comentados</a></li>
-                <!-- <li><a href="index.html">Usuarios Top</a></li> -->
-                <li class="divider"></li>                    
-              </ul>          
-           
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="salas_conectado.html">Conectado</a></li>
-                <li><a href="salas_viewer.html">Ver/Unirse a Sala</a></li>
-                <li><a href="salas_invitacion.html">Invitaciones</a></li>
-                <li><a href="salas_edit.html">Crear/editar</a></li>
-                <li class="divider"></li>                    
-              </ul>          
-            </li>
-            <li><a href="miperfil.html">Tu Perfil</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Moderar...&nbsp;<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="post_denuncias.html">Posts</a></li>
-                <li><a href="comentarios_denuncias.html">Comentarios</a></li>
-              </ul>
-            </li>             
-            <!-- <li class="dropdown">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="create_post.html">Infórmanos!</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class=""><a href="post_viewer.html">Post</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Rank<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="post_ranking_likes.html">Mejores Post</a></li>
+								<li><a href="post_ranking_dislikes.html">Peores Post</a></li>
+								<li><a href="post_ranking_comments.html">Mas comentados</a></li>
+								<!-- <li><a href="index.html">Usuarios Top</a></li> -->
+								<li class="divider"></li>
+							</ul>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="salas_conectado.html">Conectado</a></li>
+								<li><a href="salas_viewer.html">Ver/Unirse a Sala</a></li>
+								<li><a href="salas_invitacion.html">Invitaciones</a></li>
+								<li><a href="salas_edit.html">Crear/editar</a></li>
+								<li class="divider"></li>
+							</ul></li>
+						<li><a href="miperfil.html">Tu Perfil</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Moderar...&nbsp;<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="post_denuncias.html">Posts</a></li>
+								<li><a href="comentarios_denuncias.html">Comentarios</a></li>
+							</ul></li>
+						<!-- <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Action</a></li>
@@ -48,46 +43,42 @@
                 <li><a href="#">One more separated link</a></li>
               </ul>
             </li>-->
-          </ul>
-          <ul class="nav navbar-nav navbar-right" style="float: right!important;">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span id="myname-barra"></span>
-                <script>
-                var name = "username=";
-                var username = "";
-                  var ca = document.cookie.split(';');
-                  for(var i=0; i<ca.length; i++) 
-                    {
-                    var c = ca[i].trim();
-                    if (c.indexOf(name)==0) username= c.substring(name.length,c.length);
-                    }
-                    document.getElementById("myname-barra").innerHTML = username;
-                </script>
-                <b class="caret"></b>
-              </a>
-              <ul class="dropdown-menu">
-                  <li><a href="index.html" onclick="logOut()">Salir</a></li>
-              </ul>
-            </li>
-          </ul>
-           <!-- Poner aqui el usuario y el cerrar sesion                            
+					</ul>
+					<ul class="nav navbar-nav navbar-right" style="float: right !important;">
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span id="myname-barra"></span> <script>
+							var name = "username=";
+							var username = "";
+							var ca = document.cookie.split(';');
+							for (var i = 0; i < ca.length; i++) {
+								var c = ca[i].trim();
+								if (c.indexOf(name) == 0)
+									username = c.substring(name.length,
+											c.length);
+							}
+							document.getElementById("myname-barra").innerHTML = username;
+						</script> <b class="caret"></b>
+						</a>
+							<ul class="dropdown-menu">
+								<li><a href="index.html" onclick="logOut()">Salir</a></li>
+							</ul></li>
+					</ul>
+					<!-- Poner aqui el usuario y el cerrar sesion                            
         </div><!--/.nav-collapse -->
-      </div>
-    </div>
-  </div>
-</div></nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
 
 <script src="js/extra/bootstrap-transition.js"></script>
-    <script src="js/extra/bootstrap-alert.js"></script>
-    <script src="js/extra/bootstrap-modal.js"></script>
-    <script src="js/extra/bootstrap-dropdown.js"></script>
-    <script src="js/extra/bootstrap-scrollspy.js"></script>
-    <script src="js/extra/bootstrap-tab.js"></script>
-    <script src="js/extra/bootstrap-tooltip.js"></script>
-    <script src="js/extra/bootstrap-popover.js"></script>
-    <script src="js/extra/bootstrap-button.js"></script>
-    <script src="js/extra/bootstrap-collapse.js"></script>
-    <script src="js/extra/bootstrap-carousel.js"></script>
-    <script src="js/extra/bootstrap-typeahead.js"></script>
-    
+<script src="js/extra/bootstrap-alert.js"></script>
+<script src="js/extra/bootstrap-modal.js"></script>
+<script src="js/extra/bootstrap-dropdown.js"></script>
+<script src="js/extra/bootstrap-scrollspy.js"></script>
+<script src="js/extra/bootstrap-tab.js"></script>
+<script src="js/extra/bootstrap-tooltip.js"></script>
+<script src="js/extra/bootstrap-popover.js"></script>
+<script src="js/extra/bootstrap-button.js"></script>
+<script src="js/extra/bootstrap-collapse.js"></script>
+<script src="js/extra/bootstrap-carousel.js"></script>
+<script src="js/extra/bootstrap-typeahead.js"></script>

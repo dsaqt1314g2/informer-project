@@ -1,18 +1,14 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-	var username = getCookie("username");
-	var userpass = getCookie("userpass");
-	var role = getCookie("role");
-	if (username != "" && userpass != "") {
-		if (role == "true")
-			$('#contenedor-barra').load('barra_moderador.html');
-		else
-			$('#contenedor-barra').load('barra_conectado.html');
-	} else
-		$('#contenedor-barra').load('barra.html');
-	Nombre = username;
-	Contrasena = userpass;
-	console.log(Nombre + ":" + Contrasena);
-});
+var loaded = 0;
+var username = getCookie("username");
+var userpass = getCookie("userpass");
+var role = getCookie("role");
+if (username != "" && userpass != "") {
+	if (role == "true")
+		$('#contenedor-barra').load('barra_moderador.html');
+	else
+		$('#contenedor-barra').load('barra_conectado.html');
+} else
+	$('#contenedor-barra').load('barra.html');
 
 function getLogin() {
 
@@ -97,12 +93,18 @@ function isLogged() {
 }
 
 function about() {
-	var objInstanceName = new jsNotifications({
-		autoCloseTime : 5,
-		showAlerts : true,
-		title : 'Informer'
-	});
-	objInstanceName.show('informer', '<img src="img/keep-calm.png"></img>');
+	if (loaded == 0) {
+		loaded = 1;
+		var objInstanceName = new jsNotifications({
+			autoCloseTime : 5,
+			showAlerts : true,
+			title : 'Informer'
+		});
+		objInstanceName.show('informer', '<img src="img/keep-calm.png"></img>');
+		setTimeout(function() {
+			loaded = 0;
+		}, 7000);
+	}
 }
 
 (function(a) {

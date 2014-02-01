@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <title>Informer</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_mensajes.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
-    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-  </head>
+<head>
+<title>Informer</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/style_mensajes.css" rel="stylesheet">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
+</head>
 
-  <body>
-  <span id="contenedor-barra"></span>
-    <div style="margin:60px; padding: 20px;margin-left: auto;margin-right: auto;width:550px;">
-    
-          <span id="res_get_list_mensajes"></span>  
-          <div id="post-mensaje-container">
-	          <div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">
-	             <textarea class="mi-mensaje-txtarea" id="mi-mensaje-txtarea" maxlength=255 spellcheck="false" placeholder="Escribe un mensaje..." onkeydown="if (event.keyCode == 13) postMensaje();"></textarea>             <!-- <button type="button" onClick="checkUpdates()" value="check updates">check updates</button>--> 
-	          </div>
-          </div>
-    </div>
+<body>
+	<span id="contenedor-barra"></span>
+	<div style="margin: 60px; padding: 20px; margin-left: auto; margin-right: auto; width: 550px;">
 
-    <!-- SCRIPTS -->
-	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="js/login.js"></script>
-    <script type="text/javascript" src="js/mensajes.js"></script>
-    <!-- notificaciones -->
-    <script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-    <script type="text/javascript" src="js/variable.js"></script>
-  </body>
+		<span id="res_get_list_mensajes"></span>
+		<div id="post-mensaje-container">
+			<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">
+				<textarea class="mi-mensaje-txtarea" id="mi-mensaje-txtarea" maxlength=255 spellcheck="false" placeholder="Escribe un mensaje..." onkeydown="if (event.keyCode == 13) postMensaje();"></textarea>
+				<!-- <button type="button" onClick="checkUpdates()" value="check updates">check updates</button>-->
+			</div>
+		</div>
+	</div>
+
+	<!-- SCRIPTS -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="js/login.js"></script>
+	<script type="text/javascript" src="js/mensajes.js"></script>
+	<!-- notificaciones -->
+	<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
+	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
+	<script type="text/javascript" src="js/variable.js"></script>
+</body>
 </html>

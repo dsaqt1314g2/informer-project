@@ -11,7 +11,8 @@
 
 .chat_container {
 	width: 550px;
-	height: 700px;
+	max-height: 500px;
+	min-heigh: 100px;
 	overflow-y: auto;
 	margin-left: auto;
 	margin-right: auto;

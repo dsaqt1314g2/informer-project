@@ -1,241 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>Informer</title>
-
-<!--[if lt IE 9]>
-          <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-  <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link href="css/style.css" rel="stylesheet">
+<link href="css/style_posts.css" rel="stylesheet">
 <link rel="shortcut icon" href="/bootstrap/img/favicon.ico">
 <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="72x72"
-	href="/bootstrap/img/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114"
-	href="/bootstrap/img/apple-touch-icon-114x114.png">
-<link rel="stylesheet"
-	href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
-<link rel="stylesheet" type="text/css"
-	href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-
-<!-- CSS code from Bootply.com editor -->
-
-<style type="text/css">
-body {
-	margin: 0;
-	overflow: auto;;
-}
-</style>
+<link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 </head>
-
-<!-- HTML code from Bootply.com editor -->
-
 <body>
 	<span id="contenedor-barra"></span>
-
-	<div id="todo" style="margin: 20 px; padding-top: 70px">
-
-		<div id="cosas" style="margin: 20 px; padding-left: 20px; padding-right: 25px" class="droppedHover">
-			
-			<div class="container-fluid">
-				<!-- <center><h1 class="letterpress"><div id="data1">Rodrigo Sampedro</div></h1></center>-->
+	<script src="js/extra/jquery.js"></script>
+	<script src="js/variable.js"></script>
+	<script src="js/login.js"></script>
+	<div id="todo" class="container-fluid" style="margin: auto; padding: 70px 25px 0px 20px; width: 1350px;">
+		<!-- <center><h1 class="letterpress"><div id="data1">Rodrigo Sampedro</div></h1></center>-->
+		<div class="row">
+			<div class="col-sm-10 col-md-10">
 				<div class="row">
-					<div class="col-sm-10 col-md-10">
-						<div class="row">
-							<div class="col-sm-2 col-md-2" style="margin-left: auto; margin-right: auto; width:250px;">
-								<small href="#PanelControl" style="" OnClick="PanelControl()" class="">Cambiar foto.</small>
-								<div class="container"  id="imageperfil">
-									<img src="http://placehold.it/150x100" class="">
-								</div>
-								<hr class="">
-								<center>
-									<strong style="" class="">Informaci&oacute;n</strong>
-								</center>
-								<hr class="">
-								<br class=""> <strong class="">Sexo: </strong> <div id="data2">Hombre</div><br
-									class=""> <strong class="">Fecha de nacimiento:</strong> <br
-									class="">
-								<div id="data3"></div>
-								<br class=""> <strong class="">Estado: </strong> <div id="data4">Soltero</div>
-								<br class=""> <strong class="">Escuela: </strong> <div id="data22">EETAC</div>
-								<br class=""> <strong class="">Ultima conexion: </strong> <br
-									class=""> <div id="data23">126548876</div><br
-									class=""> <strong class="">Residencia:</strong> <br
-									class="">
-								<div id="data5">Cunit</div>
-								<hr class="">
-								<center>
-								<table class="table table-hover">
-									<tbody><tr>
-											<td><small class="">Amigos</small></td>
-											<td><span class="badge"><div id="data6">0</div></span></td>
-										</tr><tr>
-											<td><small class="">Post</small></td>
-											<td><span class="badge badge-success"><div id="data7">0</div></span></td>
-										</tr><tr>
-											<td><small class="">Comentarios</small></td>
-											<td><span class="badge"><div id="data8">0</div></span></td>
-										</tr><tr>
-											<td class=""></td>
-											<td class=""></td>
-										</tr><tr>
-											<td><small class="">Me gusta</small></td>
-											<td><span class="badge badge-info"><div id="data9">0</div></span></td>
-										</tr>
-										</tr><tr>
-											<td><small class="">Putas mierdas</small></td>
-											<td><span class="badge badge-info label-danger" ><div id="data10">0</div></span></td>
-										</tr>
-										</tr><tr>
-											<td><small class="">Participaci&oacute;n</small></td>
-											<td><span class="badge badge-info"><div id="data11">0</div></span></td>
-										</tr>
-									</tbody>
-								</table>	
-								</center>							
-							</div>
-							
-							
-							<div class="col-sm-10 col-md-10" style="width:850px;">
-								<ul id="listStuff" class="nav nav-tabs nav-stacked">								
-								<div class="nav nav-tabs nav-stacked" id="data12">
-									<li class="list-child"><a href="/bootstraptor/64957"
-										class="">Titulo Post 1</a></li>
-									<li class="list-child"><a href="/bootstraptor/64806"
-										class="">Titulo Post 2</a></li>
-									<li class="list-child"><a href="/bootstraptor/64801"
-										class="">Titulo Post 3</a></li>
-									<li class="list-child"><a href="/bootstraptor/64807"
-										class="">Titulo Post 4</a></li>
-									<li class="list-child"><a href="/bootstraptor/64800"
-										class="">Titulo Post 5</a></li>
-									<li class="list-child"><a href="/bootstraptor/64693"
-										class="">Titulo Post 6</a></li>
-									<li class="list-child"><a href="/bootstraptor/64764"
-										class="">Titulo Post 7</a></li>
-								</div>
-								</ul>
-								<!-- <ul class="pagination pager list-pager pagination-xs"></ul>-->
-							</div>
-							
+					<div class="col-sm-2 col-md-2" style="margin-left: auto; margin-right: auto; width: 250px;">
+						<a href="#PanelControl" OnClick="PanelControl()">Cambiar imagen</a>
+						<div class="container" id="imageperfil">
+							<img src="http://placehold.it/150x100">
 						</div>
-		
+						<hr>
+						<p style="text-align: center; font-weight: bold;">Informaci&oacute;n</p>
+						<hr>
+						<p><strong>Sexo: </strong><span id="data2"></span></p>
+						<p><strong>Aniversario: </strong><span id="data3"></span></p>
+						<p><strong>Estado: </strong><span id="data4"></span></p>
+						<p><strong>Escuela: </strong><span id="data22"></span></p>
+						<p><strong>Ultima conexi&oacute;n: </strong><br> <span id="data23"></span></p>
+						<p><strong>Residencia: </strong><span id="data5"></span></p>
+						<table class="table table-hover">
+							<tbody>
+								<tr>
+									<td><small>Amigos</small></td>
+									<td><div id="data6" class="badge"></div></td>
+								</tr>
+								<tr>
+									<td><small>Post</small></td>
+									<td><div id="data7" class="badge badge-success"></div></td>
+								</tr>
+								<tr>
+									<td><small>Comentarios</small></td>
+									<td><div id="data8" class="badge"></div></td>
+								</tr>
+								<tr>
+									<td><small>Me gusta</small></td>
+									<td><div id="data9" class="badge badge-info"></div></td>
+								</tr>
+								<tr>
+									<td><small>Putas mierdas</small></td>
+									<td><div id="data10" class="badge badge-info label-danger"></div></td>
+								</tr>
+								<tr>
+									<td><small>Participaci&oacute;n</small></td>
+									<td><div id="data11" class="badge badge-info"></div></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<div class="row">
-						<div class="col-sm-2 col-md-2" style="">
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapseOne" class=""><span
-											class="glyphicon glyphicon-folder-close"> </span>Content</a>
-									</h4>
-
-								</div>
-								<div id="collapseOne" class="panel-collapse collapse in">
-									<div class="panel-body">
-										<table class="table">
-											<tbody>
-												<tr>
-													<td><span
-														class="glyphicon glyphicon-cog text-primary"></span><a
-														href="#PanelControl" OnClick="PanelControl()"class="">&nbsp;Panel de usuario</a>
-
-													</td>
-												</tr>
-												<tr>
-													<td><span
-														class="glyphicon glyphicon-user text-success"></span><a
-														href="#solicitudes" OnClick="Solicitudes()" class="">&nbsp;Solicitudes</a>
-														<span class="badge text-success"><div id="data41">4</div></span></td></td>
-														
-												</tr>
-												<tr>
-													<td><span class="glyphicon glyphicon-comment text-info"></span><a
-														href="salas_invitacion.html" class="">&nbsp;Inv. Sala</a>
-														<span class="badge"><div id="data40">4</div></span></td>
-
-													</td>
-												</tr>
-												<tr><div class="data51">
-													<td><span class="glyphicon glyphicon-eye-open text-success"></span><a href="javascript:void(0);" OnClick="Amigos()" class="">&nbsp;Ver Amigos</a>
-														</div>
-												</tr>
-												<tr><div class="data52">
-													<td><span class="glyphicon glyphicon-list text-success"></span><a href="javascript:void(0);" OnClick="window.location.reload()" class="">&nbsp;Ver Post</a>
-														</div>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapseTwo" class=""><span
-											class="glyphicon glyphicon-th"> </span>Modules</a>
-									</h4>
-
-								</div>
-								<div id="collapseTwo" class="panel-collapse collapse">
-									<div class="panel-body">
-										<table class="table">
-											<tbody>
-												<tr>
-													<td><a href="#" class="">GPS</a>
-														<span class="label label-success">$ 320</span></td>
-												</tr>
-												<tr>
-													<td><a href="#" class="">Buscar Pareja</a>
-
-													</td>
-												</tr>
-												<tr>
-													<td><a href="#" class="">Escuelas</a>
-
-													</td>
-												</tr>
-												<tr>
-													<td><a href="#" class="">VIP</a>
-
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
+					<div class="col-sm-10 col-md-10" style="width: 850px;">
+						<div id="listStuff" class="nav nav-stacked">
+							<div class="nav nav-stacked" id="data12"></div>
 						</div>
+						<!-- <ul class="pagination pager list-pager pagination-xs"></ul>-->
 					</div>
-					
-					
 				</div>
-				
-				
+
+			</div>
+			<div class="row">
+				<div class="col-sm-2 col-md-2">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a class="panel-default" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;Gesti&oacute;n</a>
+							</h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<table class="table" style="margin: 0px;">
+									<tr>
+										<td><span class="glyphicon glyphicon-cog text-primary"></span><a href="#PanelControl" OnClick="PanelControl()">&nbsp;Panel de usuario</a></td>
+									</tr>
+									<tr>
+										<td><span class="glyphicon glyphicon-user text-success"></span><a href="#solicitudes" OnClick="Solicitudes()">&nbsp;Solicitudes&nbsp;</a>
+											<div id="data41" class="badge text-success"></div></td>
+									</tr>
+									<tr>
+										<td><span class="glyphicon glyphicon-comment text-info"></span><a href="salas_invitacion.html">&nbsp;Invitaciones&nbsp;</a>
+											<div class="badge" id="data40"></div></td>
+									</tr>
+									<tr id="data51">
+										<td><span class="glyphicon glyphicon-eye-open text-success"></span><a href="javascript:void(0);" OnClick="Amigos()">&nbsp;Ver Amigos</a></td>
+									</tr>
+									<tr class="data52">
+										<td><span class="glyphicon glyphicon-list text-success"></span><a href="javascript:void(0);" OnClick="window.location.reload()">&nbsp;Ver Post</a>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo"><span class="glyphicon glyphicon-th"></span>&nbsp;Nuevas implementaciones</a>
+							</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse">
+							<div class="panel-body">
+								<table class="table">
+									<tr>
+										<td><a href="#">GPS</a>&nbsp;&nbsp;<span class="label label-success">1 €</span></td>
+									</tr>
+									<tr>
+										<td><a href="#">Buscar pareja</a></td>
+									</tr>
+									<tr>
+										<td><a href="#">Escuelas</a></td>
+									</tr>
+									<tr>
+										<td><a href="#">VIP</a></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		
-
-		<script type='text/javascript'
-			src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-		<!-- JavaScript jQuery code from Bootply.com editor -->
-
-		<script src="js/variable.js"></script>
-		<script src="js/login.js"></script>
-		<script src="js/posts.js"></script>
-		<script src="js/perfil.js"></script>
-		
-		<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-   		<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-    	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-		
+	</div>
+	<script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="js/posts.js"></script>
+	<script src="js/perfil.js"></script>
 </body>
 </html>

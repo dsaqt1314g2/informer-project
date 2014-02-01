@@ -64,7 +64,7 @@ function rellenarPosts(data, htmlString) {
 		htmlString += '</td></tr></table>';
 		htmlString += '<div id="comentarios-container'+p.identificador+'"></div>';
 		htmlString += '<div class="post-mi-comentario-container" id="mi-comentario-container'+p.identificador+'">';
-		htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).css("height","auto");$(this).height(this.scrollHeight);" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
+		htmlString += '			     <textarea class="mi-comentario-txtarea" id="mi-comentario'+p.identificador+'" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeyup="$(this).height( 0 ); $(this).height( this.scrollHeight );" onkeydown="if (event.keyCode == 13) postComentario('+p.identificador+');"></textarea>';
 /*			htmlString += '			   <div class="dropdown-menu pull-right">';
 		htmlString += '				  <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu1" data-toggle="dropdown">';
 		htmlString += '				    Dropdown';

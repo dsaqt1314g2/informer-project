@@ -1,113 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
- <head>
-   <title>Informer</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/style_posts.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"> 
-    <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-  </head>
+<head>
+<title>Informer</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/style_posts.css" rel="stylesheet">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
+</head>
 <body>
-<span id="contenedor-barra"></span>
+	<span id="contenedor-barra"></span>
 
-<div id= "todo" > 
-		
-		
-		
-	<div class="sala-container">
-		
-		<div id="tabla_missalas">
-			<span>
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<div id="MisSalas">Tus Salas</div>
-						</h3>
-					</div>
-					<div class="panel-body">
-						<div id="tabla_publica">
-							<table>
-								<tr>
-									<th>ID</th>
-									<th>Nombre Sala</th>
-									<th>Editar Nombre</th>
-									<th>Visibilidad</th>
-									<th>Editar Tipo</th>
-									<th>Editar Password</th>
-									<th>Ultima Actulizacion</th>
-								</tr>
-							</table>
+	<div id="todo">
+
+
+
+		<div class="sala-container">
+
+			<div id="tabla_missalas">
+				<span>
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<div id="MisSalas">Tus Salas</div>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div id="tabla_publica">
+								<table>
+									<tr>
+										<th>ID</th>
+										<th>Nombre Sala</th>
+										<th>Editar Nombre</th>
+										<th>Visibilidad</th>
+										<th>Editar Tipo</th>
+										<th>Editar Password</th>
+										<th>Ultima Actulizacion</th>
+									</tr>
+								</table>
+							</div>
 						</div>
 					</div>
-				</div>
-			</span>
+				</span>
+			</div>
+
+
 		</div>
 
-		
-	</div>
-	
-	<div id="tabla_mod" style="text-align:center;"><button type="button" class="btn btn-success" OnClick="CrearSala()" >Crear Sala</button></div>
-		
-		<div style="display:none;" id="tabla_crearsala">
-		<div class="crear-sala-container">
-		<div class="panel panel-warning">
+		<div id="tabla_mod" style="text-align: center;">
+			<button type="button" class="btn btn-success" OnClick="CrearSala()">Crear Sala</button>
+		</div>
+
+		<div style="display: none;" id="tabla_crearsala">
+			<div class="crear-sala-container">
+				<div class="panel panel-warning">
 					<div class="panel-heading">
 						<h3 class="panel-title">
 							<div>Crear nueva sala</div>
 						</h3>
 					</div>
 					<div class="panel-body">
-					<div class="form-group">
-						<label class="control-label" for="input01">Nombre de la
-							Sala.</label>
-						<div class="controls">
-							<input type="text" class="input-xlarge form-control" id="nombre_sala">
-							<p class="help-block">Tiene que ser un Nombre Autodescriptivo
-								y no muy largo.</p>
-						</div>
 						<div class="form-group">
-						<label class="control-label" for="input01">Password</label>
-						<div class="controls">
-							<input type="password" class="input-xlarge form-control" id="pass_sala">
-							<p class="help-block">Solo es necesario en caso de sala privada</p>
-						</div>
-					</div>
+							<label class="control-label" for="input01">Nombre de la Sala.</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge form-control" id="nombre_sala">
+								<p class="help-block">Tiene que ser un Nombre Autodescriptivo y no muy largo.</p>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="input01">Password</label>
+								<div class="controls">
+									<input type="password" class="input-xlarge form-control" id="pass_sala">
+									<p class="help-block">Solo es necesario en caso de sala privada</p>
+								</div>
+							</div>
 
-					<div class="form-group">
-						<label class="control-label" for="select01">Tipo de Sala</label>
-						<div class="input-xlarge form-control">
-							<select id="select01">
-								<option value="0">Publica</option>
-								<option value="1">Privada-Visible</option>
-								<option value="2">Privada-Oculta</option>
-							</select>
+							<div class="form-group">
+								<label class="control-label" for="select01">Tipo de Sala</label>
+								<div class="input-xlarge form-control">
+									<select id="select01">
+										<option value="0">Publica</option>
+										<option value="1">Privada-Visible</option>
+										<option value="2">Privada-Oculta</option>
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="controls">
+								<button type="button" class="btn btn-success form-control" onclick="Salanueva()">Crear</button>
+							</div>
 						</div>
 					</div>
-					<br>
-					<div class="controls">
-						<button type="button" class="btn btn-success form-control"  onclick="Salanueva()">Crear</button>
-					</div>
+				</div>
 			</div>
-			</div>
-			</div>
+
+
+
 		</div>
-	
-	
-
-</div>
 
 
 
-	<!-- SCRIPTS -->
-	<script src="js/variable.js"></script>
-    <script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-    <script src="js/extra/jquery.js"></script>   
-    <script src="js/login.js"></script>
-    <script src="js/salas_edit.js"></script>
-    
+		<!-- SCRIPTS -->
+		<script src="js/variable.js"></script>
+		<script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
+		<script src="js/extra/jquery.js"></script>
+		<script src="js/login.js"></script>
+		<script src="js/salas_edit.js"></script>
 </body>
 </html>

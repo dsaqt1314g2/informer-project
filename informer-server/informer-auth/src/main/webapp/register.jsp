@@ -49,7 +49,7 @@
 					<tr>
 						<td colspan=2 class="tabla-registro-especial">
 							<select name="universidad" class="form-control">
-								<option value="0">Escola d'Enginyeria de Telecomunicació i Aeroespacial de Castelldefels (UPC)</option>
+								<option value="0">Escola d'Enginyeria de Telecomunicaci&oacute; i Aeroespacial de Castelldefels (UPC)</option>
 							</select>
 						</td>
 					</tr>

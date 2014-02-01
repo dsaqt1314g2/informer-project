@@ -158,16 +158,13 @@
 	width: 500px;
 }
 
-textarea {
+textarea.mi-comentario-txtarea {
+	width: 380px;
+	height: 25px;
 	overflow: hidden;
 	resize: none;
 	white-space: pre;
 	border: 2px solid #D2EBFF;
-}
-
-textarea.mi-comentario-txtarea {
-	width: 380px;
-	height: 25px;
 }
 
 textarea.mi-post-txtarea {
