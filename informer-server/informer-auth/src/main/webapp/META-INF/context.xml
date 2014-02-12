@@ -8,4 +8,7 @@
 	<Resource name="jdbc/realmdb" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" maxWait="10000" username="realm"
 		password="realm" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/realmdb" />
+
+	<Resource name="mail/Session" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="smtp.gmail.com" mail.smtp.port="465"/>
 </Context>

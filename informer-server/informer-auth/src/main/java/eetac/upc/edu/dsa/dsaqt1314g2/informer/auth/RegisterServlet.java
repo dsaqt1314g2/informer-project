@@ -3,6 +3,8 @@ package eetac.upc.edu.dsa.dsaqt1314g2.informer.auth;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,6 +136,7 @@ public class RegisterServlet extends HttpServlet {
 					if (resu == 0) {
 						error = "No se ha hecho post en informerdb";
 						con.commit();
+						Correo.sendCorreo(username,new BigInteger(24, new SecureRandom()).toString(32).toUpperCase(), email);
 					} else
 						con.rollback();
 					stmt.close();
