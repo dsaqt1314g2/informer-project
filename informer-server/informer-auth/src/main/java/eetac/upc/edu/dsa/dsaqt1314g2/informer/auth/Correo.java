@@ -31,8 +31,8 @@ public class Correo {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(username+"@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse(destino));
-			message.setSubject("Información de registro");
-			message.setText("Hola  "+usuario+","+"\n\nBienvenido a la web de informer.\nTu clave de activación es "+clave);
+			message.setSubject("Informacion de registro");
+			message.setText("Hola  "+usuario+","+"\n\nBienvenido a la web de informer.\nTu clave de activacion es "+clave);
 			Transport.send(message);
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
