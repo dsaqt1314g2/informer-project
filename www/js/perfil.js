@@ -9,9 +9,7 @@ $(document).ready(function () {
 });
 
 function Pintar() {
-
     var url = API_BASE_URL + "/users/" + getCookie("username");
-
     GetUsuario(url, offset, length);
     GetNotificaciones(getCookie("username"));
     GetPost(getCookie("username"), 0, 15);
@@ -61,7 +59,6 @@ function GetNotificaciones(username) {
 }
 
 function GetUsuario(url) {
-
     $.ajax({
         url: url,
         type: 'GET',
@@ -78,10 +75,9 @@ function GetUsuario(url) {
         .done(
             function (data, status, jqxhr) {
                 console.log(data);
-                var html = '' + data.correo + '     |     ' + data.username;
-                $("#data1").html(html);
+                $("#data1").html(data.username);
                 $("#imageperfil").html(
-                    '<img style="max-width: 200px; max-height: 250px" src=' + data.foto + ' class="">');
+                    '<img style="max-width: 200px; max-height: 250px" src=' + data.foto + '>');
                 var estado = "Soltero";
                 if (data.genero)
                     sexo = "Hombre";
@@ -101,7 +97,6 @@ function GetUsuario(url) {
                     (new Date(data.last_Update))
                     .toLocaleDateString() + ' a las ' + (new Date(data.last_Update))
                     .toLocaleTimeString());
-
             }).fail(function (jqXHR, textStatus) {
             console.log(textStatus + " " + url);
             var Stringhtml = "Error";
@@ -282,12 +277,11 @@ function Getamigos(username) {
             function (data, status, jqxhr) {
                 console.log(data);
                 var html = "";
-                $.each( data.users,function (i, s) {
-                    html += '<td class="text-center"><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
+                $.each(data.users,function (i, s) {
+                    html += '<tr><td class="text-center"><a align="left"><div class="container" style="max-width: 75px; max-height: 50px" id="imageperfil">';
                     html += '<img style="text-align:center;max-width: 75px; max-height: 50px" src="' + s.foto + '" class=""></div></a></td>';
                     html += '<td class="text-center">' + s.username + '</td>';
-                    html += '<td class="text-center">' + (new Date(s.last_Update))
-                        .toLocaleDateString() + '</td>';
+                    html += '<td class="text-center">' + (new Date(s.last_Update)).toLocaleDateString() + '</td>';
                     html += '<td class="text-center"><a class="btn btn-info btn-xs" href="perfil.html?user=' + s.username + '" ><span class="glyphicon glyphicon-edit">';
                     html += '</span> Ver Perfil </a> <a href="#eliminar" OnClick="EliminarAmistad(\'' + s.username + '\')" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
                     html += '</span> Eliminar Amistad</a></td></tr>';
@@ -404,7 +398,7 @@ function GetUserDates(username) {
         },
     }).done(function (data, status, jqxhr) {
         console.log(data);
-        $("#nombre").val(data.name);
+        $("#nombre").val(data.username);
         $("#correo").val(data.correo);
         $("#foto2").val(data.foto);
         if (data.genero)
@@ -427,29 +421,25 @@ function ActulizarUser() {
 
     var url = API_BASE_URL + "users/" + getCookie("username");
     var correo = $('#correo').val();
-    var name = $('#username').val();
-    var foto = $('#foto3').val();
+    var foto = $('#foto2').val();
 
-    var estado_civil = $('#civil').val();
+    var estado_civil = $('#estado').val();
     var genero = $('.inlineCheckbox1').val();
+    var universidad = $("#universidad").val();
     var sex = true;
     if (genero != "male")
         sex = false;
-
-    var fecha = $('#ano').val() + "-" + $('#mes').val(); + "-" + $('#dia').val();
+    var fecha = $('#ano').val() + "-" + $('#mes').val() + "-" + $('#dia').val()+"T00:00:00";
 
     var usuario = '{"correo": "' + correo + '",';
     usuario += '"estado_civil": ' + estado_civil + ',';
     usuario += '"fecha_nacimiento": "' + fecha + '",';
     usuario += '"genero": ' + sex + ',';
-    usuario += '"lugar_de_residencia": "Mi casa",';
-    usuario += '"name": "' + name + '",';
+    //usuario += '"lugar_de_residencia": "Mi casa",';
     usuario += '"foto": "' + foto + '",';
-    usuario += '"participar_GPS": false,';
-    usuario += '"uni_escuela": 1   }';
-
+    //usuario += '"participar_GPS": false,';
+    usuario += '"uni_escuela": '+universidad+'}';
     console.log(usuario);
-
     $.ajax({
         url: url,
         type: 'PUT',

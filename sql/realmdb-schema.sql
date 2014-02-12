@@ -18,7 +18,7 @@ create table user_roles (
 );
 
 create table escuelas (
-	identificador int not null primary key,
+	identificador int not null primary key auto_increment,
 	escuela 	varchar(255) not null,
 	correo		varchar(255) not null
 );

@@ -4,7 +4,7 @@
 	margin: 0 auto;
 }
 
-.form-signin .form-signin-heading,.form-signin .checkbox {
+.form-signin .form-signin-heading, .form-signin .checkbox {
 	margin-bottom: 10px;
 }
 
@@ -81,11 +81,11 @@
 .tabla-registro {
 	width: 250px;
 	text-align: center;
-	padding: 3px 20px 6px 0px;
+	padding: 3px 0px 6px 0px;
 }
 
 .tabla-registro-especial {
-	padding: 3px 20px 6px 0px;
+	padding: 3px 0px 6px 0px;
 }
 
 .fondo {

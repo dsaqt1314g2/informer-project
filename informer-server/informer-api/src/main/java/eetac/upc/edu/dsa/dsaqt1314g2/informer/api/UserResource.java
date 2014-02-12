@@ -722,24 +722,11 @@ public class UserResource {
 	@Consumes(MediaType.INFORMER_API_USER)
 	@Produces(MediaType.INFORMER_API_USER)
 	public User updateUser(@PathParam("username") String username, User user) {
-		// TODO: Put: /users/{nombre} (Registered-Propietario)(admin)
-
+		// Put: /users/{nombre} (Registered-Propietario)(admin)
 		Statement stmt = null;
-
-		if (!security.isUserInRole("registered") && !security.isUserInRole("admin")) {
-
+		if (!security.getUserPrincipal().getName().equals(username)) {
 			throw new ForbiddenException("You are nor allowed");
-
 		}
-		if (security.isUserInRole("registered")) {
-
-			if (!security.getUserPrincipal().getName().equals(username)) {
-
-				throw new ForbiddenException("You are nor allowed");
-			}
-
-		}
-
 		// arrancamos la conexion
 		Connection conn = null;
 		try {
@@ -756,7 +743,7 @@ public class UserResource {
 			String fechanacimineto = dt1.format(user.getFecha_nacimiento());
 			// creamos el statement y la consulta
 			stmt = conn.createStatement();
-			String sql = "update  perfiles SET perfiles.name='" + user.getName() + "',perfiles.correo='" + user.getCorreo() + "', perfiles.fecha_nacimiento='" + fechanacimineto + "', perfiles.uni_escuela=" + user.getUni_escuela() + ", perfiles.foto='" + user.getFoto() + "', perfiles.estado_civil="
+			String sql = "update  perfiles SET perfiles.correo='" + user.getCorreo() + "', perfiles.fecha_nacimiento='" + fechanacimineto + "', perfiles.uni_escuela=" + user.getUni_escuela() + ", perfiles.foto='" + user.getFoto() + "', perfiles.estado_civil="
 					+ user.getEstado_civil() + ", perfiles.lugar_de_residencia='" + user.getLugar_de_residencia() + "', perfiles.participar_GPS=" + user.getParticipar_GPS() + " where username='" + username + "';";
 			// realizamos la consulta
 

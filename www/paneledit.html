@@ -1,16 +1,16 @@
-<link rel="stylesheet" type="text/css" href="/css/login.css">
+<link rel="stylesheet" type="text/css" href="css/login.css">
 <div class="account-wall-personalizado" style="margin-right: auto; margin-left: auto; width: 480px;">
-	<div class="well fondo" style="background-image: url(bootstrap/img/registro.png);">
+	<div class="well fondo">
 		<table>
 			<tr>
-				<td class="tabla-registro"><input class="form-control" id="nombre" placeholder="Usuario" type="text" required autofocus></input></td>
+				<td class="tabla-registro"><input class="form-control" id="nombre" readonly /></td>
 				<td class="tabla-registro"><input class="form-control" style="padding-bottom: 4px;" name="password" placeholder="Contrase&ntilde;a" type="password" required /></td>
 			</tr>
 			<tr>
 				<td class="tabla-registro" colspan=2><input class="form-control" id="correo" placeholder="Correo universitario" type="text" required /></td>
 			</tr>
 			<tr>
-				<td colspan=2 class="tabla-registro-especial"><select name="universidad" class="form-control">
+				<td colspan=2 class="tabla-registro-especial"><select id="universidad" class="form-control">
 						<option value="0">Escola d'Enginyeria de Telecomunicaci&oacute; i Aeroespacial de Castelldefels (UPC)</option>
 				</select></td>
 			</tr>
