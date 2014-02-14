@@ -1,0 +1,144 @@
+.post-container {
+	width: 532px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.post {
+	width: 450px;
+	margin-top: 5px;
+	margin-left: 20px;
+	margin-bottom: 5px;
+	margin-right: 20px;
+	border-top-width: thin;
+	border-style: solid none none solid;
+	border-left-width: thin;
+	border-left-color: #E0E0E0;
+	border-top-color: #E0E0E0;
+}
+.post-imagen {
+	width: 50px;
+	height: 50px;
+	float: left;
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+}
+.post-usuario {
+	padding-bottom: 5px;
+	margin-left: 0px;
+	padding-left: 10px;
+	padding-top: 5px;
+	padding-right: 10px;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	text-align: left;
+	font-size: medium;
+	color: #7D6400;
+	font-weight: bold;
+	float: left;
+}
+.post-contenido {
+	margin-left: 60px;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	padding-right: 10px;
+	font-size: small;
+	text-align: justify;
+	padding-top: 0px;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+.post-gusta {
+	margin-left: 60px;
+	width: 80px;
+	float: left;
+	padding-left: 10px;
+}
+.post-disgusta {
+	padding-left: 10px;
+	width: 137px;
+	float: left;
+}
+.post-opiniones {
+	margin-left: 60px;
+	padding-left: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 10px;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+	font-size: 11px;
+	background-color: #FBFFA6;
+}
+.post-comentarios {
+	margin-left: 60px;
+	padding-left: 10px;
+	padding-top: 5px;
+	background-color: #FBFFA6;
+	margin-top: 5px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	min-height: 60px;
+}
+.post-comentario-mifoto {
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+.post-comentario-contenido {
+	margin-left: 60px;
+	padding-right: 10px;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+	font-size: small;
+	text-align: justify;
+}
+.post-fecha {
+	font-size: x-small;
+	text-align: right;
+	margin-left: 275px;
+	padding-right: 10px;
+}
+.post-opciones {
+	padding-top: 5px;
+	padding-left: 10px;
+	padding-bottom: 7px;
+	padding-right: 10px;
+	margin-left: 415px;
+}
+.post-triangulos {
+	width: 0;
+	height: 0;
+	border-left: 5px solid transparent;  /* left arrow slant */
+	border-right: 5px solid transparent; /* right arrow slant */
+	border-bottom: 5px solid #FBFFA6;
+	font-size: 0;
+	line-height: 0;
+	margin-left: 90px;
+}
+.post-gusta a:link {font-size: x-small;
+	color: #060;}
+.post-gusta a:visited {font-size: x-small;
+	color: #060;}
+.post-gusta a:hover {font-size: x-small;
+	color: #060;}
+.post-gusta a:active {font-size: x-small;
+	color: #060;}
+	
+.post-disgusta a:link {font-size: x-small;
+	color: #600;}
+.post-disgusta a:visited {font-size: x-small;
+	color: #600;}
+.post-disgusta a:hover {font-size: x-small;
+	color: #600;}
+.post-disgusta a:active {
+	font-size: x-small;
+	color: #600;
+}
+
+textarea.mi-comentario-txtarea {
+	width: 306px;
+	height: 25px;
+	overflow: hidden;
+	resize: none;
+	white-space: pre;
+	border: 2px solid #D2EBFF;
+}

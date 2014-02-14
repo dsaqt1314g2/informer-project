@@ -1,6 +1,6 @@
 var urlredirect = WWW_URL;
 
-function Buscar(){
+function Buscar() {
 	console.log("Aki llega al buscador");
 	var busqueda = $('#buscar_barra').val();
 	document.cookie = "busqueda=" + busqueda;

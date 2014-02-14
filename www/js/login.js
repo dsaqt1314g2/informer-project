@@ -11,7 +11,6 @@ if (username != "" && userpass != "") {
 	$('#contenedor-barra').load('barra.html');
 
 function getLogin() {
-
 	// definimos las vriables del login
 	var username = $('#username').val();
 	var userpass = $('#userpass').val();
@@ -35,10 +34,17 @@ function getLogin() {
 					+ btoa(username + ':' + userpass));
 		},
 		success : function(data, status, jqxhr) {
-			document.cookie = "username=" + username;
-			document.cookie = "userpass=" + userpass;
-			document.cookie = "role=" + data.isModerador.toString();
-			window.location = urlredirect + "/post_viewer.html";
+			var links = data.links;
+			for (var i = 0; i < links.length; i++) {
+				if (links[i].rel == "principal") {
+					document.cookie = "username=" + username;
+					document.cookie = "userpass=" + userpass;
+					document.cookie = "role=" + data.isModerador.toString();
+					document.cookie = "imagen=" + data.foto;
+					window.location = links[i].uri;
+				}
+			}
+			//window.location = urlredirect + "/post_viewer.html";
 			console.log(data);
 		},
 		error : function(jqXHR, textStatus) {
