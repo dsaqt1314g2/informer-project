@@ -3,6 +3,8 @@ var pagina = "default";
 var loaded = 0;
 var offset = 0;
 var length = 7;
+var length_c = 2;
+var cont = 0;
 
 function getListPosts() {
 	pagina = "default";
@@ -28,7 +30,11 @@ function getListPosts() {
 		htmlString = rellenarPosts(data, htmlString)
 		htmlString += "</div>";
 		$('#res_get_list_posts').html(htmlString);
-		// console.log(posts);
+		$.each(data.posts, function(i, p) {
+			if (p.numcomentarios > 0)
+				processComentarios(p.identificador,0);
+		});
+		console.log(data);
 	}).fail(function(jqXHR, textStatus) {
 		console.log(textStatus);
 	});
@@ -42,7 +48,7 @@ function rellenarPosts(data, htmlString) {
 		htmlString += '  <div class="post-usuario">'
 		htmlString += '  ' + p.username + ''
 		htmlString += '  </div>'
-		htmlString += '  <div class="post-opciones">O</div>'
+		htmlString += '  <div class="post-opciones"><img src="img/options.png"/></div>'
 		htmlString += '  <div class="post-contenido">'
 		htmlString += p.contenido
 		htmlString += '  </div>'
@@ -57,11 +63,32 @@ function rellenarPosts(data, htmlString) {
 		htmlString += '  <div class="post-fecha">' + (new Date(p.publicacion_date)).toLocaleDateString() + ' a las ' + (new Date(p.publicacion_date)).toLocaleTimeString() + '</div>'
 		htmlString += '  <div class="post-triangulos"></div>'
 		htmlString += '  <div class="post-opiniones">A '+ p.calificaciones_positivas+' personas les gusta y '+p.calificaciones_negativas+' piensan que es una puta mierda</div>'
-		htmlString += '  <div class="post-comentarios">'
+		htmlString += '  <div id="comentarios-container' + p.identificador + '"></div>';
+		htmlString += '  <div id="num-comentarios-container' + p.identificador + '" style="display: none;">'+p.numcomentarios+'</div>';
+		htmlString += '  <div class="post-mi-comentario">'
 		htmlString += '    <div class="post-comentario-mifoto"><img src="'+mifoto+'" width=50px height=50px></img></div>'
-		htmlString += '    <div class="post-comentario-contenido"><textarea class="mi-comentario-txtarea id="mi-comentario' + p.identificador + '" maxlength=255 spellcheck="false" placeholder="Escribe un comentario..." onkeydown="if (event.keyCode == 13) postComentario(' + p.identificador+ ');else {$(this).height( 0 ); $(this).height( this.scrollHeight );}"></textarea></div>'
+		htmlString += '    <div id="mi-comentario-visibilidad' + p.identificador + '" style="display:none;">0</div>'
+		htmlString += '    <div class="post-comentario-contenido"><textarea class="mi-comentario-txtarea" id="mi-comentario' + p.identificador + '" maxlength=255 spellcheck="false" placeholder="';
+		if (p.numcomentarios == 0)
+			htmlString += 'Se el primero en escribir un comentario...';
+		else
+			htmlString += 'Escribe un comentario...';
+		htmlString += '" onkeydown="if (event.keyCode == 13) postComentario(' + p.identificador+ ');else {$(this).height( 0 ); $(this).height( this.scrollHeight );}"></textarea></div>'
 		htmlString += '  </div>'
 		htmlString += '</div>'
+	});
+	return htmlString;
+}
+
+function rellenarComentarios(data, htmlString, identificador) {
+	cont = 0;
+	$.each(data.comentarios, function(i, c) {
+		htmlString += '<div class="post-comentarios" id="comentario' + c.identificador + '">'
+		htmlString += '    <div class="post-comentario-mifoto"><img src="'+c.imagen_usuario+'" width=50px height=50px title="'+c.username+'"></img></div>'
+		htmlString += '    <div class="post-comentario-contenido" title="Publicado el ' + (new Date(c.publicacion_date)).toLocaleDateString() + ' a las ' + (new Date(c.publicacion_date)).toLocaleTimeString()+'">'+c.contenido+'</div>';
+		htmlString += '    <div class="post-comentario-denuncia"><a href="javascript:void(0);" id="denuncia' + c.identificador + '" onClick="processDenunciaComentario(' + identificador + ',' + c.identificador+ ')">Denunciar</a></div>';
+		htmlString += '</div>';
+		cont = cont + 1;
 	});
 	return htmlString;
 }
@@ -229,7 +256,7 @@ function processVerContenidoPostComentarioDenunciado(contenido) {
 
 function postComentario(postid) {
 	var url = API_BASE_URL + "posts/" + postid + "/comentarios";
-	var visibilidad = $('#mi-comentario-visibilidad' + postid).val();
+	var visibilidad = $('#mi-comentario-visibilidad' + postid).text();
 	var contenido = $('#mi-comentario' + postid).val();
 	var comentario = '{"visibilidad": "' + visibilidad + '", "contenido": "' + contenido + '"}';
 	$.ajax({
@@ -247,60 +274,46 @@ function postComentario(postid) {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
-		var txtArea = document.getElementById("mi-comentario" + postid);
-		txtArea.value = '';
-		processComentarios(postid, 0);
+		document.getElementById("mi-comentario" + postid).value = '';
+		var numcomentarios = $('#num-comentarios-container'+postid).text();
+		$('#num-comentarios-container'+postid).text(numcomentarios+1);
+		processComentarios(postid, (numcomentarios+1));
 	}).fail(function(jqXHR, textStatus) {
 		console.log(textStatus + " " + url);
 	});
 }
 
 function processComentarios(identificador, caso) {
-	if (caso == 1) {
-		$('#comentarios-container' + identificador).html("");
-		var contenido = document.getElementById('num-comentarios' + identificador).innerHTML;
-		$('#div-num-comentarios' + identificador).html('<a href="javascript:void(0);" id="num-comentarios' + identificador + '" onClick="processComentarios(' + identificador + ',0)">' + contenido + '</a>');
-	} else {
-		var url = API_BASE_URL + "posts/" + identificador + "/comentarios";
-		$.ajax({
-			url : url,
-			type : 'GET',
-			crossDomain : true,
-			dataType : 'json',
-			headers : {
-				"Content-Type" : "application/vnd.informer.api.comentario.collection+json",
-			},
-			beforeSend : function(request) {
-				request.withCredentials = true;
-				request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
-			},
-		}).done(
-				function(data, status, jqxhr) {
-					var htmlString = "";
-					cont = 0;
-					$.each(data.comentarios, function(i, c) {
-						// htmlString += '<span
-						// class="comentario'+c.identificador+">";
-						htmlString += '<div class="well" style="padding:2px 10px 2px 10px;width:480px;margin-left: auto; margin-bottom:10px;" id="comentario' + c.identificador + '">';
-						htmlString += '<table style="width:460px"><tr><td>'
-						htmlString += '<h4>' + c.username + '</h4></td><td style="text-align:right;"> ...el ' + (new Date(c.publicacion_date)).toLocaleDateString() + ' a las ' + (new Date(c.publicacion_date)).toLocaleTimeString()
-								+ '</td></tr><tr><td colspan=2>';
-						htmlString += c.contenido + '</td></tr><tr><td colspan=2 style="text-align:right;">';
-						htmlString += '<div class="comentario-denuncia"><a href="javascript:void(0);" id="denuncia' + c.identificador + '" onClick="processDenunciaComentario(' + identificador + ',' + c.identificador
-								+ ')">Denunciar</a></div></td></tr></table>';
-						htmlString += '</div>';
-						// htmlString += '</span>';
-						cont = cont + 1;
-					});
-					if (cont == 1)
-						$('#div-num-comentarios' + identificador).html('<a href="javascript:void(0);" id="num-comentarios' + identificador + '" onClick="processComentarios(' + identificador + ',1)">' + cont + ' comentario</a>');
-					else
-						$('#div-num-comentarios' + identificador).html('<a href="javascript:void(0);" id="num-comentarios' + identificador + '" onClick="processComentarios(' + identificador + ',1)">' + cont + ' comentarios</a>');
-					$('#comentarios-container' + identificador).html(htmlString);
-				}).fail(function(jqXHR, textStatus) {
-			console.log(textStatus + " " + url);
-		});
-	}
+	var url = API_BASE_URL + "posts/" + identificador + "/comentarios?l="+length_c;
+	if (caso != 0) url = API_BASE_URL + "posts/" + identificador + "/comentarios?o="+0+"&l="+caso; 
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		headers : {
+			"Content-Type" : "application/vnd.informer.api.comentario.collection+json",
+		},
+		beforeSend : function(request) {
+			request.withCredentials = true;
+			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
+		},
+	}).done(function(data, status, jqxhr) {
+		var htmlString = "";
+		//if (caso != 0) htmlString = $('#comentarios-container' + identificador).html();
+		htmlString = rellenarComentarios(data, htmlString, identificador);
+		var numcomentarios = $('#num-comentarios-container'+identificador).text();
+		if (numcomentarios > 2 && caso == 0) {
+			htmlString += '<div class="post-mas-comentarios" id="post-mas-comentarios'+identificador+'">'
+			htmlString += '    <div class="post-comentario-mifoto"></div>'
+			htmlString += '    <div class="post-comentario-contenido"><a href="javascript:void(0);" onCLick="processComentarios('+identificador+','+numcomentarios+');">Ver '+(numcomentarios-length_c)+' comentarios m&aacute;s</a></div>';
+			htmlString += '</div>'; 
+		}
+		$('#comentarios-container' + identificador).html(htmlString);
+		if (caso != 0) $('#post-mas-comentarios'+identificador).remove();
+	}).fail(function(jqXHR, textStatus) {
+		//console.log(textStatus + " " + url);
+	});
 }
 
 function processDenunciaComentario(post, comentario) {

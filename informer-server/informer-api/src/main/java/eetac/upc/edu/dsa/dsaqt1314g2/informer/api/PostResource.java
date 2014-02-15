@@ -33,6 +33,7 @@ import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.PostCollection;
 public class PostResource {
 
 	private final static String anonymous = "Anónimo";
+	private final static String anonymous_picture = "img/informer.png";
 
 	@Context
 	private UriInfo uriInfo;
@@ -95,7 +96,6 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
-				post.setAsunto(rs.getString("foto"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -105,6 +105,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
+				post.setAsunto(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
@@ -1092,7 +1093,7 @@ public class PostResource {
 
 	private String postAnonimo(String yo, String autor, String amigo, int visibilidad) {
 		if (yo.equals(autor))
-			return yo;
+			return autor;
 		if (visibilidad == 0) {
 			return anonymous;
 		}
@@ -1102,7 +1103,21 @@ public class PostResource {
 			return autor;
 		}
 		// if (visibilidad == 2)
-
 		return autor;
+	}
+	
+	private String postAnonimoFoto(String yo, String autor, String amigo, int visibilidad, String foto) {
+		if (yo.equals(autor))
+			return foto;
+		if (visibilidad == 0) {
+			return anonymous_picture;
+		}
+		if (visibilidad == 1) {
+			if (amigo == null)
+				return anonymous_picture;
+			return foto;
+		}
+		// if (visibilidad == 2)
+		return foto;
 	}
 }

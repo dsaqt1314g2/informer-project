@@ -32,6 +32,7 @@ import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.ComentarioCollection;
 public class ComentarioResource {
 
 	private final static String anonymous = "Anónimo";
+	private final static String anonymous_picture = "img/informer.png";
 
 	@Context
 	private UriInfo uriInfo;
@@ -90,8 +91,8 @@ public class ComentarioResource {
 		}
 
 		try {
-			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador WHERE comentarios.id_post=" + postid
+			String query = "SELECT amigos.friend, comentarios.*, posts.visibilidad, perfiles.foto FROM comentarios LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=comentarios.username and amigos.estado=1 LEFT JOIN posts ON comentarios.id_post=posts.identificador LEFT JOIN perfiles ON perfiles.username=comentarios.username WHERE comentarios.id_post=" + postid
 					+ " and posts.visibilidad<3 and comentarios.identificador NOT IN(SELECT id_comentario FROM comentarios,denuncias_comentario WHERE denuncias_comentario.id_comentario=comentarios.identificador and denuncias_comentario.username='" + username
 					+ "')ORDER BY comentarios.publicacion_date desc LIMIT " + offset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
@@ -106,6 +107,7 @@ public class ComentarioResource {
 				c.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				c.setRevisado(rs.getInt("revisado"));
 				c.setWho_revisado(rs.getString("who_revisado"));
+				c.setImagen_usuario(comentarioAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), c.getVisibilidad(), rs.getString("foto")));
 				c.setUsername(comentarioAnonimo(username, rs.getString("username"), rs.getString("friend"), c.getVisibilidad()));
 				if (c.getIdentificador() != 1)
 					c.addLink(ComentariosAPILinkBuilder.buildURIComentarioId(uriInfo, postid, c.getIdentificador() - 1, "prev"));
@@ -683,5 +685,20 @@ public class ComentarioResource {
 		}
 		// if (visibilidad == 2)
 		return autor;
+	}
+	
+	private String comentarioAnonimoFoto(String yo, String autor, String amigo, int visibilidad, String foto) {
+		if (yo.equals(autor))
+			return foto;
+		if (visibilidad == 0) {
+			return anonymous_picture;
+		}
+		if (visibilidad == 1) {
+			if (amigo == null)
+				return anonymous_picture;
+			return foto;
+		}
+		// if (visibilidad == 2)
+		return foto;
 	}
 }

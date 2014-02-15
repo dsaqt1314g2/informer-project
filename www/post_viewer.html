@@ -7,26 +7,23 @@
 <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
 <meta name="author" content="DSA_projet EETAC UPC">
 
-<!-- Los estilos utilizados bootstrap -->
-<!--<link href="css/style.css" rel="stylesheet">-->
-<!-- <link href="css/style_posts.css" rel="stylesheet">-->
 <link href="css/style_posts_test.css" rel="stylesheet">
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 
 </head>
 <body onLoad="getListPosts()">
-	<span id="contenedor-barra"></span>
+	<!--#if expr="${HTTP_COOKIE} = /username=a/" -->
+	<!--#include virtual="barra.html" -->
+	<!--#else -->
+	<!--#include virtual="barra_conectado.html" -->
+	<!--#endif -->
 
 	<div style="margin: 20 px; padding-top: 70px;">
 		<span id="res_get_list_posts">
 		</span>
 	</div>
-	<!-- /container -->
-	<!-- SCRIPTS -->
-	<script src="js/extra/jquery.js"></script>
-	<script src="js/login.js"></script>
+	<!--#include virtual="barra_footer.html" -->
 	<script src="js/posts.js"></script>
-	<script src="js/variable.js"></script>
 </body>
 </html>

@@ -49,15 +49,23 @@
 	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
 }
 .post-gusta {
+	font-size: x-small;
 	margin-left: 60px;
 	width: 80px;
 	float: left;
 	padding-left: 10px;
 }
 .post-disgusta {
+	font-size: x-small;
 	padding-left: 10px;
 	width: 137px;
 	float: left;
+}
+.post-fecha {
+	font-size: x-small;
+	text-align: right;
+	padding-left: 275px;
+	padding-right: 10px;
 }
 .post-opiniones {
 	margin-left: 60px;
@@ -69,20 +77,19 @@
 	font-size: 11px;
 	background-color: #FBFFA6;
 }
-.post-comentarios {
+.post-mi-comentario {
 	margin-left: 60px;
 	padding-left: 10px;
 	padding-top: 5px;
 	background-color: #FBFFA6;
 	margin-top: 5px;
 	padding-right: 10px;
-	padding-bottom: 5px;
-	min-height: 60px;
+	padding-bottom: 2px;
+	min-height: 52px;
 }
 .post-comentario-mifoto {
 	float: left;
 	width: 50px;
-	height: 50px;
 }
 .post-comentario-contenido {
 	margin-left: 60px;
@@ -91,12 +98,7 @@
 	font-size: small;
 	text-align: justify;
 }
-.post-fecha {
-	font-size: x-small;
-	text-align: right;
-	margin-left: 275px;
-	padding-right: 10px;
-}
+
 .post-opciones {
 	padding-top: 5px;
 	padding-left: 10px;
@@ -114,6 +116,40 @@
 	line-height: 0;
 	margin-left: 90px;
 }
+.post-comentarios {
+	margin-left: 60px;
+	padding-left: 10px;
+	padding-top: 5px;
+	background-color: #FBFFA6;
+	margin-top: 2px;
+	padding-right: 10px;
+	padding-bottom: 2px;
+	min-height: 52px;
+}
+
+.post-comentario-denuncia {
+	padding-left: 10px;
+	padding-top: 5px;
+	background-color: #FBFFA6;
+	margin-top: 2px;
+	padding-right: 10px;
+	padding-bottom: 2px;
+	text-align:right;
+	font-size: x-small;
+	vertical-align: bottom;
+}
+
+.post-mas-comentarios {
+	margin-left: 60px;
+	padding-left: 10px;
+	padding-top: 5px;
+	background-color: #FBFFA6;
+	margin-top: 2px;
+	padding-right: 10px;
+	padding-bottom: 2px;
+	min-height: 25px;
+}
+
 .post-gusta a:link {font-size: x-small;
 	color: #060;}
 .post-gusta a:visited {font-size: x-small;
@@ -132,6 +168,17 @@
 .post-disgusta a:active {
 	font-size: x-small;
 	color: #600;
+}
+
+.post-comentario-denuncia a:link {font-size: x-small;
+	color: #9A00FF;}
+.post-comentario-denuncia a:visited {font-size: x-small;
+	color: #9A00FF;}
+.post-comentario-denuncia a:hover {font-size: x-small;
+	color: #9A00FF;}
+.post-comentario-denuncia a:active {
+	font-size: x-small;
+	color: #9A00FF;
 }
 
 textarea.mi-comentario-txtarea {

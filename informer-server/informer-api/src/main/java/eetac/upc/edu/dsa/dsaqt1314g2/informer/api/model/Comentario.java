@@ -17,6 +17,9 @@ public class Comentario {
 	private int revisado;
 	private String who_revisado;
 	private String contenido_post;
+	private String imagen_usuario;
+	
+	
 
 	public String getContenido_post() {
 		return contenido_post;
@@ -103,6 +106,14 @@ public class Comentario {
 
 	public void setLinks(ArrayList<Link> links) {
 		this.links = links;
+	}
+
+	public String getImagen_usuario() {
+		return imagen_usuario;
+	}
+
+	public void setImagen_usuario(String imagen_usuario) {
+		this.imagen_usuario = imagen_usuario;
 	}
 
 }

@@ -6,16 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Informer es un Red social, creada para la comunicacion y el humor dentro de la UPC. Hecha por universitarios para universitarios todo desde un punto de vista social y humoristico.">
 <meta name="author" content="EETAC UPC Informer">
-<script src="js/variable.js"></script>
-<script src="js/extra/jquery.js"></script>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
-<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
 
 </head>
 <body>
-	<span id="contenedor-barra"></span>
+	<!--#include virtual="barra.html" -->
 	<script src="js/login.js"></script>
 	<div class="container">
 		<!-- Main hero unit for a primary marketing message or call to action -->
@@ -55,10 +52,7 @@
 			<p>Realidad... en la UPC hay dos problemas claros, la falta de vida social y una gran cantidad de solteros, con esta red social intentamos hacer m&aacute;s soportable estos problemas, sin mencionar la ingente cantidad de entusiasmo que
 				generamos entre los cotillas.</p>
 		</div>
-		<footer id="end-of-the-document"> </footer>
-		<script>
-			$('#end-of-the-document').load('barra-footer.html');
-		</script>
+		<!--#include virtual="barra-footer.html" -->
 	</div>
 </body>
 </html>
