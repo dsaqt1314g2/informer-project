@@ -1,91 +1,71 @@
 <script src="js/extra/jquery.js"></script>
 <script src="js/variable.js"></script>
 <script src="js/login.js"></script>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 <nav>
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="create_post.html">Infórmanos!</a>
-				</div>
-				<div class="collapse navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class=""><a href="post_viewer.html">Post</a></li>
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Rank<b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="post_ranking_likes.html">Mejores Post</a></li>
-								<li><a href="post_ranking_dislikes.html">Peores Post</a></li>
-								<li><a href="post_ranking_comments.html">Mas comentados</a></li>
-								<!-- <li><a href="index.html">Usuarios Top</a></li> -->
-								<li class="divider"></li>
-							</ul>
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas<b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="salas_conectado.html">Conectado</a></li>
-								<li><a href="salas_viewer.html">Ver/Unirse a Sala</a></li>
-								<li><a href="salas_invitacion.html">Invitaciones</a></li>
-								<li><a href="salas_edit.html">Crear/editar</a></li>
-								<li class="divider"></li>
-							</ul></li>
-						<li><a href="miperfil.html">Tu Perfil</a></li>
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Moderar...&nbsp;<b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="post_denuncias.html">Posts</a></li>
-								<li><a href="comentarios_denuncias.html">Comentarios</a></li>
-							</ul></li>
-						<!-- <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas.. <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="nav-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>-->
-					</ul>
-					<ul class="nav navbar-nav navbar-right" style="float: right !important;">
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span id="myname-barra"></span> <script>
-							var name = "username=";
-							var username = "";
-							var ca = document.cookie.split(';');
-							for (var i = 0; i < ca.length; i++) {
-								var c = ca[i].trim();
-								if (c.indexOf(name) == 0)
-									username = c.substring(name.length,
-											c.length);
-							}
-							document.getElementById("myname-barra").innerHTML = username;
-						</script> <b class="caret"></b>
-						</a>
-							<ul class="dropdown-menu">
-								<li><a href="index.html" onclick="logOut()">Salir</a></li>
-							</ul></li>
-					</ul>
-					<!-- Poner aqui el usuario y el cerrar sesion                            
-        </div><!--/.nav-collapse -->
-				</div>
+			<div class="navbar-header">
+				<a class="navbar-brand" href="create_post.html">Inf&oacute;rmanos!</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class=""><a href="post_viewer.html">Genialidades</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Ranking&nbsp;<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="post_ranking_likes.html">Mejores publicaciones</a></li>
+							<li><a href="post_ranking_dislikes.html">Peores publicaciones</a></li>
+							<li><a href="post_ranking_comments.html">Publicaciones m&aacute;s comentadas</a></li>
+							<!-- <li><a href="index.html">Usuarios Top</a></li> -->
+							<!-- <li class="divider"></li> -->
+						</ul>
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Salas&nbsp;<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="salas_conectado.html">Conectado</a></li>
+							<li><a href="salas_viewer.html">Lista de salas</a></li>
+							<li><a href="salas_invitacion.html">Invitaciones</a></li>
+							<li><a href="salas_edit.html">Crear/editar</a></li>
+							<!--  <li class="divider"></li> -->
+						</ul></li>
+					<li><a href="miperfil.html">Tu Perfil</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Moderar...&nbsp;<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="post_denuncias.html">Posts</a></li>
+							<li><a href="comentarios_denuncias.html">Comentarios</a></li>
+						</ul></li>
+					<div class="pull-left navbar-form" style="height: 25px;">
+						<input type="text" id="buscar_barra" class="search-query span2 form-control" onkeydown='if (event.keyCode == 13) Buscar();' placeholder="Buscar usuario...">
+					</div>
+				</ul>
+				<ul class="nav navbar-nav navbar-right" style="float: right !important;">
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span id="myname-barra"></span>&nbsp;<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="index.html" onclick="logOut()">Salir</a></li>
+						</ul></li>
+				</ul>
 			</div>
 		</div>
 	</div>
 </nav>
-
-<script src="js/extra/bootstrap-transition.js"></script>
-<script src="js/extra/bootstrap-alert.js"></script>
-<script src="js/extra/bootstrap-modal.js"></script>
 <script src="js/extra/bootstrap-dropdown.js"></script>
-<script src="js/extra/bootstrap-scrollspy.js"></script>
-<script src="js/extra/bootstrap-tab.js"></script>
-<script src="js/extra/bootstrap-tooltip.js"></script>
-<script src="js/extra/bootstrap-popover.js"></script>
-<script src="js/extra/bootstrap-button.js"></script>
-<script src="js/extra/bootstrap-collapse.js"></script>
-<script src="js/extra/bootstrap-carousel.js"></script>
-<script src="js/extra/bootstrap-typeahead.js"></script>
-
-<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
-<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
+<script>
+	var name = "username=";
+	var username = "";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name) == 0)
+			username = c.substring(name.length, c.length);
+	}
+	document.getElementById("myname-barra").innerHTML = username;
+</script>
+<script>
+	function Buscar() {
+		var busqueda = $('#buscar_barra').val();
+		document.cookie = "busqueda=" + busqueda;
+		window.location = WWW_URL + "/buscador.html";
+		//console.log(busqueda);
+	}
+</script>
+<div style="padding-top: 70px; margin:auto; width:1200px;min-height:1000px;">

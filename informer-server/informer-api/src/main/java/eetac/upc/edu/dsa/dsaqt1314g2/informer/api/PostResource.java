@@ -96,6 +96,7 @@ public class PostResource {
 					break;
 				Post post = new Post();
 				post.setIdentificador(rs.getInt("identificador"));
+				post.setAsunto(rs.getString("asunto"));
 				post.setPublicacion_date(rs.getTimestamp("publicacion_date"));
 				post.setNumcomentarios(rs.getInt("numcomentarios"));
 				post.setCalificaciones_positivas(rs.getInt("calificaciones_positivas"));
@@ -105,7 +106,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
-				post.setAsunto(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
+				post.setImagen_usuario(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));
@@ -265,8 +266,8 @@ public class PostResource {
 		}
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT amigos.friend, posts.*, calificacion.estado FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=posts.username and amigos.estado=1 WHERE posts.visibilidad<3 and identificador NOT IN(SELECT id_post FROM posts,denuncias_post WHERE denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username + "') ";
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado, perfiles.foto FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN perfiles ON perfiles.username=posts.username WHERE posts.visibilidad<3 and posts.identificador NOT IN(SELECT id_post FROM posts,denuncias_post WHERE denuncias_post.id_post=posts.identificador and denuncias_post.username='" + username + "') ";
 			if (categoria.equals("likes"))
 				query += "ORDER BY calificaciones_positivas ";
 			else if (categoria.equals("coments"))
@@ -291,6 +292,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(rs.getInt("visibilidad"));
 				post.setContenido(rs.getString("contenido"));
+				post.setImagen_usuario(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
 				post.setUsername(postAnonimo(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));

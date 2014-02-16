@@ -1,71 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<title>Informer</title>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<link href="css/style.css" rel="stylesheet">
-<link href="css/style_posts.css" rel="stylesheet">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<meta charset="utf-8">
+<title>Informer UPC</title>
 <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 </head>
-<body>
-	<span id="contenedor-barra"></span>
 
+<body onLoad="pintar()">
+	<!-- BARRA -->
+	<!--#if expr="($HTTP_COOKIE = /role\=true/)" -->
+	<!--#include virtual="barra_moderador.html" -->
+	<!--#elif expr="($HTTP_COOKIE = /role\=false/)" -->
+	<!--#include virtual="barra_conectado.html" -->
+	<!--#else -->
+	<!--#include virtual="barra.html" -->
+	<!--#endif -->
 
+	<!-- INFO -->
 	<div class="sala-container">
 		<div id="tabla_contenidos">
-			<span>
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<div id="Misinvitaciones">Salas a las que estas suscrito</div>
-						</h3>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Salas a las que estas suscrito</h3>
+				</div>
+				<div class="panel-body">
+					<div>
+						<table class='table'>
+							<thead>
+								<tr>
+									<!-- <th>ID</th> -->
+									<th style='text-align: center;'>Propietario</th>
+									<th style='text-align: center;'>Nombre Sala</th>
+									<th style='text-align: center;'>Invitar Amigos</th>
+									<th style='text-align: center;'>Abandonar</th>
+									<th style='text-align: center;'>Ultima Actulizacion</th>
+								</tr>
+							</thead>
+							<tbody id="tabla_salas" style='text-align: center;'>
+								<tr>
+									<td colspan=6 style='text-align: center;'><h3>No hay salas</h3></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<div class="panel-body">
-						<div id="tabla_salas">
-							<!-- IDPropietarioNombre SalaInvitar AmigosAbandonarUltima Actulizacion -->
-
-						</div>
-
-						<div class="post-numcomentarios">
-							<a href="salas_conectado.html">Invitar a tu Salas</a>
-						</div>
-
-						<div id="paginacion">
-							<ul class="pagination">
-								<li class="disabled"><span>«</span></li>
-								<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
-								<li><a href="#">»</a></li>
-							</ul>
-						</div>
-
+					<div class="post-numcomentarios">
+						<a href="salas_conectado.html">Invitar a tu salas</a>
+					</div>
+					<div id="paginacion">
+						<ul class="pagination">
+							<li class="disabled"><span>«</span></li>
+							<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
+							<li><a href="#">»</a></li>
+						</ul>
 					</div>
 				</div>
-			</span>
+			</div>
 		</div>
-
-
-
 	</div>
 
-
-
-
-	<!-- SCRIPTS -->
-
-	<script src="js/extra/jquery.js"></script>
-	<script src="js/variable.js"></script>
-	<script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-	<script src="js/login.js"></script>
-	<script src="js/salas_conectado.js"></script>
-
-	<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+	<div class="modal fade bs-example-modal-lg" id="invitarAmigos" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title" id="myLargeModalLabel">Invitar amigos a la sala</h4>
+				</div>
+				<div class="modal-body">
+					<table class="table" style="text-align: center;">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Foto</th>
+								<th style="text-align: center;">Nombre</th>
+								<th style="text-align: center;">Usuario</th>
+								<th style="text-align: center;">&Uacute;ltima conexi&oacute;n</th>
+								<th style="text-align: center;">Acci&oacute;n</th>
+							</tr>
+						</thead>
+						<tbody id="listaAmigosInvitar">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- FOOTER -->
+	<!--#include virtual="barra_footer.html" -->
+	<script type="text/javascript" src="js/salas_conectado.js"></script>
+	<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 
-
+	<script type="text/javascript" src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
+	<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
 </body>
 </html>

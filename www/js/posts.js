@@ -1,10 +1,11 @@
 var autorizacion = getCookie("username") + ":" + getCookie("userpass");
 var pagina = "default";
-var loaded = 0;
+var loaded = -1;
 var offset = 0;
 var length = 7;
 var length_c = 2;
 var cont = 0;
+var stop = 0; //indica si ya no hay mas pagiando.
 
 function getListPosts() {
 	pagina = "default";
@@ -33,32 +34,57 @@ function getListPosts() {
 			if (p.numcomentarios > 0)
 				processComentarios(p.identificador, 0);
 		});
-		$(".btna").popover({
-		    animate: false,
-		    html: true,
-		    placement: 'left',
-		    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content">An&oacute;nimo, S&oacute;lo amigos, P&uacute;blico</div></div></div>'
-		}).click(function(e) {
-		    e.preventDefault();
-		}).mouseenter(function(e) {
-		    $(this).popover('show');
-		});
-		$(".post-popover").popover({
-		    animate: false,
-		    html: true,
-		    placement: 'bottom',
-		    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content">An&oacute;nimo, S&oacute;lo amigos, P&uacute;blico</div></div></div>'
-		}).click(function(e) {
-			$(this).popover('show');
-		}).mouseenter(function(e) {
-			$(this).popover('show');
-		});
-		//console.log(data);
-		console.log(getCookie("role"));
-		console.log(getCookie("username"));
-		console.log(getCookie("userpass"));
+		refreshPopovers();
+		stop = 0;
 	}).fail(function(jqXHR, textStatus) {
+		stop = 1;
 		console.log(textStatus);
+	});
+}
+
+function processComentarios(identificador, caso) {
+	var url = API_BASE_URL + "posts/" + identificador + "/comentarios?l=" + length_c;
+	if (caso != 0)
+		url = API_BASE_URL + "posts/" + identificador + "/comentarios?o=" + 0 + "&l=" + caso;
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		headers : {
+			"Content-Type" : "application/vnd.informer.api.comentario.collection+json",
+		},
+		beforeSend : function(request) {
+			request.withCredentials = true;
+			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
+		},
+	}).done(
+			function(data, status, jqxhr) {
+				var htmlString = "";
+				// if (caso != 0) htmlString =
+				// $('#comentarios-container' + identificador).html();
+				htmlString = rellenarComentarios(data, htmlString, identificador);
+				var numcomentarios = $('#num-comentarios-container' + identificador).text();
+				if (numcomentarios > 2 && caso == 0) {
+					htmlString += '<div class="post-mas-comentarios" id="post-mas-comentarios' + identificador + '">'
+					htmlString += '    <div class="post-comentario-mifoto"></div>'
+					htmlString += '    <div class="post-comentario-contenido"><a href="javascript:void(0);" onCLick="processComentarios(' + identificador + ',' + numcomentarios + ');">Ver ' + (numcomentarios - length_c)
+							+ ' comentarios m&aacute;s</a></div>';
+					htmlString += '</div>';
+				}
+				$('#comentarios-container' + identificador).html(htmlString);
+				if (caso != 0)
+					$('#post-mas-comentarios' + identificador).remove();
+				$(".comentario-popover").popover({
+				    animate: true,
+				    delay: { show: 1500, hide: 1500 },
+				    trigger: 'hover',
+				    html: true,
+				    placement: 'left',
+				    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><div class="popover-content">An&oacute;nimo, S&oacute;lo amigos, P&uacute;blico</div></div></div>'
+				});
+			}).fail(function(jqXHR, textStatus) {
+		// console.log(textStatus + " " + url);
 	});
 }
 
@@ -66,7 +92,7 @@ function rellenarPosts(data, htmlString) {
 	var mifoto = getCookie("imagen");
 	$.each(data.posts, function(i, p) {
 		htmlString += '<div class="post" id="post' + p.identificador + '">'
-		htmlString += '  <div class="post-imagen"><img src="' + p.asunto + '" width=50px height=50px></img></div>'
+		htmlString += '  <div class="post-imagen"><img src="' + p.imagen_usuario + '" width=50px height=50px></img></div>'
 		htmlString += '  <div class="post-usuario">'
 		htmlString += '  ' + p.username + ''
 		htmlString += '  </div>'
@@ -141,6 +167,8 @@ function cambiarVisibilidad(visibilidad, identificador) {
 	}
 }
 
+
+
 function getRankingPosts(ranking) {
 	pagina = ranking;
 	var url;
@@ -165,16 +193,21 @@ function getRankingPosts(ranking) {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
-		var posts = $.parseJSON(jqxhr.responseText);
 		var htmlString = "<div class='post-container' id='post-container'>";
 		if (loaded > 0)
 			htmlString += document.getElementById('post-container').innerHTML;
 		htmlString = rellenarPosts(data, htmlString)
 		htmlString += "</div>";
 		$('#res_get_ranking_posts').html(htmlString);
-		console.log(posts);
+		$.each(data.posts, function(i, p) {
+			if (p.numcomentarios > 0)
+				processComentarios(p.identificador, 0);
+		});
+		refreshPopovers();
+		stop = 0;
 	}).fail(function(jqXHR, textStatus) {
-		console.log(textStatus);
+		stop = 1;
+		//console.log(textStatus);
 	});
 }
 
@@ -331,51 +364,7 @@ function postComentario(postid) {
 	});
 }
 
-function processComentarios(identificador, caso) {
-	var url = API_BASE_URL + "posts/" + identificador + "/comentarios?l=" + length_c;
-	if (caso != 0)
-		url = API_BASE_URL + "posts/" + identificador + "/comentarios?o=" + 0 + "&l=" + caso;
-	$.ajax({
-		url : url,
-		type : 'GET',
-		crossDomain : true,
-		dataType : 'json',
-		headers : {
-			"Content-Type" : "application/vnd.informer.api.comentario.collection+json",
-		},
-		beforeSend : function(request) {
-			request.withCredentials = true;
-			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
-		},
-	}).done(
-			function(data, status, jqxhr) {
-				var htmlString = "";
-				// if (caso != 0) htmlString =
-				// $('#comentarios-container' + identificador).html();
-				htmlString = rellenarComentarios(data, htmlString, identificador);
-				var numcomentarios = $('#num-comentarios-container' + identificador).text();
-				if (numcomentarios > 2 && caso == 0) {
-					htmlString += '<div class="post-mas-comentarios" id="post-mas-comentarios' + identificador + '">'
-					htmlString += '    <div class="post-comentario-mifoto"></div>'
-					htmlString += '    <div class="post-comentario-contenido"><a href="javascript:void(0);" onCLick="processComentarios(' + identificador + ',' + numcomentarios + ');">Ver ' + (numcomentarios - length_c)
-							+ ' comentarios m&aacute;s</a></div>';
-					htmlString += '</div>';
-				}
-				$('#comentarios-container' + identificador).html(htmlString);
-				if (caso != 0)
-					$('#post-mas-comentarios' + identificador).remove();
-				$(".comentario-popover").popover({
-				    animate: true,
-				    delay: { show: 1500, hide: 1500 },
-				    trigger: 'hover',
-				    html: true,
-				    placement: 'left',
-				    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content">An&oacute;nimo, S&oacute;lo amigos, P&uacute;blico</div></div></div>'
-				});
-			}).fail(function(jqXHR, textStatus) {
-		// console.log(textStatus + " " + url);
-	});
-}
+
 
 function processDenunciaComentario(post, comentario) {
 	var objInstanceName = new jsNotifications({
@@ -672,6 +661,29 @@ function processEliminarComentario(postid, identificador) {
 	});
 }
 
+
+function refreshPopovers() {
+	$(".btna").popover({
+	    animate: false,
+	    html: true,
+	    placement: 'left',
+	    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"></div></div></div>'
+	}).click(function(e) {
+	    e.preventDefault();
+	}).mouseenter(function(e) {
+	    $(this).popover('show');
+	});
+	$(".post-popover").popover({
+	    animate: false,
+	    html: true,
+	    placement: 'bottom',
+	    template: '<div class="popover" onmouseover="$(this).mouseleave(function() {$(this).hide(); });"><div class="arrow"></div><div class="popover-inner"><div class="popover-content">An&oacute;nimo, S&oacute;lo amigos, P&uacute;blico</div></div></div>'
+	}).click(function(e) {
+		$(this).popover('show');
+	}).mouseenter(function(e) {
+		$(this).popover('show');
+	});
+}
 // extra
 
 function getheight() {
@@ -692,8 +704,7 @@ function getheight() {
 	var scrolledtonum = window.pageYOffset + myHeight + 2;
 	var heightofbody = document.body.offsetHeight;
 	if (scrolledtonum >= heightofbody) {
-		loaded++;
-		offset += length;
+		if (stop == 0) offset += length;
 		if (pagina == "default")
 			getListPosts();
 		else if (pagina == "1" || pagina == "2" || pagina == "3")
@@ -704,6 +715,7 @@ function getheight() {
 			getListComentariosDenunciados();
 		else
 			console.log(pagina);
+		loaded++;
 	}
 }
 

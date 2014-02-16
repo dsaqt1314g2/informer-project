@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<title>Informer</title>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<link href="css/style_posts.css" rel="stylesheet">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<meta charset="utf-8">
+<title>Informer UPC</title>
+<link rel="stylesheet" type="text/css" href="css/posts.css">
 <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 </head>
-<body>
-	<span id="contenedor-barra"></span>
 
+<body onLoad="pintar()">
+	<!-- BARRA -->
+	<!--#if expr="($HTTP_COOKIE = /role\=true/)" -->
+	<!--#include virtual="barra_moderador.html" -->
+	<!--#elif expr="($HTTP_COOKIE = /role\=false/)" -->
+	<!--#include virtual="barra_conectado.html" -->
+	<!--#else -->
+	<!--#include virtual="barra.html" -->
+	<!--#endif -->
+
+	<!-- INFO -->
 	<div id="todo">
-
 		<div class="sala-container">
 			<div id="tabla_1">
 				<span>
@@ -23,21 +29,27 @@
 							</h3>
 						</div>
 						<div class="panel-body">
-							<div id="tabla_publica">
-								<tr>
-									<th>ID</th>
-									<th>Propietario</th>
-									<th>Nombre Sala</th>
-									<th>Unirse</th>
-									<th>Ultima Actulizacion</th>
-								</tr>
+							<div>
+								<table class='table'>
+									<thead>
+										<tr>
+											<!-- <th>ID</th> -->
+											<th style='text-align: center;'>Propietario</th>
+											<th style='text-align: center;'>Nombre Sala</th>
+											<th style='text-align: center;'>Unirse</th>
+											<th style='text-align: center;'>Ultima Actulizacion</th>
+										</tr>
+									</thead>
+									<tbody id="tabla_publica" style='text-align: center;'>
+										<tr>
+											<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
+										</tr>
+									</tbody>
 								</table>
 							</div>
-
 							<div class="post-numcomentarios">
-								<a href="salas_edit.html">Crear tu propia Sala publica</a>
+								<a href="salas_edit.html">Crear tu propia sala p&uacute;blica</a>
 							</div>
-
 							<div id="paginacion1">
 								<ul class="pagination">
 									<li class="disabled"><span>&laquo;</span></li>
@@ -45,7 +57,6 @@
 									<li><a href="#">&raquo;</a></li>
 								</ul>
 							</div>
-
 						</div>
 					</div>
 				</span>
@@ -60,20 +71,26 @@
 							</h3>
 						</div>
 						<div class="panel-body">
-							<div id="tabla_privada">
+							<div>
 								<table class='table'>
-									<tr>
-										<th>ID</th>
-										<th>Propietario</th>
-										<th>Nombre Sala</th>
-										<th>Unirse</th>
-										<th>Ultima Actulizacion</th>
-									</tr>
+									<thead>
+										<tr>
+											<!-- <th>ID</th> -->
+											<th style='text-align: center;'>Propietario</th>
+											<th style='text-align: center;'>Nombre Sala</th>
+											<th style='text-align: center;'>Unirse</th>
+											<th style='text-align: center;'>Ultima Actulizacion</th>
+										</tr>
+									</thead>
+									<tbody id="tabla_privada" style='text-align: center;'>
+										<tr>
+											<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
+										</tr>
+									</tbody>
 								</table>
 							</div>
-
 							<div class="post-numcomentarios">
-								<a href="salas_edit.html">Crear tu propia Sala Privada</a>
+								<a href="salas_edit.html">Crear tu propia sala privada</a>
 							</div>
 							<div id="paginacion2">
 								<ul class="pagination">
@@ -82,31 +99,21 @@
 									<li><a href="#">&raquo;</a></li>
 								</ul>
 							</div>
-
 						</div>
 					</div>
 				</span>
 			</div>
-
 		</div>
-
 	</div>
-
-
-
-	<!-- SCRIPTS -->
-	<script src="js/variable.js"></script>
-	<script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="js/extra/jquery.js"></script>
-	<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-	<script src="js/login.js"></script>
-	<script src="js/salas_list.js"></script>
-
-	<!-- notificaciones -->
-	<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+	<!-- FOOTER -->
+	<!--#include virtual="barra_footer.html" -->
+	<!-- <script type="text/javascript" src="js/salas_conectado.js"></script> -->
+	<script type="text/javascript" src="js/salas_list.js"></script>
+	<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 
+	<script type="text/javascript" src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
+	<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
 </body>
 </html>

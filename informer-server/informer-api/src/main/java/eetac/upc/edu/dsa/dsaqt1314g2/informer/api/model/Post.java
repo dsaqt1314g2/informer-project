@@ -19,6 +19,15 @@ public class Post {
 	private int revisado;
 	private String who_revised;
 	private int liked; // 2 liked, 1 disliked
+	private String imagen_usuario;
+
+	public String getImagen_usuario() {
+		return imagen_usuario;
+	}
+
+	public void setImagen_usuario(String imagen_usuario) {
+		this.imagen_usuario = imagen_usuario;
+	}
 
 	private ArrayList<Link> links = new ArrayList<Link>();
 

@@ -18,8 +18,6 @@ public class Comentario {
 	private String who_revisado;
 	private String contenido_post;
 	private String imagen_usuario;
-	
-	
 
 	public String getContenido_post() {
 		return contenido_post;
