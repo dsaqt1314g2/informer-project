@@ -23,7 +23,6 @@ function getListPosts() {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
-		// var posts = $.parseJSON(jqxhr.responseText);
 		var htmlString = "<div class='post-container' id='post-container'>";
 		if (loaded > 0)
 			htmlString += document.getElementById('post-container').innerHTML;
@@ -54,7 +53,10 @@ function getListPosts() {
 		}).mouseenter(function(e) {
 			$(this).popover('show');
 		});
-		console.log(data);
+		//console.log(data);
+		console.log(getCookie("role"));
+		console.log(getCookie("username"));
+		console.log(getCookie("userpass"));
 	}).fail(function(jqXHR, textStatus) {
 		console.log(textStatus);
 	});
@@ -109,7 +111,6 @@ function rellenarComentarios(data, htmlString, identificador) {
 	cont = 0;
 	var user = getCookie("username");
 	$.each(data.comentarios, function(i, c) {
-		console.log(c);
 		htmlString += '<div class="post-comentarios" id="comentario' + c.identificador + '">'
 		if (user != c.username) htmlString += '    <div class="post-comentario-mifoto"><img src="' + c.imagen_usuario + '" width=50px height=50px title="' + c.username + '"></img></div>'
 		else {
