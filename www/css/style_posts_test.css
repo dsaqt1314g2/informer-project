@@ -51,7 +51,7 @@
 .post-gusta {
 	font-size: x-small;
 	margin-left: 60px;
-	width: 80px;
+	width: 85px;
 	float: left;
 	padding-left: 10px;
 }
@@ -85,11 +85,11 @@
 	margin-top: 5px;
 	padding-right: 10px;
 	padding-bottom: 2px;
-	min-height: 52px;
+	min-height: 60px;
 }
 .post-comentario-mifoto {
 	float: left;
-	width: 50px;
+	min-height: 50px;
 }
 .post-comentario-contenido {
 	margin-left: 60px;
@@ -124,7 +124,7 @@
 	margin-top: 2px;
 	padding-right: 10px;
 	padding-bottom: 2px;
-	min-height: 52px;
+	min-height: 60px;
 }
 
 .post-comentario-denuncia {

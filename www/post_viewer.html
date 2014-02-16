@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 
+
 </head>
 <body onLoad="getListPosts()">
 	<!--#if expr="${HTTP_COOKIE} = /username=a/" -->
@@ -18,12 +19,13 @@
 	<!--#else -->
 	<!--#include virtual="barra_conectado.html" -->
 	<!--#endif -->
-
 	<div style="margin: 20 px; padding-top: 70px;">
 		<span id="res_get_list_posts">
 		</span>
 	</div>
 	<!--#include virtual="barra_footer.html" -->
 	<script src="js/posts.js"></script>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 </body>
 </html>

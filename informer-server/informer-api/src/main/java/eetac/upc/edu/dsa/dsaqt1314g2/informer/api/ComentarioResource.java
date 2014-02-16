@@ -348,7 +348,7 @@ public class ComentarioResource {
 			rs.next();
 			if (rs.getInt(1) == 0)
 				throw new PostNotFoundException();
-			String update = "UPDATE posts SET numcomentarios=numcomentarios+1 WHERE identificador=" + postid + ";";
+			String update = "UPDATE posts SET numcomentarios=numcomentarios+1 and publicacion_date=publicacion_date WHERE identificador=" + postid + ";";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			update = "INSERT INTO comentarios (id_post,username,visibilidad,contenido) VALUES (" + postid + ", '" + comentario.getUsername() + "', " + comentario.getVisibilidad() + ", '" + comentario.getContenido().replace("'", "´") + "')";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
