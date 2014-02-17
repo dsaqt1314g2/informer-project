@@ -511,7 +511,7 @@ public class SalasResource {
 			throw new BadRequestException("Longitud del nombre excede el limite de 50 caracteres o es inferior a 3.");
 		if (sala.getPassword().length() > 255)
 			throw new BadRequestException("Longitud de la contraseñaexcede el limite de 255 caracteres.");
-
+		String username = security.getUserPrincipal().getName();
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -522,23 +522,20 @@ public class SalasResource {
 
 		try {
 			stmt = con.createStatement();
-			String update = "insert into salas_chat (username, nombre_sala, visibilidad, password) values ('" + sala.getUsername() + "','" + sala.getNombre_sala() + "'," + sala.getVisibilidad() + ",'" + sala.getPassword() + "');";
+			String update = "insert into salas_chat (username, nombre_sala, visibilidad, password) values ('" + username + "','" + sala.getNombre_sala() + "'," + sala.getVisibilidad() + ",'" + sala.getPassword() + "');";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
 				int identificador = rs.getInt(1);
 				rs.close();
-
 				rs = stmt.executeQuery("SELECT * FROM salas_chat WHERE identificador='" + identificador + "';");
 				rs.next();
-
 				sala.setIdentificador(rs.getInt("identificador"));
 				sala.setUsername(rs.getString("username"));
 				sala.setNombre_sala(rs.getString("nombre_sala"));
 				sala.setVisibilidad(rs.getInt("visibilidad"));
 				sala.setLast_update(rs.getTimestamp("last_update"));
 				sala.setPassword("*********");
-
 				// TODO Links
 				sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala, "GET", "self"));
 				sala.addLinks(SalasAPILinkBuilder.buildURISalaId(uriInfo, sala, "PUT", "self"));
@@ -559,11 +556,9 @@ public class SalasResource {
 				// sala.getIdentificador()));
 				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIAbandonarSala(uriInfo, sala.getIdentificador()));
 				sala.addLinks(SalasAPILinkBuilder.buildTemplatedURIDenegarInvitacion(uriInfo, sala.getIdentificador()));
-
 			} else {
 				throw new SalaNotFoundException();
 			}
-
 			update = "insert into rel_sala_user (username, id_sala, estado) values ('" + security.getUserPrincipal().getName() + "'," + sala.getIdentificador() + ",1);";
 			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();

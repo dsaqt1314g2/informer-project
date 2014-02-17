@@ -76,6 +76,7 @@ function ActulizarSala(id) {
 		},
 	}).done(function(data, status, jqxhr) {
 		//console.log(data);
+		$('#tabla_modsala').modal('hide');
 		objInstanceName.show('ok', 'Modificaci&oacute;n realizada');
 		setTimeout(function() {
 			Pintar()
@@ -94,7 +95,7 @@ function Salanueva() {
 	var sala = '{"nombre_sala": "' + nombre + '",';
 	sala += '"password": "' + pass + '",';
 	sala += '"visibilidad": ' + visibilidad + '}';
-	//console.log(sala);
+	console.log(sala);
 	//console.log(url);
 	$.ajax({
 		url : url,
@@ -111,6 +112,7 @@ function Salanueva() {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
+		$('#tabla_crearsala').modal('hide');
 		setTimeout(function() {
 			Pintar()
 		}, redirecttimeout);
