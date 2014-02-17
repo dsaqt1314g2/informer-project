@@ -2,7 +2,7 @@ var autorizacion = getCookie("username") + ":" + getCookie("userpass");
 var pagina = "default";
 var loaded = -1;
 var offset = 0;
-var length = 7;
+var length = 6;
 var length_c = 2;
 var cont = 0;
 var stop = 0; //indica si ya no hay mas pagiando.
@@ -25,11 +25,9 @@ function getListPosts() {
 		},
 	}).done(function(data, status, jqxhr) {
 		var htmlString = "<div class='post-container' id='post-container'>";
-		if (loaded > 0)
-			htmlString += document.getElementById('post-container').innerHTML;
 		htmlString = rellenarPosts(data, htmlString)
 		htmlString += "</div>";
-		$('#res_get_list_posts').html(htmlString);
+		$('#res_get_list_posts').append(htmlString);
 		$.each(data.posts, function(i, p) {
 			if (p.numcomentarios > 0)
 				processComentarios(p.identificador, 0);

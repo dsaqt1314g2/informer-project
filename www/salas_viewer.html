@@ -21,95 +21,83 @@
 	<div id="todo">
 		<div class="sala-container">
 			<div id="tabla_1">
-				<span>
-					<div class="panel panel-primary">
-						<div class="panel-heading">
-							<h3 class="panel-title">
-								<div id="Salas-publicas">Salas p&uacute;blicas</div>
-							</h3>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">Salas p&uacute;blicas</h3>
+					</div>
+					<div class="panel-body">
+						<table class='table'>
+							<thead>
+								<tr>
+									<!-- <th>ID</th> -->
+									<th style='text-align: center;'>Propietario</th>
+									<th style='text-align: center;'>Nombre Sala</th>
+									<th style='text-align: center;'>Unirse</th>
+									<th style='text-align: center;'>&Uacute;ltima Actulizaci&oacute;n</th>
+								</tr>
+							</thead>
+							<tbody id="tabla_publica" style='text-align: center;'>
+								<tr>
+									<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="post-numcomentarios">
+							<a href="salas_edit.html">Crear tu propia sala p&uacute;blica</a>
 						</div>
-						<div class="panel-body">
-							<div>
-								<table class='table'>
-									<thead>
-										<tr>
-											<!-- <th>ID</th> -->
-											<th style='text-align: center;'>Propietario</th>
-											<th style='text-align: center;'>Nombre Sala</th>
-											<th style='text-align: center;'>Unirse</th>
-											<th style='text-align: center;'>Ultima Actulizacion</th>
-										</tr>
-									</thead>
-									<tbody id="tabla_publica" style='text-align: center;'>
-										<tr>
-											<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="post-numcomentarios">
-								<a href="salas_edit.html">Crear tu propia sala p&uacute;blica</a>
-							</div>
-							<div id="paginacion1">
-								<ul class="pagination">
-									<li class="disabled"><span>&laquo;</span></li>
-									<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
-									<li><a href="#">&raquo;</a></li>
-								</ul>
-							</div>
+						<div id="paginacion1">
+							<ul class="pagination">
+								<li class="disabled"><span>&laquo;</span></li>
+								<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
+								<li><a href="#">&raquo;</a></li>
+							</ul>
 						</div>
 					</div>
-				</span>
+				</div>
 			</div>
 
 			<div id="tabla_2">
-				<span>
-					<div class="panel panel-primary">
-						<div class="panel-heading">
-							<h3 class="panel-title">
-								<div id="Salas-Privadas">Salas privadas</div>
-							</h3>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">Salas privadas</h3>
+					</div>
+					<div class="panel-body">
+						<div>
+							<table class='table'>
+								<thead>
+									<tr>
+										<!-- <th>ID</th> -->
+										<th style='text-align: center;'>Propietario</th>
+										<th style='text-align: center;'>Nombre Sala</th>
+										<th style='text-align: center;'>Unirse</th>
+										<th style='text-align: center;'>&Uacute;ltima Actulizaci&oacute;n</th>
+									</tr>
+								</thead>
+								<tbody id="tabla_privada" style='text-align: center;'>
+									<tr>
+										<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
-						<div class="panel-body">
-							<div>
-								<table class='table'>
-									<thead>
-										<tr>
-											<!-- <th>ID</th> -->
-											<th style='text-align: center;'>Propietario</th>
-											<th style='text-align: center;'>Nombre Sala</th>
-											<th style='text-align: center;'>Unirse</th>
-											<th style='text-align: center;'>Ultima Actulizacion</th>
-										</tr>
-									</thead>
-									<tbody id="tabla_privada" style='text-align: center;'>
-										<tr>
-											<td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="post-numcomentarios">
-								<a href="salas_edit.html">Crear tu propia sala privada</a>
-							</div>
-							<div id="paginacion2">
-								<ul class="pagination">
-									<li class="disabled"><span>&laquo;</span></li>
-									<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
-									<li><a href="#">&raquo;</a></li>
-								</ul>
-							</div>
+						<div class="post-numcomentarios">
+							<a href="salas_edit.html">Crear tu propia sala privada</a>
+						</div>
+						<div id="paginacion2">
+							<ul class="pagination">
+								<li class="disabled"><span>&laquo;</span></li>
+								<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
+								<li><a href="#">&raquo;</a></li>
+							</ul>
 						</div>
 					</div>
-				</span>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!-- FOOTER -->
 	<!--#include virtual="barra_footer.html" -->
-	<!-- <script type="text/javascript" src="js/salas_conectado.js"></script> -->
 	<script type="text/javascript" src="js/salas_list.js"></script>
-	<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 

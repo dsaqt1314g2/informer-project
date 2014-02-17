@@ -1,75 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<title>Informer</title>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<link href="css/style.css" rel="stylesheet">
-<link href="css/style_posts.css" rel="stylesheet">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+<meta charset="utf-8">
+<title>Informer UPC</title>
+<link rel="stylesheet" type="text/css" href="css/posts.css">
 <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 </head>
-<body>
-	<span id="contenedor-barra"></span>
+
+<body onLoad="startDoc()">
+	<!-- BARRA -->
+	<!--#if expr="($HTTP_COOKIE = /role\=true/)" -->
+	<!--#include virtual="barra_moderador.html" -->
+	<!--#elif expr="($HTTP_COOKIE = /role\=false/)" -->
+	<!--#include virtual="barra_conectado.html" -->
+	<!--#else -->
+	<!--#include virtual="barra.html" -->
+	<!--#endif -->
+
+	<!-- INFO -->
 	<div class="sala-container">
 		<div id="tabla_contenidos">
-			<span>
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<div id="Misinvitaciones">Invitaciones Recibidas</div>
-						</h3>
-					</div>
-					<div class="panel-body">
-						<div id="tabla_invitaciones">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Invitaciones recibidas</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table">
+						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Propietario</th>
-								<th>Nombre Sala</th>
-								<th>Aceptar</th>
-								<th>Rechazar</th>
-								<th>Ultima Actulizacion</th>
+								<!-- <th>ID</th> -->
+								<th style='text-align: center;'>Propietario</th>
+								<th style='text-align: center;'>Nombre Sala</th>
+								<th style='text-align: center;'>Aceptar</th>
+								<th style='text-align: center;'>Rechazar</th>
+								<th style='text-align: center;'>&Uacute;ltima Actulizaci&oacute;n</th>
 							</tr>
-							</table>
-						</div>
-
-						<div class="post-numcomentarios">
-							<a href="salas_conectado.html">Invitar a tu Salas</a>
-						</div>
-
-						<div id="paginacion">
-							<ul class="pagination">
-								<li class="disabled"><span>&laquo;</span></li>
-								<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
-								<li><a href="#">&raquo;</a></li>
-							</ul>
-						</div>
-
+						</thead>
+						<tbody id="tabla_invitaciones" style='text-align: center;'>
+							<tr>
+								<td colspan=5 style='text-align: center;'><h3>No hay invitaciones</h3></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="post-numcomentarios">
+						<a href="salas_conectado.html">Invitar a tus salas</a>
+					</div>
+					<div id="paginacion">
+						<ul class="pagination">
+							<li class="disabled"><span>&laquo;</span></li>
+							<li class="active"><span>1<span class="sr-only">(current)</span></span></li>
+							<li><a href="#">&raquo;</a></li>
+						</ul>
 					</div>
 				</div>
-			</span>
+			</div>
 		</div>
-
-
-
 	</div>
-
-
-
-
-	<!-- SCRIPTS -->
-	<script src="js/variable.js"></script>
-	<script src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="js/extra/jquery.js"></script>
-	<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-	<script src="js/login.js"></script>
-	<script src="js/salas_inv.js"></script>
-
-	<!-- notificaciones -->
-	<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
+	<!-- FOOTER -->
+	<!--#include virtual="barra_footer.html" -->
+	<script type="text/javascript" src="js/salas_inv.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 
+	<script type="text/javascript" src="http://cachedcommons.org/cache/jquery-cookie/0.0.0/javascripts/jquery-cookie.js"></script>
+	<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
 </body>
 </html>

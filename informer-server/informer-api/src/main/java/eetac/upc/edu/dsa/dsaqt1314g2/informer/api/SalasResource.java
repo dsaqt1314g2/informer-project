@@ -249,7 +249,6 @@ public class SalasResource {
 	@Produces(MediaType.INFORMER_API_SALA_COLLECTION)
 	public Response getVisibilidad(@PathParam("categoria") String categoria, @QueryParam("o") String offset, @QueryParam("l") String length, @Context Request req) {
 		// GETs: /posts/ranking/{categoria} (Registered)(admin)
-
 		int ioffset = 0, ilength = 10, icategoria = 0;
 		if ((offset == null) || (length == null)) {
 			offset = "0";
@@ -277,7 +276,7 @@ public class SalasResource {
 				throw new BadRequestException(" categoria must be an integer greater or equal than 0.");
 			}
 		}
-
+		String username = security.getUserPrincipal().getName();
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
@@ -290,27 +289,20 @@ public class SalasResource {
 			stmt = con.createStatement();
 			String query = "";
 			String query2 = "";
-			if (icategoria == 0) {
-				query = "SELECT * FROM salas_chat where visibilidad=0 ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
-				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad=0;";
-			} else if (icategoria == 1) {
-				query = "SELECT * FROM salas_chat where visibilidad=1 ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
-				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad=1;";
+			if (icategoria < 2) {
+				query = "SELECT DISTINCT salas_chat.* FROM rel_sala_user, salas_chat WHERE salas_chat.visibilidad="+icategoria+" and salas_chat.identificador NOT IN (SELECT id_sala FROM rel_sala_user WHERE rel_sala_user.username='"+username+"') ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad="+icategoria+";";
 			} else if (icategoria == 2) {
-				String username = security.getUserPrincipal().getName();
 				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
 				query += "rel_sala_user.username = '" + username + "' ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
 				query2 = "SELECT Count(identificador) FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
 				query2 += "rel_sala_user.username = '" + username + "';";
-
 			} else if (icategoria == 3) {
-				String username = security.getUserPrincipal().getName();
 				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=1 and ";
 				query += "rel_sala_user.username = '" + username + "' ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
 				query2 = "SELECT Count(identificador) FROM salas_chat, rel_sala_user  where rel_sala_user.id_sala = salas_chat.identificador and rel_sala_user.estado=1 and ";
 				query2 += "rel_sala_user.username = '" + username + "';";
 			}
-
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				Sala sala = new Sala();
@@ -593,9 +585,7 @@ public class SalasResource {
 	@Path("/{salaid}/unirse")
 	public String Unirse(@PathParam("salaid") String salaid, @QueryParam("pass") String pass, @Context Request req) {
 		// GET: /posts/{postid} (Registered)(admin)
-
 		String mensaje = "La contraseña es incorrecta;";
-
 		if (pass == null) {
 			pass = "password";
 		}
@@ -617,25 +607,19 @@ public class SalasResource {
 				sala.setNombre_sala(rs.getString("nombre_sala"));
 				sala.setVisibilidad(rs.getInt("visibilidad"));
 				sala.setLast_update(rs.getTimestamp("last_update"));
-
 				if (sala.getVisibilidad() < 1) {
 					sala.setPassword("password");
 				} else {
 					sala.setPassword(rs.getNString("password"));
 				}
-
 				// TODO Links
-
 			} else
 				throw new SalaNotFoundException();
-
 			if (pass.equals(sala.getPassword())) {
 				rs.close();
-
 				query = "SELECT * FROM rel_sala_user WHERE id_sala=" + sala.getIdentificador() + " and username = '" + security.getUserPrincipal().getName() + "';";
 				rs = stmt.executeQuery(query);
 				if (!rs.next()) {
-
 					String update = "insert into rel_sala_user (username, id_sala, estado) values ('" + security.getUserPrincipal().getName() + "'," + sala.getIdentificador() + ",1);";
 					stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 					rs = stmt.getGeneratedKeys();
@@ -650,11 +634,9 @@ public class SalasResource {
 					// TODO: execepciones
 					throw new SalaUserExistException();
 				}
-
 			} else {
 				throw new SalaUserExistException();
 			}
-
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -664,7 +646,6 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
-
 		return (mensaje);
 	}
 

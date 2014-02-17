@@ -26,16 +26,19 @@ function Gen_getSalasPublicas(url, offset, length) {
 			"Accept" : "application/vnd.informer.api.sala.collection+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		//console.log(data);
+		// console.log(data);
 		var Stringhtml = "";
 		$.each(data.salas, function(i, s) {
-			Stringhtml += "<tr><td>" + s.username + "</td><td>" + s.nombre_sala + "</td><td><input type='button' value='Unirse' OnClick='Unirse(" + s.identificador + ")'></td><td>"+ (new Date(s.last_update)).toLocaleDateString() + ' a las ' + (new Date(s.last_update)).toLocaleTimeString() + "</td></tr>";
+			Stringhtml += "<tr id=sala"+s.identificador+"><td>" + s.username + "</td><td>" + s.nombre_sala + "</td><td><input type='button' value='Unirse' OnClick='Unirse(" + s.identificador + ")'></td><td>" + (new Date(s.last_update)).toLocaleDateString() + ' a las '
+					+ (new Date(s.last_update)).toLocaleTimeString() + "</td></tr>";
 		});
+		if (Stringhtml == "") Stringhtml = "<tr><td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td></tr>";
 		$("#tabla_publica").html(Stringhtml);
-		$("#paginacion1").html(gen_paginacion(data, length, "publica",1));
+		$("#paginacion1").html(gen_paginacion(data, offset, length, "publica", 1));
 	}).fail(function(jqXHR, textStatus) {
-		//console.log(textStatus + " " + url);
-		$("#tabla_publica").html(JSON.parse(jqXHR.responseText).message);
+		var Stringhtml = "<tr><td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td></tr>";
+		$("#tabla_publica").html(Stringhtml);
+		//$("#tabla_publica").html(JSON.parse(jqXHR.responseText).message);
 	});
 }
 
@@ -55,17 +58,17 @@ function Gen_getSalasPrivadas(url, offset, length) {
 			"Accept" : "application/vnd.informer.api.sala.collection+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		//console.log(data);
+		console.log(data);
 		var Stringhtml = "";
 		$.each(data.salas, function(i, s) {
-			Stringhtml += "<tr><td>" + s.username + "</td><td>" + s.nombre_sala + "</td><td><div id='ponerpass" + s.identificador + "'><input type='button' value='Unirse' OnClick='PonerPass(" + s.identificador
-					+ ")'></div></td><td>" + (new Date(s.last_update)).toLocaleDateString() + ' a las ' + (new Date(s.last_update)).toLocaleTimeString() + "</td></tr>";
+			Stringhtml += "<tr><td>" + s.username + "</td><td>" + s.nombre_sala + "</td><td id='ponerpass" + s.identificador + "'><button type='button' OnClick='PonerPass(" + s.identificador + ")'>Unirse</button></td><td>"
+					+ (new Date(s.last_update)).toLocaleDateString() + ' a las ' + (new Date(s.last_update)).toLocaleTimeString() + "</td></tr>";
 		});
+		if (Stringhtml == "") Stringhtml = "<tr><td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td></tr>";
 		$("#tabla_privada").html(Stringhtml);
-		$("#paginacion2").html(gen_paginacion(data, length, "privada",0));
+		$("#paginacion2").html(gen_paginacion(data, offset, length, "privada", 0));
 	}).fail(function(jqXHR, textStatus) {
-		console.log(textStatus + " " + url);
-		var Stringhtml = "Error";
+		var Stringhtml = "<tr><td colspan=4 style='text-align: center;'><h3>No hay salas</h3></td></tr>";
 		$("#tabla_privada").html(Stringhtml);
 	});
 }
@@ -86,30 +89,19 @@ function Unirse(id) {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
-		console.log(status);
-		console.log(data);
+		//console.log(data);
 		objInstanceName.show('ok', 'Te has unido correctamente a la sala');
-		// var Stringhtml = "<div class='alert alert-success'>Te has unido
-		// correctamente a la Sala con ID: "+ id + ".<p>" + data + "</div>";
-		// $("#tabla_publica").html(Stringhtml);
-		setTimeout(function() {
-			Pintar();
+		setTimeout(function() {	//paginacion refresh...
+			pintar();
 		}, redirecttimeout);
 	}).fail(function(data, status, jqXHR, textStatus) {
-		console.log(data);
+		//console.log(data);
 		objInstanceName.show('error', 'Error interno, usted ya esta en esta sala.');
-		// var Stringhtml = "<div class='alert alert-danger'>Error interno,
-		// Usted ya esta en esta sala.</div>";
-		// $("#tabla_publica").html(Stringhtml);
-		setTimeout(function() {
-			Pintar();
-		}, redirecttimeout);
 	});
 }
 function PonerPass(id) {
-	var div = "#ponerpass" + id;
-	var Stringhtml = "<input type='password' style='width:150px;' class='form-control' id='userpass" + id + "' placeholder='Contrase&ntilde;a' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado(" + id + ");'>";
-	$(div).html(Stringhtml);
+	var Stringhtml = "<input type='password' style='width:150px;margin:auto;' class='form-control' id='userpass" + id + "' placeholder='Contrase&ntilde;a' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado(" + id + ");'>";
+	$("#ponerpass" + id).html(Stringhtml);
 }
 
 function PaginaPublica(pag, tabla) {
@@ -134,7 +126,7 @@ function UnirsePrivado(id) {
 	var String = "#userpass" + id;
 	var password = $(String).val();
 	var url = API_BASE_URL + "salas/" + id + "/unirse?pass=" + CryptoJS.MD5(password).toString();
-	console.log(url);
+	//console.log(url);
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -144,58 +136,60 @@ function UnirsePrivado(id) {
 			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
 		},
 	}).done(function(data, status, jqxhr) {
-		console.log(status);
-		console.log(data);
-		var Stringhtml = "<div class='alert alert-success'>Te has unido correctamente a la Sala con ID: " + id + ".<p>" + data + "</div>";
-		$("#post-container").html(Stringhtml);
+		//console.log(status);
+		//console.log(data);
+		var objInstanceName = new jsNotifications({
+			autoCloseTime : 5,
+			showAlerts : true,
+			title : 'Informer'
+		});
+		objInstanceName.show('ok', 'Te has unido correctamente!');
 		setTimeout(function() {
-			Pintar();
+			pintar();
 		}, redirecttimeout);
-	}).fail(
-			function(data, status, jqXHR, textStatus) {
-				console.log(data);
-				var div = "#ponerpass" + id;
-				var Stringhtml = "<input type='password' style='width:150px;border:1px solid red;box-shadow: 0 0 3px #CC0000;'class='form-control' id='userpass" + id
-						+ "' placeholder='Contrase&ntilde;a incorrecta' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado(" + id + ");'></div>";
-				$(div).html(Stringhtml);
-				setTimeout(function() {
-					Pintar();
-				}, redirecttimeout);
-			});
+	}).fail(function(data, status, jqXHR, textStatus) {
+		//console.log(data);
+		var Stringhtml = "<input type='password' style='width:150px;border:1px solid red;box-shadow: 0 0 3px #CC0000;margin:auto;' class='form-control' id='userpass" + id + "' placeholder='Contrase&ntilde;a incorrecta' required='' onkeydown='if (event.keyCode == 13) UnirsePrivado(" + id + ");'>";
+		$("#ponerpass" + id).html(Stringhtml);
+	});
 }
 
-function gen_paginacion(data, length, tipo, numtipo) {
+function gen_paginacion(data, offset, length, tipo, numtipo) {
 	var numpag = Math.ceil(data.count / length);
-	//console.log(numpag);
+	// console.log(numpag);
 	var Stringpaginacion = "";
-	if (pagprivada == 0) {
-		Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#"+tipo+"0' OnClick='PaginaPublica(0,"+numtipo+")'>1 <span class='sr-only'>(current)</span></a></li>";
+	if ((pagprivada == 0 && numtipo == 0) || (pagpublica == 0 && numtipo == 1)) {
+		Stringpaginacion = "<ul class='pagination'><li class='active'><a href='#" + tipo + "0' OnClick='PaginaPublica(0," + numtipo + ")'>1 <span class='sr-only'>(current)</span></a></li>";
 		var i = 1;
 		while (i < numpag) {
-			Stringpaginacion += "<li><a href='#"+tipo+"" + i + "' OnClick='PaginaPublica(" + i + ","+numtipo+")'>" + (i + 1) + " </a></li>";
+			Stringpaginacion += "<li><a href='#" + tipo + "" + i + "' OnClick='PaginaPublica(" + i + "," + numtipo + ")'>" + (i + 1) + " </a></li>";
 			i++;
 		}
-		//console.log(numpag);
+		// console.log(numpag);
 		if (numpag > 1) {
-			Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica(1,"+numtipo+")'>&raquo;</a></li>";
+			Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica(1," + numtipo + ")'>&raquo;</a></li>";
 		}
 		Stringpaginacion += "</ul>";
 	} else {
 		Stringpaginacion = "<ul class='pagination'>";
-		Stringpaginacion += "<li><a href='#Prev' OnClick='PaginaPublica(" + (pagprivada - 1) + ","+numtipo+")'>&laquo;</a></li>";
-		//console.log(Stringpaginacion);
+		Stringpaginacion += "<li><a href='#Prev' OnClick='PaginaPublica(" + (pagprivada - 1) + "," + numtipo + ")'>&laquo;</a></li>";
+		// console.log(Stringpaginacion);
 		var i = 0;
 		while (i < numpag) {
-			if (i == pagprivada) {
-				Stringpaginacion += "<li class='active'><a href='#"+tipo+"" + i + "' OnClick='PaginaPublica(" + i + ","+numtipo+")'>" + (i + 1) + " <span class='sr-only'>(current)</span></a></li>";
+			var expr;
+			if (numtipo == 0)
+				expr = (i == pagprivada);
+			else
+				expr = (i == pagpublica);
+			if (expr) {
+				Stringpaginacion += "<li class='active'><a href='#" + tipo + "" + i + "' OnClick='PaginaPublica(" + i + "," + numtipo + ")'>" + (i + 1) + " <span class='sr-only'>(current)</span></a></li>";
 			} else {
-				Stringpaginacion += "<li><a href='#"+tipo+"" + i + "' OnClick='PaginaPublica(" + i + ","+numtipo+")'>" + (i + 1) + " </a></li>";
+				Stringpaginacion += "<li><a href='#" + tipo + "" + i + "' OnClick='PaginaPublica(" + i + "," + numtipo + ")'>" + (i + 1) + " </a></li>";
 			}
-
 			i++;
 		}
 		if (numpag > pagprivada + 1)
-			Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica(" + pagprivada + 1 + ","+numtipo+")'>&raquo;</a></li></ul>";
+			Stringpaginacion += "<li><a href='#' OnClick='PaginaPublica(" + pagprivada + 1 + "," + numtipo + ")'>&raquo;</a></li></ul>";
 	}
 	return Stringpaginacion;
 }
