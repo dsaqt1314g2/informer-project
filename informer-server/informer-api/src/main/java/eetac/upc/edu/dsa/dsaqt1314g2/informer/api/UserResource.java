@@ -50,7 +50,7 @@ public class UserResource {
 		CacheControl cc = new CacheControl();
 		User user = new User();
 		Statement stmt = null;
-
+		String receptor = security.getUserPrincipal().getName();
 		// arrancamos la conexion
 		Connection conn = null;
 		try {
@@ -65,7 +65,7 @@ public class UserResource {
 		try {
 			// creamos el statement y la consulta
 			stmt = conn.createStatement();
-			String sql = "select * from perfiles where username='" + username + "';";
+			String sql = "SELECT amigos.friend, perfiles.* from perfiles LEFT JOIN amigos ON perfiles.username=amigos.username and amigos.friend='"+receptor+"' WHERE perfiles.username='" + username + "';";
 			// realizamos la consulta
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -84,7 +84,10 @@ public class UserResource {
 				user.setParticipar_GPS(rs.getBoolean("participar_GPS"));
 				user.setLast_Update(rs.getTimestamp("last_Update"));
 				user.setIsModerador(security.isUserInRole("moderador"));
-
+				if (rs.getString("friend") == null)
+					user.setIsFriend(false);
+				else
+					user.setIsFriend(true);
 				// TODO: Generar lso Links
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo, user.getUsername(), "self"));
 				user.addLinks(UsersAPILinkBuilder.buildURIDeleteUser(uriInfo, user.getUsername(), "delete"));
@@ -115,7 +118,7 @@ public class UserResource {
 		}
 
 		// Calculate the ETag on last modified date of user resource
-		EntityTag eTag = new EntityTag(Integer.toString(user.getLast_Update().hashCode()));
+		EntityTag eTag = new EntityTag(Integer.toString(user.hashCode()));
 
 		// Verify if it matched with etag available in http request
 		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
@@ -551,7 +554,6 @@ public class UserResource {
 				e.printStackTrace();
 			}
 		}
-
 		mensaje="";
 		return mensaje;
 	}

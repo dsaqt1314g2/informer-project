@@ -3,11 +3,38 @@ var loaded = 0;
 var offset = 0;
 var length = 15;
 
+function START() {
+	var username = getCookie("username");
+	var perfil = getUrlVars();
+	if (perfil == null)
+		Pintar();
+	else {
+		perfil = getUrlVars().user;
+		if (username == perfil)
+			Pintar();
+		else
+			Pintar2();
+	}
+}
+
 function Pintar() {
 	var url = API_BASE_URL + "/users/" + getCookie("username");
 	GetUsuario(url, offset, length);
-	GetNotificaciones(getCookie("username"));
+	GetNotificaciones(getCookie("username"), 0);
 	GetPost(getCookie("username"), 0, 15);
+	$("#solicitudAmistad").remove();
+	$("#eliminarAmistad").remove();
+}
+
+function Pintar2() {
+	$(".borrar").remove();
+	var perfil = getUrlVars().user;
+	$("#solicitud-amigos").attr("onClick","SolicitarAmistad('"+perfil+"',-1)");
+	$("#eliminar-amigos").attr("onClick","EliminarAmistad('"+perfil+"',-1)");
+	var url = API_BASE_URL + "users/" + perfil;
+	GetUsuario_ajeno(url);
+	GetNotificaciones(perfil, 1);
+	GetPost(perfil, 0, 15);
 }
 
 function GetUsuario(url) {
@@ -52,7 +79,7 @@ function GetUsuario(url) {
 	});
 }
 
-function GetNotificaciones(username) {
+function GetNotificaciones(username, caso) {
 	var url = API_BASE_URL + "/user/" + username + "/notifications";
 	$.ajax({
 		url : url,
@@ -75,7 +102,10 @@ function GetNotificaciones(username) {
 		$("#data11").html(data.participacion);
 		$("#data40").html(data.n_i_sala);
 		$("#data41").html(data.n_s_amistad);
-		$("#data51").attr("onClick", "Amigos(\'" + username + "\')");
+		if (caso == 0)
+			$("#data51").attr("onClick", "Amigos(\'" + username + "\')");
+		if (caso == 1)
+			$("#data51").attr("onClick", "Amigos_ajeno(\'" + username + "\')");
 	}).fail(function(jqXHR, textStatus) {
 		// console.log("aki llega bien pero ta mal");
 	});
@@ -143,18 +173,19 @@ function GetSolicitudes(username) {
 			"Accept" : "application/vnd.informer.api.user.collection+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		// console.log(data);
+		console.log(data);
 		var html = "";
 		$.each(data.users, function(i, s) {
 			html += '<tr>';
 			html += '<td style="vertical-align:middle;"><img style="max-width: 50px; max-height: 50px;" src="' + s.foto + '"></td>';
 			html += '<td style="vertical-align:middle;">' + s.username + '</td>';
 			html += '<td style="vertical-align:middle;">' + (new Date(s.last_Update)).toLocaleDateString() + '</td>';
-			html += '<td style="vertical-align:middle;"><p class="btn btn-success btn-xs" onClick="AceptarAmistad(\'' + s.username + '\')"><span class="glyphicon glyphicon-ok">';
+			html += '<td style="vertical-align:middle;"><p class="btn btn-success btn-xs" onClick="AceptarAmistad(\'' + s.username + '\',0)"><span class="glyphicon glyphicon-ok">';
 			html += '</span> Aceptar</p>&nbsp;&nbsp;<p OnClick="EliminarAmistad(\'' + s.username + '\',0)" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
 			html += '</span> Rechazar</p></td></tr>';
 		});
-		if (html == "") html = "<tr><td colspan=4><h3>No hay solicitudes</h3></td></tr>";
+		if (html == "")
+			html = "<tr><td colspan=4><h3>No hay solicitudes</h3></td></tr>";
 		$("#perfiles-amigos-inv").html(html);
 	}).fail(function(jqXHR, textStatus) {
 		// console.log(textStatus);
@@ -164,7 +195,7 @@ function GetSolicitudes(username) {
 function Getamigos(username) {
 	// anadir ofset y length con paginacion
 	var url = API_BASE_URL + "users/" + username + "/amigos?o=0&l=20";
-	//console.log(url);
+	// console.log(url);
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -178,7 +209,7 @@ function Getamigos(username) {
 			"Accept" : "application/vnd.informer.api.user.collection+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		//console.log(data);
+		// console.log(data);
 		var html = "";
 		$.each(data.users, function(i, s) {
 			html += '<tr><td style="vertical-align:middle;"><img style="text-align:center;max-width: 50px; max-height: 50px" src="' + s.foto + '" /></td>';
@@ -188,10 +219,11 @@ function Getamigos(username) {
 			html += '</span> Ver Perfil</a>&nbsp;&nbsp;<a href="#eliminar" OnClick="EliminarAmistad(\'' + s.username + '\',1)" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-remove">';
 			html += '</span> Eliminar</a></td></tr>';
 		});
-		if (html == "") html = "<tr><td colspan=4 style='text-align: center;'><h3>No tienes amigos :(</h3></td></tr>";
+		if (html == "")
+			html = "<tr><td colspan=4 style='text-align: center;'><h3>No tienes amigos :(</h3></td></tr>";
 		$("#perfiles-amigos").html(html);
 	}).fail(function(jqXHR, textStatus) {
-		//console.log(textStatus);
+		// console.log(textStatus);
 	});
 }
 
@@ -202,7 +234,7 @@ function EliminarAmistad(username, caso) {
 		title : 'Informer'
 	});
 	var url = API_BASE_URL + "users/" + username + "/deletefriend";
-	//console.log(url);
+	// console.log(url);
 	$.ajax({
 		url : url,
 		type : 'DELETE',
@@ -222,12 +254,14 @@ function EliminarAmistad(username, caso) {
 			objInstanceName.show('error', jqXHR.responseText);
 	});
 	setTimeout(function() {
-		if (caso == 0) GetSolicitudes(getCookie("username"));
-		else if (caso == 1) Getamigos(getCookie("username"));
+		if (caso == 0)
+			GetSolicitudes(getCookie("username"));
+		else if (caso == 1)
+			Getamigos(getCookie("username"));
 	}, redirecttimeout);
 }
 
-function AceptarAmistad(username) {
+function AceptarAmistad(username, caso) {
 	// console.log("Aqui llega 3");
 	var objInstanceName = new jsNotifications({
 		autoCloseTime : 5,
@@ -255,7 +289,8 @@ function AceptarAmistad(username) {
 			objInstanceName.show('error', jqXHR.responseText);
 	});
 	setTimeout(function() {
-		GetSolicitudes(getCookie("username"));
+		if (caso == 0)
+			GetSolicitudes(getCookie("username"));
 	}, redirecttimeout);
 }
 
@@ -339,5 +374,113 @@ function ActulizarUser() {
 	}).fail(function(jqXHR, textStatus) {
 		console.log(textStatus);
 		return (false);
+	});
+}
+
+function getUrlVars() {
+	var perfil;
+	if (perfil != null)
+		return perfil;
+	var vars = [], hash;
+	var hashes;
+	try {
+		hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			vars.push(hash[0]);
+			vars[hash[0]] = hash[1].split('#')[0];
+		}
+	} catch (err) {
+		return null;
+	}
+	return vars;
+}
+
+function GetUsuario_ajeno(url) {
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend : function(request) {
+			request.withCredentials = true;
+			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
+		},
+		headers : {
+			"Accept" : "application/vnd.informer.api.user+json",
+		},
+	}).done(function(data, status, jqxhr) {
+		if (data.isFriend == true)
+			$("#solicitudAmistad").remove();
+		else
+			$("#eliminarAmistad").remove();
+		$("#data1").html(data.username);
+		$("#imageperfil").attr("src", data.foto);
+		var sexo = "Mujer";
+		if (data.genero)
+			sexo = "Hombre";
+		var estado = "Soltero";
+		if (data.estado_civil == 1)
+			estado = "Sin lazos";
+		else if (data.estado_civil == 2)
+			estado = "A falta de mimos";
+		else if (data.estado_civil == 3)
+			estado = "Follamig@";
+		else if (data.estado_civil == 4)
+			estado = "Relaci&oacute;n abierta";
+		else if (data.estado_civil == 5)
+			estado = "Relaci&oacute;n a distancia";
+		else if (data.estado_civil == 6)
+			estado = "En una relaci&oacute;n";
+		else if (data.estado_civil == 7)
+			estado = "Comprometid@";
+		$("#data2").html(sexo);
+		$("#data4").html(estado);
+		$("#solicitud-amigos").attr("onClick", "SolicitarAmistad('" + data.username + "')")
+		$("#data3").html((new Date(data.fecha_nacimiento)).getFullYear());
+	}).fail(function(jqXHR, textStatus) {
+		console.log(textStatus + " " + url);
+		var Stringhtml = "Error";
+		$("#todo").html(Stringhtml);
+	});
+}
+
+function Amigos_ajeno(username) {
+	if (username == null)
+		username = getUrlVars().user;
+	$('#listStuff').load('frames/veramigos.html');
+	Getamigos(username);
+}
+
+function SolicitarAmistad(username) {
+	var objInstanceName = new jsNotifications({
+		autoCloseTime : 5,
+		showAlerts : true,
+		title : 'Informer'
+	});
+
+	var url = API_BASE_URL + "users/solicitud/" + username;
+	console.log(url);
+	$.ajax({
+		url : url,
+		type : 'GET',
+		crossDomain : true,
+		dataType : 'json',
+		beforeSend : function(request) {
+			request.withCredentials = true;
+			request.setRequestHeader("Authorization", "Basic " + btoa(autorizacion));
+		},
+		headers : {
+			"Accept" : "application/vnd.informer.api.user+json",
+		},
+	}).done(function(data, status, jqxhr) {
+		// setTimeout(function(){Pintar();},redirecttimeout);
+	}).fail(function(jqXHR, textStatus) {
+		//console.log(jqXHR);
+		if (jqXHR.status == 200)
+			objInstanceName.show('ok', 'Se ha enviado la solicitud.');
+		else
+			objInstanceName.show('error', JSON.parse(jqXHR.responseText).message);
+		// setTimeout(function(){Pintar();},redirecttimeout);
 	});
 }

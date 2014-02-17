@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
 </head>
-<body onLoad="Pintar()">
+<body onLoad="START()">
 	<!-- BARRA -->
 	<!--#if expr="($HTTP_COOKIE = /role\=true/)" -->
 	<!--#include virtual="barra_moderador.html" -->
@@ -30,6 +30,9 @@
 					<a href="#PanelControl" OnClick="PanelControl()">Cambiar imagen</a>
 					<div class="container" style="min-width: 150px; min-height: 100px;">
 						<img id="imageperfil" style="max-height: 200px; max-width: 200px;">
+					</div>
+					<div id="solicitudAmistad" style="text-align: center;margin-top:10px;">
+						<button id="solicitud-amigos" type="button" class="btn btn-success">Solicitar amistad</button>
 					</div>
 					<hr>
 					<p style="text-align: center; font-weight: bold;">Informaci&oacute;n</p>
@@ -183,8 +186,6 @@
 	<!--#include virtual="barra_footer.html" -->
 	<script type="text/javascript" src="js/posts.js"></script>
 	<script type="text/javascript" src="js/perfil.js"></script>
-	<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
-	<script type="text/javascript" src="js/extra/bootstrap-tooltip.js"></script>
 	<script type="text/javascript" src="js/extra/bootstrap-popover.js"></script>
 	<script type="text/javascript" src="js/extra/bootstrap-collapse.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>

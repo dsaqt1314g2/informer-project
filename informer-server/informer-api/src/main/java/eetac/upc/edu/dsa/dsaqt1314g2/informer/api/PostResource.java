@@ -1054,7 +1054,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(0);
 				post.setContenido(rs.getString("contenido"));
-				post.setImagen_usuario(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
+				post.setImagen_usuario(postAnonimoFoto(receptor, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
 				post.setUsername(postAnonimo(receptor, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));

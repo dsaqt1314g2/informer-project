@@ -26,7 +26,16 @@ public class User {
 	private Boolean participar_GPS;
 	private Date last_Update;
 	private Boolean isModerador;
+	private Boolean isFriend;
 	
+	public Boolean getIsFriend() {
+		return isFriend;
+	}
+
+	public void setIsFriend(Boolean isFriend) {
+		this.isFriend = isFriend;
+	}
+
 	public Boolean getIsModerador() {
 		return isModerador;
 	}
