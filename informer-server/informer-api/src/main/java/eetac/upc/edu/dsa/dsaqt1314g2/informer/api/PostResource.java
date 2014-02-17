@@ -1034,8 +1034,8 @@ public class PostResource {
 		}
 		try {
 			// usuario normal. No selecciona los de visiblidad > 2
-			String query = "SELECT amigos.friend, posts.*, calificacion.estado  FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
-					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN comentarios ON comentarios.id_post=posts.identificador and comentarios.username='" + username + "'" + "WHERE posts.visibilidad<3 and (posts.username='" + username
+			String query = "SELECT amigos.friend, posts.*, calificacion.estado, perfiles.foto  FROM posts LEFT JOIN calificacion ON calificacion.id_post=posts.identificador and calificacion.username='" + username + "' LEFT JOIN amigos ON amigos.friend='" + username
+					+ "' and amigos.username=posts.username and amigos.estado=1 LEFT JOIN perfiles ON perfiles.username=posts.username LEFT JOIN comentarios ON comentarios.id_post=posts.identificador and comentarios.username='" + username + "'" + "WHERE posts.visibilidad<3 and (posts.username='" + username
 					+ "' or posts.username IN(select amigos.friend from amigos where amigos.username='" + username + "') or (posts.identificador=calificacion.id_post and calificacion.username='" + username + "') or (posts.identificador=comentarios.id_post and comentarios.username='" + username
 					+ "')) ORDER BY publicacion_date DESC LIMIT " + ioffset + ", " + (ilength + 1) + ";";
 			ResultSet rs = stmt.executeQuery(query);
@@ -1054,6 +1054,7 @@ public class PostResource {
 				post.setLiked(rs.getInt("estado"));
 				post.setVisibilidad(0);
 				post.setContenido(rs.getString("contenido"));
+				post.setImagen_usuario(postAnonimoFoto(username, rs.getString("username"), rs.getString("friend"), post.getVisibilidad(),rs.getString("foto")));
 				post.setUsername(postAnonimo(receptor, rs.getString("username"), rs.getString("friend"), post.getVisibilidad()));
 				if (post.getIdentificador() != 1)
 					post.addLink(PostsAPILinkBuilder.buildURIPostId(uriInfo, post.getIdentificador() - 1, "prev"));

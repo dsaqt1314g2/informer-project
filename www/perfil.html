@@ -1,33 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<title>Informer</title>
-<!--[if lt IE 9]> <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-<link href="css/style.css" rel="stylesheet">
-<link href="css/style_posts.css" rel="stylesheet">
+<title>Informer UPC</title>
+<link type="text/css" rel="stylesheet" href="css/posts.css">
+<link type="text/css" rel="stylesheet" href="css/style.css">
 <link rel="shortcut icon" href="/bootstrap/img/favicon.ico">
 <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
 <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css" href="js/jsNotifications/ext/jboesch-Gritter/css/jquery.gritter.css">
-<!-- CSS code from Bootply.com editor -->
-<style type="text/css">
-body {
-	margin: 0;
-	overflow: auto;;
-}
-</style>
 </head>
-<!-- HTML code from Bootply.com editor -->
+
 <body>
-	<span id="contenedor-barra"></span>
-	<script src="js/extra/jquery.js"></script>
-	<script src="js/variable.js"></script>
-	<script src="js/login.js"></script>
+	<!-- BARRA -->
+	<!--#if expr="($HTTP_COOKIE = /role\=true/)" -->
+	<!--#include virtual="barra_moderador.html" -->
+	<!--#elif expr="($HTTP_COOKIE = /role\=false/)" -->
+	<!--#include virtual="barra_conectado.html" -->
+	<!--#else -->
+	<!--#include virtual="barra.html" -->
+	<!--#endif -->
+
+	<!-- INFO -->
 	<div id="todo" class="container-fluid" style="margin: auto; padding: 70px 25px 0px 20px; width: 1350px;">
 		<!-- <center><h1 class="letterpress"><div id="data1">Rodrigo Sampedro</div></h1></center>-->
 		<div class="row">
@@ -44,13 +39,27 @@ body {
 						<hr>
 						<p style="text-align: center; font-weight: bold;">Informaci&oacute;n</p>
 						<hr>
-						<p><strong>Usuario: </strong><span id="data1"></span></p>
-						<p><strong>Sexo: </strong><span id="data2"></span></p>
-						<p><strong>Aniversario: </strong><span id="data3"></span></p>
-						<p><strong>Estado: </strong><span id="data4"></span></p>
-						<p><strong>Escuela: </strong><span id="data22"></span></p>
-						<p><strong>Ultima conexi&oacute;n: </strong><br> <span id="data23"></span></p>
-						<p><strong>Residencia: </strong><span id="data5"></span></p>
+						<p>
+							<strong>Usuario: </strong><span id="data1"></span>
+						</p>
+						<p>
+							<strong>Sexo: </strong><span id="data2"></span>
+						</p>
+						<p>
+							<strong>Aniversario: </strong><span id="data3"></span>
+						</p>
+						<p>
+							<strong>Estado: </strong><span id="data4"></span>
+						</p>
+						<p>
+							<strong>Escuela: </strong><span id="data22"></span>
+						</p>
+						<p>
+							<strong>Ultima conexi&oacute;n: </strong><br> <span id="data23"></span>
+						</p>
+						<p>
+							<strong>Residencia: </strong><span id="data5"></span>
+						</p>
 						<table class="table table-hover">
 							<tbody>
 								<tr>
@@ -114,9 +123,11 @@ body {
 			</div>
 		</div>
 	</div>
+
+	<!-- FOOTER -->
+	<!--#include virtual="barra_footer.html" -->
 	<script src="js/posts.js"></script>
 	<script src="js/perfil2.js"></script>
-	<script type="text/javascript" src="js/jsNotifications/ext/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/ext/jboesch-Gritter/js/jquery.gritter.min.js"></script>
 	<script type="text/javascript" src="js/jsNotifications/jsNotifications.js"></script>
 </body>

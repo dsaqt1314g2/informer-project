@@ -45,8 +45,8 @@ INSERT INTO `informerdb`.`comentarios` (`id_post`, `username`, `visibilidad`, `c
 INSERT INTO `informerdb`.`comentarios` (`id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('9', 'McD0n3ld', '10', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
 INSERT INTO `informerdb`.`comentarios` (`id_post`, `username`, `visibilidad`, `contenido`, `publicacion_date`, `revisado`, `who_revisado`) VALUES ('9', 'McD0n3ld', '10', 'Esto es uncomentario 2', CURRENT_TIMESTAMP, '0', NULL);
 
-INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('1', 'ropnom', 'McD0n3ld','1'); 
-INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('2', 'McD0n3ld', 'ropnom','1');
+INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('1', 'ropnom', 'McD0n3ld','0'); 
+INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('2', 'McD0n3ld', 'ropnom','0');
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('3', 'McD0n3ld', 'Creador','1');
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('4', 'Creador', 'McD0n3ld','1');
 INSERT INTO `informerdb`.`amigos` (`id`, `username`, `friend`,`estado`) VALUES ('5', 'alicia', 'McD0n3ld','1'); 
