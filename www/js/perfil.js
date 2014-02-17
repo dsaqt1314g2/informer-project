@@ -258,6 +258,8 @@ function EliminarAmistad(username, caso) {
 			GetSolicitudes(getCookie("username"));
 		else if (caso == 1)
 			Getamigos(getCookie("username"));
+		else if (caso == -1)
+			location.reload();
 	}, redirecttimeout);
 }
 
@@ -329,7 +331,6 @@ function GetUserDates(username) {
 }
 
 function ActulizarUser() {
-
 	var url = API_BASE_URL + "users/" + getCookie("username");
 	var correo = $('#correo').val();
 	var foto = $('#foto2').val();
@@ -477,8 +478,10 @@ function SolicitarAmistad(username) {
 		// setTimeout(function(){Pintar();},redirecttimeout);
 	}).fail(function(jqXHR, textStatus) {
 		//console.log(jqXHR);
-		if (jqXHR.status == 200)
+		if (jqXHR.status == 200) {
 			objInstanceName.show('ok', 'Se ha enviado la solicitud.');
+			location.reload();
+		}
 		else
 			objInstanceName.show('error', JSON.parse(jqXHR.responseText).message);
 		// setTimeout(function(){Pintar();},redirecttimeout);

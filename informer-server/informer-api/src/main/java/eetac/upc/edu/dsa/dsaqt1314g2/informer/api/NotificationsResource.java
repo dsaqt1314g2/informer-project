@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.sql.DataSource;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,10 +35,8 @@ public class NotificationsResource {
 
 	@GET
 	@Produces(MediaType.INFORMER_API_NOTIFICATION)
-	public Response getmynotificacion(@PathParam("username") String username,
-			@Context Request req) {
+	public Response getmynotificacion(@PathParam("username") String username, @Context Request req) {
 
-				
 		CacheControl cc = new CacheControl();
 		Connection con = null;
 		Statement stmt = null;
@@ -51,63 +48,55 @@ public class NotificationsResource {
 		try {
 			stmt = con.createStatement();
 
-			String query = "SELECT COUNT(*) AS rowcount FROM amigos  where amigos.username='"
-					+ username + "' ;";
+			String query = "SELECT COUNT(*) AS rowcount FROM amigos where amigos.username='" + username + "' and amigos.estado=1;";
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setNumamigos(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM comentarios  where comentarios.username='"
-					+ username + "' ;";
+			query = "SELECT COUNT(*) AS rowcount FROM comentarios  where comentarios.username='" + username + "' ;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setNumcomment(rs.getInt("rowcount"));
-			}			
+			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM posts  where posts.username='"
-					+ username + "' ;";
+			query = "SELECT COUNT(*) AS rowcount FROM posts  where posts.username='" + username + "' ;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setNumpost(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM calificacion, posts  where calificacion.estado =1 and calificacion.id_post=posts.identificador and posts.username='"
-					+ username + "' ;";
+			query = "SELECT COUNT(*) AS rowcount FROM calificacion, posts  where calificacion.estado =1 and calificacion.id_post=posts.identificador and posts.username='" + username + "' ;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setNumlikes(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM calificacion, posts  where calificacion.estado =2 and calificacion.id_post=posts.identificador and posts.username='"
-					+ username + "' ;";
+			query = "SELECT COUNT(*) AS rowcount FROM calificacion, posts  where calificacion.estado =2 and calificacion.id_post=posts.identificador and posts.username='" + username + "' ;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setNumdislikes(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM calificacion where calificacion.username='"
-					+ username + "' ;";
+			query = "SELECT COUNT(*) AS rowcount FROM calificacion where calificacion.username='" + username + "' ;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 
 				notificacion.setParticipacion(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM amigos where amigos.username='"
-					+ username + "' and amigos.estado=0;";
+			query = "SELECT COUNT(*) AS rowcount FROM amigos where amigos.username='" + username + "' and amigos.estado=0;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				notificacion.setN_s_amistad(rs.getInt("rowcount"));
 			}
 			rs.close();
-			query = "SELECT COUNT(*) AS rowcount FROM rel_sala_user where rel_sala_user.username='"
-					+ username + "' and rel_sala_user.estado=0;";
+			query = "SELECT COUNT(*) AS rowcount FROM rel_sala_user where rel_sala_user.username='" + username + "' and rel_sala_user.estado=0;";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				notificacion.setN_i_sala(rs.getInt("rowcount"));
@@ -125,8 +114,7 @@ public class NotificationsResource {
 		}
 
 		// Calculate the ETag on last modified date of user resource
-		EntityTag eTag = new EntityTag(
-				Integer.toString(notificacion.hashCode()));
+		EntityTag eTag = new EntityTag(Integer.toString(notificacion.hashCode()));
 
 		// Verify if it matched with etag available in http request
 		Response.ResponseBuilder rb = req.evaluatePreconditions(eTag);
