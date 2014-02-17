@@ -1,6 +1,7 @@
 <script src="js/extra/jquery.js"></script>
 <script src="js/variable.js"></script>
 <script src="js/login.js"></script>
+<script src="js/buscador.js"></script>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 <nav>
@@ -35,7 +36,7 @@
 							<li><a href="comentarios_denuncias.html">Comentarios</a></li>
 						</ul></li>
 					<div class="pull-left navbar-form" style="height: 25px;">
-						<input type="text" id="buscar_barra" class="search-query span2 form-control" onkeydown='if (event.keyCode == 13) Buscar();' placeholder="Buscar usuario...">
+						<input type="text" id="buscar_barra" class="search-query span2 form-control" data-toggle='modal' data-keyboard='true' onkeydown='if (event.keyCode == 13) GetBusqueda();' placeholder="Buscar usuario...">
 					</div>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" style="float: right !important;">
@@ -48,7 +49,32 @@
 		</div>
 	</div>
 </nav>
-<script src="js/extra/bootstrap-dropdown.js"></script>
+<div class="modal fade bs-example-modal-lg" id="buscarAmigos" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myLargeModalLabel">Invitar amigos a la sala</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table" style="text-align: center;">
+					<thead>
+						<tr>
+							<th style="text-align: center;">Foto</th>
+							<th style="text-align: center;">Usuario</th>
+							<th style="text-align: center;">&Uacute;ltima conexi&oacute;n</th>
+							<th style="text-align: center;">Acci&oacute;n</th>
+						</tr>
+					</thead>
+					<tbody id="listaAmigosBuscados">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="js/extra/bootstrap-dropdown.js"></script>
+<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 <script>
 	var name = "username=";
 	var username = "";
@@ -60,12 +86,4 @@
 	}
 	document.getElementById("myname-barra").innerHTML = username;
 </script>
-<script>
-	function Buscar() {
-		var busqueda = $('#buscar_barra').val();
-		document.cookie = "busqueda=" + busqueda;
-		window.location = WWW_URL + "/buscador.html";
-		//console.log(busqueda);
-	}
-</script>
-<div style="padding-top: 70px; margin:auto; width:1200px;min-height:1000px;">
+<div style="padding-top: 70px; margin: auto; width: 1200px; min-height: 1000px;">
