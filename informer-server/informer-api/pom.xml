@@ -8,9 +8,7 @@
 		<artifactId>informer-server</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>eetac.upc.edu.dsa.dsaqt1314g2</groupId>
 	<artifactId>informer-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>informer-api</name>
 	<properties>

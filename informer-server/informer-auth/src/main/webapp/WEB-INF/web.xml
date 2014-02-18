@@ -18,7 +18,8 @@
 		<description>
 			Resource reference to a factory for javax.mail.Session
 			instances that may be used for sending electronic mail
-			messages, preconfigured to connect to the appropriate
+			messages,
+			preconfigured to connect to the appropriate
 			SMTP server.
 		</description>
 		<res-ref-name>

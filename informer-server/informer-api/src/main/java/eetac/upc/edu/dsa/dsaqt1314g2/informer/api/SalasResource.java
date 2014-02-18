@@ -130,8 +130,8 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
-		int prev = ioffset - ilength;
-		int next = ioffset + ilength;
+		//int prev = ioffset - ilength;
+		//int next = ioffset + ilength;
 
 		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 0, "Categorias"));
 		salas.addLink(SalasAPILinkBuilder.buildURISalasVision(uriInfo, offset, length, 1, "Categorias"));
@@ -290,8 +290,9 @@ public class SalasResource {
 			String query = "";
 			String query2 = "";
 			if (icategoria < 2) {
-				query = "SELECT DISTINCT salas_chat.* FROM rel_sala_user, salas_chat WHERE salas_chat.visibilidad="+icategoria+" and salas_chat.identificador NOT IN (SELECT id_sala FROM rel_sala_user WHERE rel_sala_user.username='"+username+"') ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
-				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad="+icategoria+";";
+				query = "SELECT DISTINCT salas_chat.* FROM rel_sala_user, salas_chat WHERE salas_chat.visibilidad=" + icategoria + " and salas_chat.identificador NOT IN (SELECT id_sala FROM rel_sala_user WHERE rel_sala_user.username='" + username
+						+ "') ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
+				query2 = "SELECT Count(identificador) FROM salas_chat where visibilidad=" + icategoria + ";";
 			} else if (icategoria == 2) {
 				query = "SELECT salas_chat.* FROM salas_chat, rel_sala_user  where salas_chat.visibilidad=2 and rel_sala_user.id_sala = salas_chat.identificador and ";
 				query += "rel_sala_user.username = '" + username + "' ORDER BY nombre_sala asc LIMIT " + offset + ", " + length + ";";
@@ -357,8 +358,8 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
-		int prev = ioffset - ilength;
-		int next = ioffset + ilength;
+		//int prev = ioffset - ilength;
+		//int next = ioffset + ilength;
 
 		// TODO Links
 
@@ -479,8 +480,8 @@ public class SalasResource {
 			} catch (Exception e) {
 			}
 		}
-		int prev = ioffset - ilength;
-		int next = ioffset + ilength;
+		//int prev = ioffset - ilength;
+		//int next = ioffset + ilength;
 
 		// Calculate the ETag on last modified date of user resource
 		EntityTag eTag = new EntityTag(Integer.toString(salas.hashCode()));
@@ -648,11 +649,12 @@ public class SalasResource {
 	@Path("/{salaid}/invitar")
 	public void Invitar(@PathParam("salaid") String salaid, @QueryParam("username") String username, @Context Request req) {
 		// GET: /posts/{postid} (Registered)(admin)
-		//String mensaje = "No puedes invitar a una sala en al que no estas subscrito";
+		// String mensaje =
+		// "No puedes invitar a una sala en al que no estas subscrito";
 		if (username == null) {
 			throw new BadRequestException("Es encesario indicar el username a invitar");
 		}
-		//Sala sala = new Sala();
+		// Sala sala = new Sala();
 		Connection con = null;
 		Statement stmt = null;
 		try {
@@ -683,9 +685,11 @@ public class SalasResource {
 					stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
 					rs = stmt.getGeneratedKeys();
 					if (rs.next()) {
-						//int identificador = rs.getInt(1);
+						// int identificador = rs.getInt(1);
 						rs.close();
-						//mensaje = "Usuario " + username + " Invitado Correctamente, relacion : " + identificador;
+						// mensaje = "Usuario " + username +
+						// " Invitado Correctamente, relacion : " +
+						// identificador;
 					} else {
 						throw new SalaNotFoundException();
 					}

@@ -4,7 +4,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriInfo;
 
-import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.InformerRootAPIResource;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.MediaType;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.SalasResource;
 import eetac.upc.edu.dsa.dsaqt1314g2.informer.api.model.Sala;

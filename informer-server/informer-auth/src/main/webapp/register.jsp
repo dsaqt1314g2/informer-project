@@ -74,7 +74,7 @@
 						</td>
 						<td>
 							<select name="dia" class="form-control" style="width: 75px;">
-								<option value="0" selected="1">D&iacute;a</option>
+								<option value="0" selected>D&iacute;a</option>
 								<option value="1">1</option>
 								<option value="2">2</option>
 								<option value="3">3</option>
@@ -110,7 +110,7 @@
 						</td>
 						<td>
 							<select name="mes" class="form-control" style="width: 115px;">
-								<option value="0" selected="1">Mes</option>
+								<option value="0" selected>Mes</option>
 								<option value="1">Enero</option>
 								<option value="2">Febrero</option>
 								<option value="3">Marzo</option>
@@ -127,7 +127,7 @@
 						</td>
 						<td>
 							<select name="ano" class="form-control" style="width: 80px;">
-								<option value="0" selected="1">A&ntilde;o</option>
+								<option value="0" selected>A&ntilde;o</option>
 								<!-- <option value="2014">2014</option>
 								<option value="2013">2013</option>
 								<option value="2012">2012</option>
