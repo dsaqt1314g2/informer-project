@@ -33,6 +33,7 @@ function GetMisSalas(url) {
 			Stringhtml += "<tr><td>" + s.nombre_sala + "</td><td>" + visibilidad + "</td><td>" + s.username + "</td><td><div id='editar" + s.identificador + "'><button type='button' data-toggle='modal' data-target='#tabla_modsala' data-keyboard='true' onClick='ModSala("
 					+ s.identificador + ",\"" + s.nombre_sala + "\", "+s.visibilidad+")'>Editar</button></div>" + "</td><td>" +  (new Date(s.last_update)).toLocaleDateString() + ' a las ' + (new Date(s.last_update)).toLocaleTimeString() + "</td></tr>";
 		});
+		if( Stringhtml == "") Stringhtml = "<tr><td colspan=6 style='text-align: center;'><h3>No hay salas</h3></td></tr>";
 		$("#tabla_publica").html(Stringhtml);
 	}).fail(function(jqXHR, textStatus) {
 		console.log(textStatus + " " + url);

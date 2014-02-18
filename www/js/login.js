@@ -2,13 +2,6 @@ var loaded = 0;
 var username = getCookie("username");
 var userpass = getCookie("userpass");
 var role = getCookie("role");
-if (username != "" && userpass != "") {
-	if (role == "true")
-		$('#contenedor-barra').load('barra_moderador.html');
-	else
-		$('#contenedor-barra').load('barra_conectado.html');
-} else
-	$('#contenedor-barra').load('barra.html');
 
 function getLogin() {
 	// definimos las vriables del login
