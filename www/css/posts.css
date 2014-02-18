@@ -203,6 +203,22 @@
 	color: #FFF;
 }
 
+.mi-post-emergente {
+	width: 550px;
+	background-image: url(../img/background-post.jpg);
+	background-repeat: no-repeat;
+}
+
+.mi-post {
+	width: 450px;
+	margin-left: 100px;
+	border-top-width: thin;
+	border-style: solid none solid solid;
+	border-width: thin;
+	border-color: #E0E0E0;
+	background-color: #FFFFFF;
+}
+
 .post-validar-der a:link {
 	color: #FFF;
 }
@@ -298,6 +314,15 @@
 textarea.mi-comentario-txtarea {
 	width: 306px;
 	height: 25px;
+	overflow: hidden;
+	resize: none;
+	white-space: pre;
+	border: 2px solid #D2EBFF;
+}
+
+textarea.mi-post-txtarea {
+	width: 380px;
+	height: 100px;
 	overflow: hidden;
 	resize: none;
 	white-space: pre;

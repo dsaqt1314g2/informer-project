@@ -73,6 +73,43 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade bs-example-modal-lg" id="postGenialidad" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myLargeModalLabel">Crear una genialidad!</h4>
+			</div>
+			<div class="modal-body">
+				<div class="mi-post-emergente">
+					<div class="mi-post">
+						<div class="post-imagen">
+							<img src="http://www.otromundoesposible.net/wp-content/uploads/2013/03/mariposa-morfo-azul.jpg" width="50px" height="50px">
+						</div>
+						<div class="post-usuario">McD0n3ld el fantastico</div>
+						<div class="post-opciones">&Psi;</div>
+						<div class="post-contenido">
+							<textarea class="mi-post-txtarea" maxlength=2048 placeholder="Puta vida tete..." onkeydown="if (event.keyCode == 13) processIdea();else {if(this.scrollHeight > 100) {$(this).height( 0 ); $(this).height( this.scrollHeight );}}"></textarea>
+						</div>
+						<div class="post-gusta">
+							<a href="#">Me gusta</a>
+						</div>
+						<div class="post-disgusta">
+							<a href="#">Una puta mierda</a>
+						</div>
+						<div class="post-fecha">FECHA</div>
+						<div class="post-triangulos"></div>
+
+						<div class="post-opiniones">A la gente le gustar&aacute; esta genialidad...</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="js/extra/bootstrap-transition.js"></script>
 <script type="text/javascript" src="js/extra/bootstrap-dropdown.js"></script>
 <script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 <script>
@@ -87,3 +124,43 @@
 	document.getElementById("myname-barra").innerHTML = username;
 </script>
 <div style="padding-top: 70px; margin: auto; width: 1200px; min-height: 1000px;">
+	<div id="mi-gran-post" style="z-index: 500; position: absolute; right: 0px; top: 60px; width: 136px; height: 200px;">
+		<div style="position: absolute; left: 45px;">
+			<div class="mi-post-emergente">
+				<div class="mi-post" id="mi-post">
+					<div class="post-imagen">
+						<img src="http://www.otromundoesposible.net/wp-content/uploads/2013/03/mariposa-morfo-azul.jpg" width="50px" height="50px">
+					</div>
+					<div class="post-usuario">McD0n3ld</div>
+					<div class="post-opciones">&Psi;</div>
+					<div class="post-contenido">
+						<textarea class="mi-post-txtarea" id="mi-genialidad" maxlength=2048 placeholder="Puta vida tete..." onkeydown="if (event.keyCode == 13) processIdea();else {if(this.scrollHeight > 100) {$(this).height( 0 ); $(this).height( this.scrollHeight );}}"></textarea>
+					</div>
+					<div class="post-gusta">
+						<a href="#">Me gusta</a>
+					</div>
+					<div class="post-disgusta">
+						<a href="#">Una puta mierda</a>
+					</div>
+					<div class="post-fecha">FECHA</div>
+					<div class="post-triangulos"></div>
+
+					<div class="post-opiniones">A la gente le gustar&aacute; esta genialidad...</div>
+				</div>
+			</div>
+			<!-- <a href="javascript:void(0);" data-toggle='modal' data-target='#postGenialidad' data-keyboard='true'><img src="http://webcare.byside.com/BWAEE7598AECA/widgets/Action/skins/hpespana2/bg1.gif" border="0"></a>-->
+		</div>
+	</div>
+	<script>
+		$('#mi-gran-post').hover(function() {
+			$(this).animate({
+				right : 500
+			}, 500);
+			//document.getElementById("mi-post").style.display = 'block';
+		}, function() {
+			$(this).animate({
+				right : '0px',
+			}, 1000);
+			//document.getElementById("mi-post").style.display = 'none';
+		});
+	</script>
