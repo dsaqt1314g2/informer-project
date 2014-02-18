@@ -23,7 +23,7 @@
 						<li><a href="http://147.83.7.156:8080/informer-auth/register.jsp">Registrarse</a></li>
 					</ul>
 					<div class="navbar-form pull-right" id="my-user-informer">
-						<input class="span2 form-control" style="height: 30px;" id="username" type="text" placeholder="Usuario"> &nbsp;&nbsp; <input class="span2 form-control" style="height: 30px;" id="userpass" type="password" placeholder="Contraseña">
+						<input class="span2 form-control" style="height: 30px;" id="username" type="text" placeholder="Usuario"> &nbsp;&nbsp; <input class="span2 form-control" style="height: 30px;" id="userpass" onkeydown="if (event.keyCode == 13) getLogin();" type="password" placeholder="Contraseña">
 						&nbsp;&nbsp;
 						<button id="button_login" style="padding: 4px;" onclick="getLogin()" class="btn btn-default">Conectarse</button>
 					</div>

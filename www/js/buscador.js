@@ -30,7 +30,7 @@ function GetBusqueda() {
 			"Content-Type" : "application/vnd.informer.api.user.collection+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		console.log(data);
+		//console.log(data);
 		var html = "";
 		$.each(data.users, function(i, s) {
 			html += '<tr><td style="vertical-align:middle;"><img style="text-align:center;max-width: 50px; max-height: 50px" src="' + s.foto + '" /></td>';

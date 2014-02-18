@@ -45,25 +45,13 @@ function getLogin() {
 				}
 			}
 			//window.location = urlredirect + "/post_viewer.html";
-			console.log(data);
+			//console.log(data);
 		},
 		error : function(jqXHR, textStatus) {
 			window.location = urlredirect + "/login.html";
 			console.log(textStatus);
 		}
 	});
-	// .done(function (data, status, jqxhr) {
-	// //$.cookie("username", username);
-	// //$.cookie("userpass", userpass);
-	// document.cookie="username="+username;
-	// document.cookie="userpass="+userpass;
-	// window.location = "http://localhost/informer-project/post_viewer.html";
-	// console.log(data);
-	// })
-	// .fail(function (jqXHR, textStatus) {
-	// //window.location = "http://localhost/informer-project/login.html";
-	// console.log(textStatus);
-	// });
 }
 
 function logOut() {

@@ -6,6 +6,7 @@ insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuel
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela,foto) values ('alicia','Alicia',true,'1980-06-06','alicia@acme.com',1,'https://pbs.twimg.com/profile_images/3593892089/d99368a964185413975dc68a98b24319.jpeg');
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela,foto) values ('blas','Blas',true,'1980-06-06','blas@acme.com',1,'https://pbs.twimg.com/profile_images/422746662407135232/Eeba0U86.jpeg');
 insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('moderador','Moderador',true,'1970-06-06','moderador@moderador.com',1);
+insert into perfiles(username, name, genero,fecha_nacimiento, correo, uni_escuela) values ('xavi','Xavier',true,'1970-06-06','xavi@estudiant.upc.es',1);
 
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('ropnom',0,'Seguiremos los pasos del creador',1,3,0,0);
 insert into posts(username, visibilidad, contenido, numcomentarios, calificaciones_positivas, calificaciones_negativas, revisado) values ('McD0n3ld',0,'Los sicarios os persiguen',1,0,3,0);
