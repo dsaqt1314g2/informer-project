@@ -107,8 +107,6 @@
 		</auth-constraint>
 	</security-constraint>
 
-
-
 	<filter>
 		<!-- The CORS filter with parameters -->
 		<filter-name>CORS</filter-name>
@@ -143,8 +141,7 @@
 
 		<init-param>
 			<param-name>cors.exposedHeaders</param-name>
-			<!-- <param-value>Access-Control-Allow-Origin, Content-Type, Access-Control-Allow-Credentials, Authorization</param-value> -->
-			<param-value>*</param-value>
+			<param-value>Access-Control-Allow-Origin, Content-Type, Access-Control-Allow-Credentials, Authorization</param-value>
 		</init-param>
 
 		<init-param>

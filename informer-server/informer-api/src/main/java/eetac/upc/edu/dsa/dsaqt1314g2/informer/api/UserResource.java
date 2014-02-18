@@ -284,7 +284,7 @@ public class UserResource {
 	}
 
 	@GET
-	@Path("{username}/amigos")
+	@Path("/{username}/amigos")
 	@Produces(MediaType.INFORMER_API_USER_COLLECTION)
 	public Response getAmigos(@QueryParam("o") String offset, @QueryParam("l") String length, @Context Request req, @PathParam("username") String username) {
 		// TODO: Search: GET ? {nombre},{escula},{sexo},{edad},{estadocivil}

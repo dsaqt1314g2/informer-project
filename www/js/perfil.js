@@ -18,7 +18,7 @@ function START() {
 }
 
 function Pintar() {
-	var url = API_BASE_URL + "/users/" + getCookie("username");
+	var url = API_BASE_URL + "users/" + getCookie("username");
 	GetUsuario(url, offset, length);
 	GetNotificaciones(getCookie("username"), 0);
 	GetPost(getCookie("username"), 0, 15);
@@ -80,7 +80,7 @@ function GetUsuario(url) {
 }
 
 function GetNotificaciones(username, caso) {
-	var url = API_BASE_URL + "/user/" + username + "/notifications";
+	var url = API_BASE_URL + "user/" + username + "/notifications";
 	$.ajax({
 		url : url,
 		type : 'GET',
@@ -297,7 +297,7 @@ function AceptarAmistad(username, caso) {
 }
 
 function GetUserDates(username) {
-	var url = API_BASE_URL + "/users/" + username;
+	var url = API_BASE_URL + "users/" + username;
 	$.ajax({
 		url : url,
 		type : 'GET',

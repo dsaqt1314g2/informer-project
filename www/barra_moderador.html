@@ -115,14 +115,27 @@
 	<script>
 		$("#mi-post-imagen-div").css("background-image", "url('" + getCookie('imagen') + "')");
 		$("#mi-post-user").html(getCookie("username"));
+		var en_proceso = false;
 		$('#mi-post-emergente').hover(function() {
-			startTime();
-			$("#mi-gran-post").animate({
-				right : 450
-			}, 500);
+			if (en_proceso == false) {
+				en_proceso = true;
+				startTime();
+				$("#mi-gran-post").animate({
+					right : 450,
+				}, {
+					duration : 500
+				});
+			}
 		}, function() {
-			$("#mi-gran-post").animate({
-				right : '0px'
-			}, 1000);
+			if (en_proceso == true) {
+				$("#mi-gran-post").animate({
+					right : '0px'
+				}, {
+					duration : 1000,
+					complete : function() {
+						en_proceso = false;
+					}
+				});
+			}
 		});
 	</script>
