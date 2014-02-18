@@ -211,7 +211,7 @@ function rellenarSalas(data) {
 		//Stringhtml += "<td>"+s.identificador + "</td>;
 		Stringhtml += "<td>" + s.username + "</td>"
 		Stringhtml += "<td><a href='javascript:void(0);' onClick='abrirChat(" + s.identificador + ")'>" + s.nombre_sala	+ "</a></td>";
-		Stringhtml += "<td><button type='button' data-toggle='modal' data-target='#invitarAmigos' data-keyboard='true' onClick='Invitar(" + s.identificador + ")'>Invitar</button></td>";
+		Stringhtml += "<td><button type='button' data-toggle='modal' data-target='#invitarAmigosSala' data-keyboard='true' onClick='Invitar(" + s.identificador + ")'>Invitar</button></td>";
 		if (s.username != getCookie("username")) {
 			Stringhtml += "<td><input type='button' value='Abandonar' OnClick='Abandonar(" + s.identificador + ")'></td>";
 		} else {
