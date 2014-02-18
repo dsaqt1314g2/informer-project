@@ -205,6 +205,8 @@
 
 .mi-post-emergente {
 	width: 550px;
+	height: 188px;
+	border-radius: 8px;
 	background-image: url(../img/background-post.jpg);
 	background-repeat: no-repeat;
 }
