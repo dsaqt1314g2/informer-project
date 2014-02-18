@@ -77,6 +77,22 @@
 
 	<security-constraint>
 		<web-resource-collection>
+			<web-resource-name>Users-registered</web-resource-name>
+			<url-pattern>/users/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>PUT</http-method>
+			<http-method>POST</http-method>
+			<http-method>DELETE</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>registered</role-name>
+			<role-name>moderador</role-name>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
 			<web-resource-name>Salas</web-resource-name>
 			<url-pattern>/salas/*</url-pattern>
 			<http-method>GET</http-method>
@@ -91,21 +107,7 @@
 		</auth-constraint>
 	</security-constraint>
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Users-registered</web-resource-name>
-			<url-pattern>/users/*</url-pattern>
-			<http-method>GET</http-method>
-			<http-method>PUT</http-method>
-			<http-method>POST</http-method>
-			<http-method>DELETE</http-method>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>registered</role-name>
-			<role-name>moderador</role-name>
-			<role-name>admin</role-name>
-		</auth-constraint>
-	</security-constraint>
+
 
 	<filter>
 		<!-- The CORS filter with parameters -->
@@ -141,7 +143,7 @@
 
 		<init-param>
 			<param-name>cors.exposedHeaders</param-name>
-			<param-value>Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Credentials</param-value>
+			<param-value>Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Credentials,Authorization</param-value>
 		</init-param>
 
 		<init-param>

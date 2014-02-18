@@ -351,7 +351,7 @@ function ActulizarUser() {
 	usuario += '"foto": "' + foto + '",';
 	// usuario += '"participar_GPS": false,';
 	usuario += '"uni_escuela": ' + universidad + '}';
-	console.log(usuario);
+	//console.log(usuario);
 	$.ajax({
 		url : url,
 		type : 'PUT',
@@ -367,7 +367,7 @@ function ActulizarUser() {
 			"Content-Type" : "application/vnd.informer.api.user+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		console.log(data);
+		//console.log(data);
 		setTimeout(function() {
 			Pintar()
 		}, redirecttimeout);
