@@ -367,7 +367,7 @@ function ActulizarUser() {
 			"Content-Type" : "application/vnd.informer.api.user+json",
 		},
 	}).done(function(data, status, jqxhr) {
-		//console.log(data);
+		document.cookie = "imagen=" + foto;
 		setTimeout(function() {
 			Pintar()
 		}, redirecttimeout);
