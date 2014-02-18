@@ -1,17 +1,19 @@
-<script src="js/extra/jquery.js"></script>
-<script src="js/variable.js"></script>
-<script src="js/login.js"></script>
+<script type="text/javascript" src="js/extra/jquery.js"></script>
+<script type="text/javascript" src="js/variable.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script type="text/javascript" src="js/buscador.js"></script>
+<script type="text/javascript" src="js/create_post.js"></script>
+<link type="text/css" rel="stylesheet" href="css/posts.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 <nav>
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="create_post.html">Inf&oacute;rmanos!</a>
+				<a class="navbar-brand" href="post_viewer.html">Inf&oacute;rmanos!</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li class=""><a href="post_viewer.html">Genialidades</a></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Ranking&nbsp;<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="post_ranking_likes.html">Mejores publicaciones</a></li>
@@ -28,9 +30,9 @@
 							<li><a href="salas_edit.html">Mis salas</a></li>
 							<!--  <li class="divider"></li> -->
 						</ul></li>
-					<li><a href="miperfil.html">Tu Perfil</a></li>
+					<li><a href="perfil.html">Mi Perfil</a></li>
 					<div class="pull-left navbar-form" style="height: 25px;">
-						<input type="text" id="buscar_barra" style="padding: 4px; height: 23px;" class="search-query span2 form-control" onkeydown='if (event.keyCode == 13) Buscar();' placeholder="Buscar usuario...">
+						<input type="text" id="buscar_barra" class="search-query span2 form-control" data-toggle='modal' data-keyboard='true' onkeydown='if (event.keyCode == 13) GetBusqueda();' placeholder="Buscar usuario...">
 					</div>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" style="float: right !important;">
@@ -43,24 +45,79 @@
 		</div>
 	</div>
 </nav>
-<script src="js/extra/bootstrap-dropdown.js"></script>
+<div class="modal fade bs-example-modal-lg" id="buscarAmigos" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myLargeModalLabel">Buscador</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table" style="text-align: center;">
+					<thead>
+						<tr>
+							<th style="text-align: center;">Foto</th>
+							<th style="text-align: center;">Usuario</th>
+							<th style="text-align: center;">&Uacute;ltima conexi&oacute;n</th>
+							<th style="text-align: center;">Acci&oacute;n</th>
+						</tr>
+					</thead>
+					<tbody id="listaAmigosBuscados">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="js/extra/bootstrap-transition.js"></script>
+<script type="text/javascript" src="js/extra/bootstrap-dropdown.js"></script>
+<script type="text/javascript" src="js/extra/bootstrap-modal.js"></script>
 <script>
-	var name = "username=";
-	var username = "";
-	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name) == 0)
-			username = c.substring(name.length, c.length);
-	}
-	document.getElementById("myname-barra").innerHTML = username;
+	document.getElementById("myname-barra").innerHTML = getCookie("username");
 </script>
-<script>
-	function Buscar() {
-		var busqueda = $('#buscar_barra').val();
-		document.cookie = "busqueda=" + busqueda;
-		window.location = WWW_URL + "/buscador.html";
-		//console.log(busqueda);
-	}
-</script>
-<div style="padding-top: 70px; margin:auto; width:1200px;min-height:1000px;">
+<div style="padding-top: 70px; margin: auto; width: 1200px; min-height: 1000px;">
+	<div id="mi-gran-post" style="z-index: 500; position: fixed; right: 0px; top: 60px; width: 100px; height: 188px;">
+		<div class="mi-post-emergente" id="mi-post-emergente">
+			<div class="mi-post" id="mi-post">
+				<div class="post-imagen blink" id="mi-post-imagen-div" style="width: 55px; height: 55px; background-size: 50px 50px; background-position: 5px 5px; background-repeat: no-repeat;">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" onClick="clicked=true;"><img width="50px" height="50px" id="mi-post-imagen" class="blink" /></a>
+					<ul class="dropdown-menu" style="top: 60px">
+						<li><a href="#" onClick="cambiarMiVisibilidad(0);">An&oacute;nimo</a></li>
+						<li><a href="#" onClick="cambiarMiVisibilidad(1);">S&oacute;lo amigos</a></li>
+						<li><a href="#" onClick="cambiarMiVisibilidad(2);">P&uacute;blico</a></li>
+					</ul>
+				</div>
+				<div id="mi-post-visibilidad" style="display: none"></div>
+				<div class="post-usuario" id="mi-post-user"></div>
+				<div class="post-opciones">&Psi;</div>
+				<div class="post-contenido">
+					<textarea class="mi-post-txtarea" id="mi-genialidad" maxlength=2048 placeholder="Puta vida tete..." onkeydown="if (event.keyCode == 13) processIdea();else {if(this.scrollHeight > 100) {$(this).height( 0 ); $(this).height( this.scrollHeight );}}"></textarea>
+				</div>
+				<div class="post-gusta">
+					<a href="#">Me gusta</a>
+				</div>
+				<div class="post-disgusta">
+					<a href="#">Una puta mierda</a>
+				</div>
+				<div class="post-fecha" id="mi-post-fecha">FECHA</div>
+				<div class="post-triangulos"></div>
+
+				<div class="post-opiniones">A la gente le gustar&aacute; esta genialidad...</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$("#mi-post-imagen-div").css("background-image", "url('" + getCookie('imagen') + "')");
+		$("#mi-post-user").html(getCookie("username"));
+		$('#mi-post-emergente').hover(function() {
+			startTime();
+			$("#mi-gran-post").animate({
+				right : 450
+			}, 500);
+		}, function() {
+			$("#mi-gran-post").animate({
+				right : '0px'
+			}, 1000);
+		});
+	</script>
