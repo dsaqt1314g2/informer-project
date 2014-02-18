@@ -92,7 +92,7 @@ public class UserResource {
 				user.addLinks(UsersAPILinkBuilder.buildURIUserName(uriInfo, user.getUsername(), "self"));
 				user.addLinks(UsersAPILinkBuilder.buildURIDeleteUser(uriInfo, user.getUsername(), "delete"));
 				user.addLinks(UsersAPILinkBuilder.buildURISolicitud(uriInfo, user.getUsername(), "solicitud"));
-				user.addLinks(UsersAPILinkBuilder.buildURIPaginaPrincipal());
+				user.addLinks(UsersAPILinkBuilder.buildURIPaginaPrincipal(uriInfo));
 
 			} else {
 				throw new UserNotFoundException();

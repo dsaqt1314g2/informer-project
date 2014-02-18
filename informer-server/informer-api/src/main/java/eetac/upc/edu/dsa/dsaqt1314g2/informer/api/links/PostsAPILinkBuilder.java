@@ -51,21 +51,23 @@ public class PostsAPILinkBuilder {
 
 		return self;
 	}
-	
+
 	public static final Link buildURIPostsDenunciados(UriInfo uriInfo, int offset, int length, String rel) {
 		URI uriStings;
-//		if (offset == null && length == null)
-//			uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).build(); // devuelve
-//																						// http:blabla/stings
-//		else {
-			// if (username == null)
-			uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("o", offset).queryParam("l", length).build();
-			// else
-			// uriStings =
-			// uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("offset",
-			// offset).queryParam("length", length)
-			// .queryParam("username", username).build();
-//		}
+		// if (offset == null && length == null)
+		// uriStings =
+		// uriInfo.getBaseUriBuilder().path(PostResource.class).build(); //
+		// devuelve
+		// // http:blabla/stings
+		// else {
+		// if (username == null)
+		uriStings = uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("o", offset).queryParam("l", length).build();
+		// else
+		// uriStings =
+		// uriInfo.getBaseUriBuilder().path(PostResource.class).queryParam("offset",
+		// offset).queryParam("length", length)
+		// .queryParam("username", username).build();
+		// }
 
 		Link self = new Link();
 		self.setUri(uriStings.toString());
@@ -128,7 +130,7 @@ public class PostsAPILinkBuilder {
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Post " + postid);
-//		link.setType(MediaType.INFORMER_API_POST);
+		// link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
 
@@ -138,17 +140,17 @@ public class PostsAPILinkBuilder {
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Post " + postid);
-//		link.setType(MediaType.INFORMER_API_POST);
+		// link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
-	
+
 	public final static Link buildURINeutroPostId(UriInfo uriInfo, int postid, String rel) {
 		URI postURI = uriInfo.getBaseUriBuilder().path(PostResource.class).path(PostResource.class, "eliminarVoto").build(postid);
 		Link link = new Link();
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Post " + postid);
-//		link.setType(MediaType.INFORMER_API_POST);
+		// link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
 
@@ -158,7 +160,7 @@ public class PostsAPILinkBuilder {
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Post " + postid);
-//		link.setType(MediaType.INFORMER_API_POST);
+		// link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
 
@@ -188,10 +190,8 @@ public class PostsAPILinkBuilder {
 		link.setUri(postURI.toString());
 		link.setRel(rel);
 		link.setTitle("Post " + postid);
-//		link.setType(MediaType.INFORMER_API_POST);
+		// link.setType(MediaType.INFORMER_API_POST);
 		return link;
 	}
-	
-
 
 }

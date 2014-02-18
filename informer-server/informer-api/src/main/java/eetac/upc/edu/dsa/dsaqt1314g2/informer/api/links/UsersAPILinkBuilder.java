@@ -125,11 +125,15 @@ public class UsersAPILinkBuilder {
 		return link;
 	}
 	
-	public final static Link buildURIPaginaPrincipal() {
-		URI stingURI;
+	public final static Link buildURIPaginaPrincipal(UriInfo uriInfo) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(UserResource.class).path(UserResource.class, "getUser").build("fakeUser");
+		String IP = stingURI.toString().substring(7).split(":")[0];
 		Link link = new Link();
 		try {
-			stingURI = new URI("http://localhost/informer-project/post_viewer.html");
+			if (IP.equals("localhost"))
+				stingURI = new URI("http://"+IP+"/informer-project/post_viewer.html");
+			else
+				stingURI = new URI("http://"+IP+"/post_viewer.html");
 			link.setUri(stingURI.toString());
 			link.setRel("principal");
 			link.setTitle("Ver posts");
